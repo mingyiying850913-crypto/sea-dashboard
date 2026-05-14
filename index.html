@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEA 營運日報</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f1117; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 24px; }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+
+    /* 指標卡片 */
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .card { background: #1a1d27; border-radius: 12px; padding: 20px; }
+    .card-label { font-size: 12px; color: #888; margin-bottom: 8px; }
+    .card-value { font-size: 28px; font-weight: 700; color: #fff; }
+    .card-icon { font-size: 20px; margin-bottom: 8px; }
+
+    /* 表格區塊 */
+    .section { background: #1a1d27; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .section-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #ccc; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; padding: 8px 12px; color: #888; font-weight: 500; border-bottom: 1px solid #2a2d3a; }
+    td { padding: 10px 12px; border-bottom: 1px solid #1f2230; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #20243a; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+
+<h1>🏦 SEA 虎機營運日報</h1>
+<div class="subtitle" id="subtitle">載入中...</div>
+
+<div class="cards">
+  <div class="card"><div class="card-icon">👥</div><div class="card-label">付費人數</div><div class="card-value" id="payingUsers">-</div></div>
+  <div class="card"><div class="card-icon">💳</div><div class="card-label">交易筆數</div><div class="card-value" id="transactions">-</div></div>
+  <div class="card"><div class="card-icon">💰</div><div class="card-label">總營收</div><div class="card-value" id="revenue">-</div></div>
+  <div class="card"><div class="card-icon">📈</div><div class="card-label">ARPPU</div><div class="card-value" id="arppu">-</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">👑 VIP 付費分析</div>
+  <table>
+    <thead><tr><th>VIP</th><th class="num">付費人數</th><th class="num">交易筆數</th><th class="num">總儲值</th></tr></thead>
+    <tbody id="vipTable"></tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">💳 儲值品項分析</div>
+  <table>
+    <thead><tr><th>品項</th><th class="num">付費人數</th><th class="num">金額</th><th class="num">佔比</th></tr></thead>
+    <tbody id="saleTable"></tbody>
+  </table>
+</div>
+
+<script>
+const saleTypeNames = {
+  1:'一般商店', 2:'首購包', 3:'再銷包', 4:'WEB金流', 5:'社交包',
+  6:'產包', 7:'付費蛋', 8:'小額付費', 9:'定製禮包', 10:'TACO',
+  11:'CRM禮包', 12:'Web產包', 13:'登入禮包'
+};
+
+function fmt(n) { return Number(n).toLocaleString('en-US'); }
+function fmtD(n) { return Number(n).toLocaleString('en-US', {minimumFractionDigits:1, maximumFractionDigits:1}); }
+
+fetch('data.json?t=' + Date.now())
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('subtitle').textContent = '資料日期：' + d.date;
+    document.getElementById('payingUsers').textContent = fmt(d.daily.PayingUsers);
+    document.getElementById('transactions').textContent = fmt(d.daily.Transactions);
+    document.getElementById('revenue').textContent = fmt(Math.round(d.daily.Revenue));
+    document.getElementById('arppu').textContent = fmtD(d.daily.ARPPU);
+
+    const vipOrder = [9,8,7,5,3,2,1,0];
+    document.getElementById('vipTable').innerHTML = vipOrder.map(v => {
+      const row = d.vip.find(r => Number(r.VipLV) === v) || {};
+      return `<tr>
+        <td>VIP ${v}</td>
+        <td class="num">${fmt(row.PayingUsers||0)}</td>
+        <td class="num">${fmt(row.Transactions||0)}</td>
+        <td class="num">${fmt(Math.round(row.Revenue||0))}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('saleTable').innerHTML = (d.saleType||[]).map(r => `<tr>
+      <td>${saleTypeNames[r.SaleType] || r.SaleType}</td>
+      <td class="num">${fmt(r.paying_users)}</td>
+      <td class="num">${fmt(Math.round(r.total_amount))}</td>
+      <td class="num">${r.revenue_percentage}%</td>
+    </tr>`).join('');
+  });
+</script>
+</body>
+</html>
