@@ -6,21 +6,25 @@
   <title>SEA版營運日報</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0f1117; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 24px; }
-    h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-    .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
+    body { background: #161925; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 24px; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #ffffff; }
+    .subtitle { color: #aaa; font-size: 14px; margin-bottom: 24px; }
     .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
-    .card { background: #1a1d27; border-radius: 12px; padding: 20px; }
-    .card-label { font-size: 13px; color: #888; margin-bottom: 8px; }
+    .card { background: #1e2340; border-radius: 12px; padding: 20px; border-top: 3px solid #444; }
+    .card:nth-child(1) { border-top-color: #7c6af7; }
+    .card:nth-child(2) { border-top-color: #3b9eff; }
+    .card:nth-child(3) { border-top-color: #f5a623; }
+    .card:nth-child(4) { border-top-color: #4cd964; }
+    .card-label { font-size: 20px; color: #bbb; margin-bottom: 8px; }
     .card-value { font-size: 30px; font-weight: 700; color: #fff; }
     .card-icon { font-size: 22px; margin-bottom: 8px; }
-    .section { background: #1a1d27; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
-    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #ccc; }
+    .section { background: #1e2340; border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #ddd; }
     table { width: 100%; border-collapse: collapse; font-size: 15px; }
-    th { text-align: left; padding: 8px 12px; color: #888; font-weight: 500; border-bottom: 1px solid #2a2d3a; }
-    td { padding: 10px 12px; border-bottom: 1px solid #1f2230; }
+    th { text-align: left; padding: 8px 12px; color: #aaa; font-weight: 500; border-bottom: 1px solid #2e3350; }
+    td { padding: 10px 12px; border-bottom: 1px solid #252840; }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #20243a; }
+    tr:hover td { background: #262b47; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
   </style>
 </head>
