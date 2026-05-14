@@ -1,1 +1,11 @@
-const githubContent = JSON.stringify(githubData, null, 2);
+{
+  "date": "2026-05-14",
+  "daily": {
+    "PayingUsers": 0,
+    "Transactions": 0,
+    "Revenue": 0,
+    "ARPPU": 0
+  },
+  "vip": [],
+  "saleType": []
+}
