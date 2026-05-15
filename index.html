@@ -26,8 +26,6 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #fffbf0; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
-
-    /* 月份比較區塊 */
     .compare-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
     .ccard { border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .ccard.current { background: #ede9fe; border-left: 5px solid #7c3aed; }
@@ -81,15 +79,15 @@
 
     <!-- 付費人數 -->
     <div class="ccard current">
-      <div class="ccard-label">5月平均付費人數</div>
+      <div class="ccard-label" id="labelCurrPaying">本月平均付費人數</div>
       <div class="ccard-main">
         <span class="ccard-value" id="mayPaying">-</span>
         <span class="ccard-unit">人 / 日</span>
-        <span class="ccard-change" id="payingChange">-</span>
+        <span class="ccard-change" id="payingChange"></span>
       </div>
     </div>
     <div class="ccard prev">
-      <div class="ccard-label">4月同期付費人數</div>
+      <div class="ccard-label" id="labelPrevPaying">上月同期付費人數</div>
       <div class="ccard-main">
         <span class="ccard-value" id="aprPaying">-</span>
         <span class="ccard-unit">人 / 日</span>
@@ -98,15 +96,15 @@
 
     <!-- ARPPU -->
     <div class="ccard current">
-      <div class="ccard-label">5月平均 ARPPU</div>
+      <div class="ccard-label" id="labelCurrArppu">本月平均 ARPPU</div>
       <div class="ccard-main">
         <span class="ccard-value" id="mayArppu">-</span>
         <span class="ccard-unit">元 / 人</span>
-        <span class="ccard-change" id="arppuChange">-</span>
+        <span class="ccard-change" id="arppuChange"></span>
       </div>
     </div>
     <div class="ccard prev">
-      <div class="ccard-label">4月同期 ARPPU</div>
+      <div class="ccard-label" id="labelPrevArppu">上月同期 ARPPU</div>
       <div class="ccard-main">
         <span class="ccard-value" id="aprArppu">-</span>
         <span class="ccard-unit">元 / 人</span>
@@ -115,14 +113,14 @@
 
     <!-- 流水 -->
     <div class="ccard current">
-      <div class="ccard-label">本月累計流水</div>
+      <div class="ccard-label" id="labelCurrRevenue">本月累計流水</div>
       <div class="ccard-main">
         <span class="ccard-value" id="currRevenue">-</span>
-        <span class="ccard-change" id="revenueChange">-</span>
+        <span class="ccard-change" id="revenueChange"></span>
       </div>
     </div>
     <div class="ccard prev">
-      <div class="ccard-label">上月同期流水</div>
+      <div class="ccard-label" id="labelPrevRevenue">上月同期流水</div>
       <div class="ccard-main">
         <span class="ccard-value" id="prevRevenue">-</span>
       </div>
@@ -144,14 +142,12 @@ function pct(a, b) {
   if (!b) return '';
   const diff = ((a - b) / b * 100).toFixed(1);
   const cls = diff >= 0 ? 'change-up' : 'change-down';
-  const sign = diff >= 0 ? '+' : '';
-  return `<span class="${cls}">${sign}${diff}%</span>`;
+  return `<span class="${cls}">${diff >= 0 ? '+' : ''}${diff}%</span>`;
 }
 function pctDirect(val) {
   if (val === undefined || val === null) return '';
   const cls = val >= 0 ? 'change-up' : 'change-down';
-  const sign = val >= 0 ? '+' : '';
-  return `<span class="${cls}">${sign}${val}%</span>`;
+  return `<span class="${cls}">${val >= 0 ? '+' : ''}${val}%</span>`;
 }
 
 fetch('data.json?t=' + Date.now())
@@ -183,14 +179,28 @@ fetch('data.json?t=' + Date.now())
 
     if (d.comparison) {
       const c = d.comparison;
+      const cm = c.curr_month || '本月';
+      const pm = c.prev_month || '上月';
+
+      // 動態標籤
+      document.getElementById('labelCurrPaying').textContent  = cm + '平均付費人數';
+      document.getElementById('labelPrevPaying').textContent  = pm + '同期付費人數';
+      document.getElementById('labelCurrArppu').textContent   = cm + '平均 ARPPU';
+      document.getElementById('labelPrevArppu').textContent   = pm + '同期 ARPPU';
+      document.getElementById('labelCurrRevenue').textContent = cm + '累計流水';
+      document.getElementById('labelPrevRevenue').textContent = pm + '同期流水';
+
+      // 數值
       document.getElementById('mayPaying').textContent  = fmt(c.may_avg_paying);
       document.getElementById('aprPaying').textContent  = fmt(c.apr_avg_paying);
       document.getElementById('mayArppu').textContent   = '$' + fmt(c.may_avg_arppu);
       document.getElementById('aprArppu').textContent   = '$' + fmt(c.apr_avg_arppu);
-      document.getElementById('payingChange').innerHTML  = pct(c.may_avg_paying, c.apr_avg_paying);
-      document.getElementById('arppuChange').innerHTML   = pct(c.may_avg_arppu, c.apr_avg_arppu);
       document.getElementById('currRevenue').textContent = fmt(c.curr_revenue);
       document.getElementById('prevRevenue').textContent = fmt(c.prev_revenue);
+
+      // 變化率
+      document.getElementById('payingChange').innerHTML  = pct(c.may_avg_paying, c.apr_avg_paying);
+      document.getElementById('arppuChange').innerHTML   = pct(c.may_avg_arppu, c.apr_avg_arppu);
       document.getElementById('revenueChange').innerHTML = pctDirect(c.revenue_growth_pct);
     }
   });
