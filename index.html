@@ -26,6 +26,21 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #fffbf0; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* 月份比較區塊 */
+    .compare-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .ccard { border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .ccard.current { background: linear-gradient(135deg, #7c6af7, #5b8af7); color: #fff; }
+    .ccard.prev { background: #fff; color: #2c2c2c; }
+    .ccard-label { font-size: 13px; margin-bottom: 12px; opacity: 0.85; font-weight: 500; }
+    .ccard.current .ccard-label { color: #e0d9ff; }
+    .ccard.prev .ccard-label { color: #888; }
+    .ccard-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+    .ccard.prev .ccard-value { color: #2c2c2c; }
+    .ccard-sub { font-size: 13px; }
+    .ccard.prev .ccard-sub { color: #aaa; }
+    .change-up { color: #4cd964; font-weight: 600; }
+    .change-down { color: #ff5f57; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -56,6 +71,32 @@
   </table>
 </div>
 
+<div class="section">
+  <div class="section-title">📊 月份同期比較</div>
+  <div class="compare-cards">
+    <div class="ccard current">
+      <div class="ccard-label">5月平均 ARPPU</div>
+      <div class="ccard-value" id="mayArppu">-</div>
+      <div class="ccard-sub" id="arppuChange">-</div>
+    </div>
+    <div class="ccard prev">
+      <div class="ccard-label">4月同期 ARPPU</div>
+      <div class="ccard-value" id="aprArppu">-</div>
+      <div class="ccard-sub">元 / 人</div>
+    </div>
+    <div class="ccard current">
+      <div class="ccard-label">5月平均付費人數</div>
+      <div class="ccard-value" id="mayPaying">-</div>
+      <div class="ccard-sub" id="payingChange">-</div>
+    </div>
+    <div class="ccard prev">
+      <div class="ccard-label">4月同期付費人數</div>
+      <div class="ccard-value" id="aprPaying">-</div>
+      <div class="ccard-sub">人 / 日</div>
+    </div>
+  </div>
+</div>
+
 <script>
 const saleTypeNames = {
   1:'一般商店', 2:'首購包', 3:'再銷包', 4:'WEB金流', 5:'社交包',
@@ -65,6 +106,13 @@ const saleTypeNames = {
 
 function fmt(n) { return Number(n).toLocaleString('en-US'); }
 function fmtD(n) { return Number(n).toLocaleString('en-US', {minimumFractionDigits:1, maximumFractionDigits:1}); }
+function pct(a, b) {
+  if (!b) return '-';
+  const diff = ((a - b) / b * 100).toFixed(1);
+  const cls = diff >= 0 ? 'change-up' : 'change-down';
+  const sign = diff >= 0 ? '+' : '';
+  return `<span class="${cls}">${sign}${diff}%</span>`;
+}
 
 fetch('data.json?t=' + Date.now())
   .then(r => r.json())
@@ -92,6 +140,17 @@ fetch('data.json?t=' + Date.now())
       <td class="num">${fmt(Math.round(r.total_amount))}</td>
       <td class="num">${r.revenue_percentage}%</td>
     </tr>`).join('');
+
+    // 月份比較
+    if (d.comparison) {
+      const c = d.comparison;
+      document.getElementById('mayArppu').textContent = fmt(c.may_avg_arppu);
+      document.getElementById('aprArppu').textContent = fmt(c.apr_avg_arppu);
+      document.getElementById('mayPaying').textContent = fmt(c.may_avg_paying);
+      document.getElementById('aprPaying').textContent = fmt(c.apr_avg_paying);
+      document.getElementById('arppuChange').innerHTML = pct(c.may_avg_arppu, c.apr_avg_arppu);
+      document.getElementById('payingChange').innerHTML = pct(c.may_avg_paying, c.apr_avg_paying);
+    }
   });
 </script>
 </body>
