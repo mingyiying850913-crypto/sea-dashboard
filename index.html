@@ -141,11 +141,10 @@
       <tr>
         <th>品項</th>
         <th class="apr-header" id="stcAprLabel1">4月付費人數</th>
-        <th class="apr-header" id="stcAprLabel2">4月流水</th>
-        <th class="apr-header">4月佔比</th>
         <th class="may-header" id="stcMayLabel1">5月付費人數</th>
+        <th class="change-header">付費人數變化</th>
+        <th class="apr-header" id="stcAprLabel2">4月流水</th>
         <th class="may-header" id="stcMayLabel2">5月流水</th>
-        <th class="may-header">5月佔比</th>
         <th class="change-header">流水變化</th>
       </tr>
     </thead>
@@ -281,11 +280,10 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
           return `<tr>
             <td><strong>${name}</strong></td>
             <td class="apr-cell">${fmt(r.apr_paying_users)}</td>
-            <td class="apr-cell">$${fmtTWD(r.apr_total_amount)}</td>
-            <td class="apr-cell">${n(r.apr_revenue_percentage).toFixed(2)}%</td>
             <td class="may-cell">${fmt(r.may_paying_users)}</td>
+            <td class="change-cell">${changeCell(r.may_paying_users, r.apr_paying_users)}</td>
+            <td class="apr-cell">$${fmtTWD(r.apr_total_amount)}</td>
             <td class="may-cell">$${fmtTWD(r.may_total_amount)}</td>
-            <td class="may-cell">${n(r.may_revenue_percentage).toFixed(2)}%</td>
             <td class="change-cell">${changeCell(r.may_total_amount, r.apr_total_amount)}</td>
           </tr>`;
         }).join('')
