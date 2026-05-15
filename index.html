@@ -15,7 +15,7 @@
     .card:nth-child(2) { border-top-color: #3b9eff; }
     .card:nth-child(3) { border-top-color: #f5a623; }
     .card:nth-child(4) { border-top-color: #4cd964; }
-    .card-label { font-size: 20px; color: #888; margin-bottom: 8px; }
+    .card-label { font-size: 13px; color: #888; margin-bottom: 8px; }
     .card-value { font-size: 30px; font-weight: 700; color: #2c2c2c; }
     .card-icon { font-size: 22px; margin-bottom: 8px; }
     .section { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -29,18 +29,22 @@
 
     /* 月份比較區塊 */
     .compare-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .ccard { border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .ccard.current { background: linear-gradient(135deg, #7c6af7, #5b8af7); color: #fff; }
-    .ccard.prev { background: #fff; color: #2c2c2c; }
-    .ccard-label { font-size: 13px; margin-bottom: 12px; opacity: 0.85; font-weight: 500; }
-    .ccard.current .ccard-label { color: #e0d9ff; }
-    .ccard.prev .ccard-label { color: #888; }
-    .ccard-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+    .ccard { border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .ccard.current { background: #ede9fe; border-left: 5px solid #7c3aed; }
+    .ccard.prev { background: #fff; border: 1px solid #e2d9b3; }
+    .ccard-label { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+    .ccard.current .ccard-label { color: #5b21b6; }
+    .ccard.prev .ccard-label { color: #92400e; }
+    .ccard-main { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .ccard-value { font-size: 38px; font-weight: 700; }
+    .ccard.current .ccard-value { color: #3730a3; }
     .ccard.prev .ccard-value { color: #2c2c2c; }
-    .ccard-sub { font-size: 13px; }
-    .ccard.prev .ccard-sub { color: #aaa; }
-    .change-up { color: #4cd964; font-weight: 600; }
-    .change-down { color: #ff5f57; font-weight: 600; }
+    .ccard-unit { font-size: 15px; font-weight: 500; }
+    .ccard.current .ccard-unit { color: #6d28d9; }
+    .ccard.prev .ccard-unit { color: #92400e; }
+    .ccard-change { font-size: 22px; font-weight: 700; }
+    .change-up { color: #16a34a; }
+    .change-down { color: #dc2626; }
   </style>
 </head>
 <body>
@@ -76,23 +80,33 @@
   <div class="compare-cards">
     <div class="ccard current">
       <div class="ccard-label">5月平均 ARPPU</div>
-      <div class="ccard-value" id="mayArppu">-</div>
-      <div class="ccard-sub" id="arppuChange">-</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="mayArppu">-</span>
+        <span class="ccard-unit">元 / 人</span>
+        <span class="ccard-change" id="arppuChange">-</span>
+      </div>
     </div>
     <div class="ccard prev">
       <div class="ccard-label">4月同期 ARPPU</div>
-      <div class="ccard-value" id="aprArppu">-</div>
-      <div class="ccard-sub">元 / 人</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="aprArppu">-</span>
+        <span class="ccard-unit">元 / 人</span>
+      </div>
     </div>
     <div class="ccard current">
       <div class="ccard-label">5月平均付費人數</div>
-      <div class="ccard-value" id="mayPaying">-</div>
-      <div class="ccard-sub" id="payingChange">-</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="mayPaying">-</span>
+        <span class="ccard-unit">人 / 日</span>
+        <span class="ccard-change" id="payingChange">-</span>
+      </div>
     </div>
     <div class="ccard prev">
       <div class="ccard-label">4月同期付費人數</div>
-      <div class="ccard-value" id="aprPaying">-</div>
-      <div class="ccard-sub">人 / 日</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="aprPaying">-</span>
+        <span class="ccard-unit">人 / 日</span>
+      </div>
     </div>
   </div>
 </div>
@@ -107,7 +121,7 @@ const saleTypeNames = {
 function fmt(n) { return Number(n).toLocaleString('en-US'); }
 function fmtD(n) { return Number(n).toLocaleString('en-US', {minimumFractionDigits:1, maximumFractionDigits:1}); }
 function pct(a, b) {
-  if (!b) return '-';
+  if (!b) return '';
   const diff = ((a - b) / b * 100).toFixed(1);
   const cls = diff >= 0 ? 'change-up' : 'change-down';
   const sign = diff >= 0 ? '+' : '';
@@ -141,11 +155,10 @@ fetch('data.json?t=' + Date.now())
       <td class="num">${r.revenue_percentage}%</td>
     </tr>`).join('');
 
-    // 月份比較
     if (d.comparison) {
       const c = d.comparison;
-      document.getElementById('mayArppu').textContent = fmt(c.may_avg_arppu);
-      document.getElementById('aprArppu').textContent = fmt(c.apr_avg_arppu);
+      document.getElementById('mayArppu').textContent = '$' + fmt(c.may_avg_arppu);
+      document.getElementById('aprArppu').textContent = '$' + fmt(c.apr_avg_arppu);
       document.getElementById('mayPaying').textContent = fmt(c.may_avg_paying);
       document.getElementById('aprPaying').textContent = fmt(c.apr_avg_paying);
       document.getElementById('arppuChange').innerHTML = pct(c.may_avg_arppu, c.apr_avg_arppu);
