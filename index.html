@@ -44,6 +44,8 @@
     .change-up { color: #16a34a; }
     .change-down { color: #dc2626; }
     .currency-badge { position: fixed; top: 16px; right: 20px; background: #ede9fe; border: 1px solid #c4b5fd; border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; color: #5b21b6; z-index: 999; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .two-col .section { margin-bottom: 0; }
     .stc-table th.apr-header { background: #fef9ec; color: #92400e; text-align: right; }
     .stc-table th.may-header { background: #ede9fe; color: #5b21b6; text-align: right; }
     .stc-table th.change-header { text-align: right; color: #999; }
@@ -65,20 +67,22 @@
   <div class="card"><div class="card-icon">📈</div><div class="card-label">ARPPU</div><div class="card-value" id="arppu">-</div></div>
 </div>
 
-<div class="section">
-  <div class="section-title">👑 VIP 付費分析</div>
-  <table>
-    <thead><tr><th>VIP</th><th class="num">付費人數</th><th class="num">交易筆數</th><th class="num">總儲值</th></tr></thead>
-    <tbody id="vipTable"></tbody>
-  </table>
-</div>
+<div class="two-col">
+  <div class="section">
+    <div class="section-title">👑 VIP 付費分析</div>
+    <table>
+      <thead><tr><th>VIP</th><th class="num">付費人數</th><th class="num">交易筆數</th><th class="num">總儲值</th></tr></thead>
+      <tbody id="vipTable"></tbody>
+    </table>
+  </div>
 
-<div class="section">
-  <div class="section-title">💳 儲值品項分析</div>
-  <table>
-    <thead><tr><th>品項</th><th class="num">付費人數</th><th class="num">金額</th><th class="num">佔比</th></tr></thead>
-    <tbody id="saleTable"></tbody>
-  </table>
+  <div class="section">
+    <div class="section-title">💳 儲值品項分析</div>
+    <table>
+      <thead><tr><th>品項</th><th class="num">付費人數</th><th class="num">金額</th><th class="num">佔比</th></tr></thead>
+      <tbody id="saleTable"></tbody>
+    </table>
+  </div>
 </div>
 
 <div class="section">
