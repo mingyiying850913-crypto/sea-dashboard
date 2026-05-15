@@ -43,6 +43,7 @@
     .ccard-change { font-size: 20px; font-weight: 700; }
     .change-up { color: #16a34a; }
     .change-down { color: #dc2626; }
+    .currency-badge { position: fixed; top: 16px; right: 20px; background: #ede9fe; border: 1px solid #c4b5fd; border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; color: #5b21b6; z-index: 999; }
     .stc-table th.apr-header { background: #fef9ec; color: #92400e; text-align: right; }
     .stc-table th.may-header { background: #ede9fe; color: #5b21b6; text-align: right; }
     .stc-table th.change-header { text-align: right; color: #999; }
@@ -53,6 +54,7 @@
 </head>
 <body>
 
+<div class="currency-badge">金額：台幣</div>
 <h1>🏦 SEA版營運日報</h1>
 <div class="subtitle" id="subtitle">載入中...</div>
 
@@ -154,9 +156,12 @@ const SALE_TYPE_NAMES = {
   11:'CRM禮包', 12:'Web產包', 13:'登入禮包'
 };
 
+const MYR_TO_TWD = 7.56; // 馬幣 → 台幣匯率
+
 // 所有數字強制轉型（BigQuery in n8n 回傳字串）
 function n(v) { return parseFloat(v) || 0; }
 function fmt(v) { return Math.round(n(v)).toLocaleString('en-US'); }
+function fmtTWD(v) { return Math.round(n(v) * MYR_TO_TWD).toLocaleString('en-US'); }
 function fmtDec(v) { return n(v).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 
 function pct(curr, prev) {
@@ -210,8 +215,8 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
 
     document.getElementById('payingUsers').textContent = fmt(paying);
     document.getElementById('transactions').textContent = fmt(trans);
-    document.getElementById('revenue').textContent = fmt(rev);
-    document.getElementById('arppu').textContent = fmt(arppu);
+    document.getElementById('revenue').textContent = '$' + fmtTWD(rev);
+    document.getElementById('arppu').textContent = '$' + fmtTWD(arppu);
 
     // ── VIP 表格 ──
     const vipOrder = [9, 8, 7, 5, 3, 2, 1, 0];
@@ -221,7 +226,7 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
         <td>VIP ${lv}</td>
         <td class="num">${fmt(row.PayingUsers || 0)}</td>
         <td class="num">${fmt(row.Transactions || 0)}</td>
-        <td class="num">${fmt(row.Revenue || 0)}</td>
+        <td class="num">$${fmtTWD(row.Revenue || 0)}</td>
       </tr>`;
     }).join('');
 
@@ -231,7 +236,7 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
       ? saleRows.map(r => `<tr>
           <td>${SALE_TYPE_NAMES[n(r.SaleType)] || r.SaleType}</td>
           <td class="num">${fmt(r.paying_users)}</td>
-          <td class="num">${fmt(r.total_amount)}</td>
+          <td class="num">$${fmtTWD(r.total_amount)}</td>
           <td class="num">${n(r.revenue_percentage).toFixed(2)}%</td>
         </tr>`).join('')
       : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
@@ -250,10 +255,10 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
 
     document.getElementById('mayPaying').textContent   = fmt(c.may_avg_paying);
     document.getElementById('aprPaying').textContent   = fmt(c.apr_avg_paying);
-    document.getElementById('mayArppu').textContent    = '$' + fmt(c.may_avg_arppu);
-    document.getElementById('aprArppu').textContent    = '$' + fmt(c.apr_avg_arppu);
-    document.getElementById('currRevenue').textContent = '$' + fmt(c.curr_revenue);
-    document.getElementById('prevRevenue').textContent = '$' + fmt(c.prev_revenue);
+    document.getElementById('mayArppu').textContent    = '$' + fmtTWD(c.may_avg_arppu);
+    document.getElementById('aprArppu').textContent    = '$' + fmtTWD(c.apr_avg_arppu);
+    document.getElementById('currRevenue').textContent = '$' + fmtTWD(c.curr_revenue);
+    document.getElementById('prevRevenue').textContent = '$' + fmtTWD(c.prev_revenue);
 
     document.getElementById('payingChange').innerHTML  = pct(c.may_avg_paying,  c.apr_avg_paying);
     document.getElementById('arppuChange').innerHTML   = pct(c.may_avg_arppu,   c.apr_avg_arppu);
@@ -272,10 +277,10 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
           return `<tr>
             <td><strong>${name}</strong></td>
             <td class="apr-cell">${fmt(r.apr_paying_users)}</td>
-            <td class="apr-cell">$${fmt(r.apr_total_amount)}</td>
+            <td class="apr-cell">$${fmtTWD(r.apr_total_amount)}</td>
             <td class="apr-cell">${n(r.apr_revenue_percentage).toFixed(2)}%</td>
             <td class="may-cell">${fmt(r.may_paying_users)}</td>
-            <td class="may-cell">$${fmt(r.may_total_amount)}</td>
+            <td class="may-cell">$${fmtTWD(r.may_total_amount)}</td>
             <td class="may-cell">${n(r.may_revenue_percentage).toFixed(2)}%</td>
             <td class="change-cell">${changeCell(r.may_total_amount, r.apr_total_amount)}</td>
           </tr>`;
