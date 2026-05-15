@@ -1,10 +1,10 @@
 {
-  "date": "",
+  "date": "2026-05-14",
   "daily": {
-    "PayingUsers": 0,
-    "Transactions": 0,
-    "Revenue": 0,
-    "ARPPU": 0
+    "PayingUsers": "1631",
+    "Transactions": "4299",
+    "Revenue": "115269.757",
+    "ARPPU": "71"
   },
   "vip": [
     {
@@ -16,157 +16,10 @@
     },
     {
       "ProDate": "2026-05-14",
-      "VipLV": "9",
-      "PayingUsers": "2",
-      "Transactions": "15",
-      "Revenue": "2416.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "9",
-      "PayingUsers": "2",
-      "Transactions": "15",
-      "Revenue": "2416.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "9",
-      "PayingUsers": "2",
-      "Transactions": "15",
-      "Revenue": "2416.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "9",
-      "PayingUsers": "2",
-      "Transactions": "15",
-      "Revenue": "2416.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "9",
-      "PayingUsers": "2",
-      "Transactions": "15",
-      "Revenue": "2416.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "9",
-      "PayingUsers": "2",
-      "Transactions": "15",
-      "Revenue": "2416.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "9",
-      "PayingUsers": "2",
-      "Transactions": "15",
-      "Revenue": "2416.5"
-    },
-    {
-      "ProDate": "2026-05-14",
       "VipLV": "8",
       "PayingUsers": "3",
       "Transactions": "10",
       "Revenue": "3111"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "8",
-      "PayingUsers": "3",
-      "Transactions": "10",
-      "Revenue": "3111"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "8",
-      "PayingUsers": "3",
-      "Transactions": "10",
-      "Revenue": "3111"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "8",
-      "PayingUsers": "3",
-      "Transactions": "10",
-      "Revenue": "3111"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "8",
-      "PayingUsers": "3",
-      "Transactions": "10",
-      "Revenue": "3111"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "8",
-      "PayingUsers": "3",
-      "Transactions": "10",
-      "Revenue": "3111"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "8",
-      "PayingUsers": "3",
-      "Transactions": "10",
-      "Revenue": "3111"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "8",
-      "PayingUsers": "3",
-      "Transactions": "10",
-      "Revenue": "3111"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "7",
-      "PayingUsers": "333",
-      "Transactions": "1440",
-      "Revenue": "66208.49"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "7",
-      "PayingUsers": "333",
-      "Transactions": "1440",
-      "Revenue": "66208.49"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "7",
-      "PayingUsers": "333",
-      "Transactions": "1440",
-      "Revenue": "66208.49"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "7",
-      "PayingUsers": "333",
-      "Transactions": "1440",
-      "Revenue": "66208.49"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "7",
-      "PayingUsers": "333",
-      "Transactions": "1440",
-      "Revenue": "66208.49"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "7",
-      "PayingUsers": "333",
-      "Transactions": "1440",
-      "Revenue": "66208.49"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "7",
-      "PayingUsers": "333",
-      "Transactions": "1440",
-      "Revenue": "66208.49"
     },
     {
       "ProDate": "2026-05-14",
@@ -184,104 +37,6 @@
     },
     {
       "ProDate": "2026-05-14",
-      "VipLV": "5",
-      "PayingUsers": "179",
-      "Transactions": "683",
-      "Revenue": "16726.55"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "5",
-      "PayingUsers": "179",
-      "Transactions": "683",
-      "Revenue": "16726.55"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "5",
-      "PayingUsers": "179",
-      "Transactions": "683",
-      "Revenue": "16726.55"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "5",
-      "PayingUsers": "179",
-      "Transactions": "683",
-      "Revenue": "16726.55"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "5",
-      "PayingUsers": "179",
-      "Transactions": "683",
-      "Revenue": "16726.55"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "5",
-      "PayingUsers": "179",
-      "Transactions": "683",
-      "Revenue": "16726.55"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "5",
-      "PayingUsers": "179",
-      "Transactions": "683",
-      "Revenue": "16726.55"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "3",
-      "PayingUsers": "655",
-      "Transactions": "1463",
-      "Revenue": "20334.11"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "3",
-      "PayingUsers": "655",
-      "Transactions": "1463",
-      "Revenue": "20334.11"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "3",
-      "PayingUsers": "655",
-      "Transactions": "1463",
-      "Revenue": "20334.11"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "3",
-      "PayingUsers": "655",
-      "Transactions": "1463",
-      "Revenue": "20334.11"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "3",
-      "PayingUsers": "655",
-      "Transactions": "1463",
-      "Revenue": "20334.11"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "3",
-      "PayingUsers": "655",
-      "Transactions": "1463",
-      "Revenue": "20334.11"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "3",
-      "PayingUsers": "655",
-      "Transactions": "1463",
-      "Revenue": "20334.11"
-    },
-    {
-      "ProDate": "2026-05-14",
       "VipLV": "3",
       "PayingUsers": "655",
       "Transactions": "1463",
@@ -296,157 +51,10 @@
     },
     {
       "ProDate": "2026-05-14",
-      "VipLV": "2",
-      "PayingUsers": "408",
-      "Transactions": "595",
-      "Revenue": "5737.26"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "2",
-      "PayingUsers": "408",
-      "Transactions": "595",
-      "Revenue": "5737.26"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "2",
-      "PayingUsers": "408",
-      "Transactions": "595",
-      "Revenue": "5737.26"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "2",
-      "PayingUsers": "408",
-      "Transactions": "595",
-      "Revenue": "5737.26"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "2",
-      "PayingUsers": "408",
-      "Transactions": "595",
-      "Revenue": "5737.26"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "2",
-      "PayingUsers": "408",
-      "Transactions": "595",
-      "Revenue": "5737.26"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "2",
-      "PayingUsers": "408",
-      "Transactions": "595",
-      "Revenue": "5737.26"
-    },
-    {
-      "ProDate": "2026-05-14",
       "VipLV": "1",
       "PayingUsers": "55",
       "Transactions": "55",
       "Revenue": "465.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "1",
-      "PayingUsers": "55",
-      "Transactions": "55",
-      "Revenue": "465.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "1",
-      "PayingUsers": "55",
-      "Transactions": "55",
-      "Revenue": "465.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "1",
-      "PayingUsers": "55",
-      "Transactions": "55",
-      "Revenue": "465.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "1",
-      "PayingUsers": "55",
-      "Transactions": "55",
-      "Revenue": "465.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "1",
-      "PayingUsers": "55",
-      "Transactions": "55",
-      "Revenue": "465.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "1",
-      "PayingUsers": "55",
-      "Transactions": "55",
-      "Revenue": "465.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "1",
-      "PayingUsers": "55",
-      "Transactions": "55",
-      "Revenue": "465.5"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "0",
-      "PayingUsers": "32",
-      "Transactions": "38",
-      "Revenue": "270.34"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "0",
-      "PayingUsers": "32",
-      "Transactions": "38",
-      "Revenue": "270.34"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "0",
-      "PayingUsers": "32",
-      "Transactions": "38",
-      "Revenue": "270.34"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "0",
-      "PayingUsers": "32",
-      "Transactions": "38",
-      "Revenue": "270.34"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "0",
-      "PayingUsers": "32",
-      "Transactions": "38",
-      "Revenue": "270.34"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "0",
-      "PayingUsers": "32",
-      "Transactions": "38",
-      "Revenue": "270.34"
-    },
-    {
-      "ProDate": "2026-05-14",
-      "VipLV": "0",
-      "PayingUsers": "32",
-      "Transactions": "38",
-      "Revenue": "270.34"
     },
     {
       "ProDate": "2026-05-14",
@@ -456,7 +64,56 @@
       "Revenue": "270.34"
     }
   ],
-  "saleType": [],
+  "saleType": [
+    {
+      "SaleType": "1",
+      "paying_users": "664",
+      "total_amount": "43145.872",
+      "revenue_percentage": "37.43"
+    },
+    {
+      "SaleType": "6",
+      "paying_users": "306",
+      "total_amount": "29210.253",
+      "revenue_percentage": "25.34"
+    },
+    {
+      "SaleType": "4",
+      "paying_users": "216",
+      "total_amount": "18333.297",
+      "revenue_percentage": "15.9"
+    },
+    {
+      "SaleType": "10",
+      "paying_users": "176",
+      "total_amount": "18007.813",
+      "revenue_percentage": "15.62"
+    },
+    {
+      "SaleType": "3",
+      "paying_users": "168",
+      "total_amount": "3521.446",
+      "revenue_percentage": "3.05"
+    },
+    {
+      "SaleType": "7",
+      "paying_users": "711",
+      "total_amount": "2778.5175",
+      "revenue_percentage": "2.41"
+    },
+    {
+      "SaleType": "2",
+      "paying_users": "56",
+      "total_amount": "232.5585",
+      "revenue_percentage": "0.2"
+    },
+    {
+      "SaleType": "5",
+      "paying_users": "1",
+      "total_amount": "40",
+      "revenue_percentage": "0.03"
+    }
+  ],
   "comparison": {
     "curr_month": "5月",
     "prev_month": "4月",
