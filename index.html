@@ -195,8 +195,9 @@ fetch('data.json?t=' + Date.now())
       document.getElementById('aprPaying').textContent  = fmt(c.apr_avg_paying);
       document.getElementById('mayArppu').textContent   = '$' + fmt(c.may_avg_arppu);
       document.getElementById('aprArppu').textContent   = '$' + fmt(c.apr_avg_arppu);
-      document.getElementById('currRevenue').textContent = fmt(c.curr_revenue);
-      document.getElementById('prevRevenue').textContent = fmt(c.prev_revenue);
+      document.getElementById('currRevenue').textContent = '$' + fmt(c.curr_revenue);
+document.getElementById('prevRevenue').textContent = '$' + fmt(c.prev_revenue);
+      
 
       // 變化率
       document.getElementById('payingChange').innerHTML  = pct(c.may_avg_paying, c.apr_avg_paying);
