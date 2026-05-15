@@ -107,6 +107,8 @@
     }
   ],
   "comparison": {
+    "curr_month": "5月",
+    "prev_month": "4月",
     "may_avg_paying": 1729,
     "apr_avg_paying": 1689,
     "may_avg_arppu": 76,
