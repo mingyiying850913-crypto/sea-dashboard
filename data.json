@@ -1,445 +1,445 @@
 {
-  "date": "2026-05-13",
+  "date": "2026-05-14",
   "daily": {
-    "PayingUsers": 1682,
-    "Transactions": 4375,
-    "Revenue": 111322.233,
-    "ARPPU": 66
+    "PayingUsers": 1631,
+    "Transactions": 4299,
+    "Revenue": 115269.757,
+    "ARPPU": 71
   },
   "vip": [
     {
       "VipLV": 9,
       "PayingUsers": 2,
-      "Transactions": 35,
-      "Revenue": 4412.5
+      "Transactions": 15,
+      "Revenue": 2416.5
     },
     {
       "VipLV": 8,
       "PayingUsers": 3,
-      "Transactions": 12,
-      "Revenue": 4091.8
+      "Transactions": 10,
+      "Revenue": 3111
     },
     {
       "VipLV": 7,
-      "PayingUsers": 318,
-      "Transactions": 1409,
-      "Revenue": 58264.7
+      "PayingUsers": 333,
+      "Transactions": 1440,
+      "Revenue": 66208.49
     },
     {
       "VipLV": 5,
-      "PayingUsers": 187,
-      "Transactions": 722,
-      "Revenue": 15694.93
+      "PayingUsers": 179,
+      "Transactions": 683,
+      "Revenue": 16726.55
     },
     {
       "VipLV": 3,
-      "PayingUsers": 682,
-      "Transactions": 1480,
-      "Revenue": 21520.09
+      "PayingUsers": 655,
+      "Transactions": 1463,
+      "Revenue": 20334.11
     },
     {
       "VipLV": 2,
-      "PayingUsers": 431,
-      "Transactions": 604,
-      "Revenue": 5981.52
+      "PayingUsers": 408,
+      "Transactions": 595,
+      "Revenue": 5737.26
     },
     {
       "VipLV": 1,
-      "PayingUsers": 51,
-      "Transactions": 51,
-      "Revenue": 289.99
+      "PayingUsers": 55,
+      "Transactions": 55,
+      "Revenue": 465.5
     },
     {
       "VipLV": 0,
-      "PayingUsers": 46,
-      "Transactions": 62,
-      "Revenue": 1066.7
+      "PayingUsers": 32,
+      "Transactions": 38,
+      "Revenue": 270.34
     },
     {
       "VipLV": 9,
       "PayingUsers": 2,
-      "Transactions": 35,
-      "Revenue": 4412.5
+      "Transactions": 15,
+      "Revenue": 2416.5
     },
     {
       "VipLV": 8,
       "PayingUsers": 3,
-      "Transactions": 12,
-      "Revenue": 4091.8
+      "Transactions": 10,
+      "Revenue": 3111
     },
     {
       "VipLV": 7,
-      "PayingUsers": 318,
-      "Transactions": 1409,
-      "Revenue": 58264.7
+      "PayingUsers": 333,
+      "Transactions": 1440,
+      "Revenue": 66208.49
     },
     {
       "VipLV": 5,
-      "PayingUsers": 187,
-      "Transactions": 722,
-      "Revenue": 15694.93
+      "PayingUsers": 179,
+      "Transactions": 683,
+      "Revenue": 16726.55
     },
     {
       "VipLV": 3,
-      "PayingUsers": 682,
-      "Transactions": 1480,
-      "Revenue": 21520.09
+      "PayingUsers": 655,
+      "Transactions": 1463,
+      "Revenue": 20334.11
     },
     {
       "VipLV": 2,
-      "PayingUsers": 431,
-      "Transactions": 604,
-      "Revenue": 5981.52
+      "PayingUsers": 408,
+      "Transactions": 595,
+      "Revenue": 5737.26
     },
     {
       "VipLV": 1,
-      "PayingUsers": 51,
-      "Transactions": 51,
-      "Revenue": 289.99
+      "PayingUsers": 55,
+      "Transactions": 55,
+      "Revenue": 465.5
     },
     {
       "VipLV": 0,
-      "PayingUsers": 46,
-      "Transactions": 62,
-      "Revenue": 1066.7
+      "PayingUsers": 32,
+      "Transactions": 38,
+      "Revenue": 270.34
     },
     {
       "VipLV": 9,
       "PayingUsers": 2,
-      "Transactions": 35,
-      "Revenue": 4412.5
+      "Transactions": 15,
+      "Revenue": 2416.5
     },
     {
       "VipLV": 8,
       "PayingUsers": 3,
-      "Transactions": 12,
-      "Revenue": 4091.8
+      "Transactions": 10,
+      "Revenue": 3111
     },
     {
       "VipLV": 7,
-      "PayingUsers": 318,
-      "Transactions": 1409,
-      "Revenue": 58264.7
+      "PayingUsers": 333,
+      "Transactions": 1440,
+      "Revenue": 66208.49
     },
     {
       "VipLV": 5,
-      "PayingUsers": 187,
-      "Transactions": 722,
-      "Revenue": 15694.93
+      "PayingUsers": 179,
+      "Transactions": 683,
+      "Revenue": 16726.55
     },
     {
       "VipLV": 3,
-      "PayingUsers": 682,
-      "Transactions": 1480,
-      "Revenue": 21520.09
+      "PayingUsers": 655,
+      "Transactions": 1463,
+      "Revenue": 20334.11
     },
     {
       "VipLV": 2,
-      "PayingUsers": 431,
-      "Transactions": 604,
-      "Revenue": 5981.52
+      "PayingUsers": 408,
+      "Transactions": 595,
+      "Revenue": 5737.26
     },
     {
       "VipLV": 1,
-      "PayingUsers": 51,
-      "Transactions": 51,
-      "Revenue": 289.99
+      "PayingUsers": 55,
+      "Transactions": 55,
+      "Revenue": 465.5
     },
     {
       "VipLV": 0,
-      "PayingUsers": 46,
-      "Transactions": 62,
-      "Revenue": 1066.7
+      "PayingUsers": 32,
+      "Transactions": 38,
+      "Revenue": 270.34
     },
     {
       "VipLV": 9,
       "PayingUsers": 2,
-      "Transactions": 35,
-      "Revenue": 4412.5
+      "Transactions": 15,
+      "Revenue": 2416.5
     },
     {
       "VipLV": 8,
       "PayingUsers": 3,
-      "Transactions": 12,
-      "Revenue": 4091.8
+      "Transactions": 10,
+      "Revenue": 3111
     },
     {
       "VipLV": 7,
-      "PayingUsers": 318,
-      "Transactions": 1409,
-      "Revenue": 58264.7
+      "PayingUsers": 333,
+      "Transactions": 1440,
+      "Revenue": 66208.49
     },
     {
       "VipLV": 5,
-      "PayingUsers": 187,
-      "Transactions": 722,
-      "Revenue": 15694.93
+      "PayingUsers": 179,
+      "Transactions": 683,
+      "Revenue": 16726.55
     },
     {
       "VipLV": 3,
-      "PayingUsers": 682,
-      "Transactions": 1480,
-      "Revenue": 21520.09
+      "PayingUsers": 655,
+      "Transactions": 1463,
+      "Revenue": 20334.11
     },
     {
       "VipLV": 2,
-      "PayingUsers": 431,
-      "Transactions": 604,
-      "Revenue": 5981.52
+      "PayingUsers": 408,
+      "Transactions": 595,
+      "Revenue": 5737.26
     },
     {
       "VipLV": 1,
-      "PayingUsers": 51,
-      "Transactions": 51,
-      "Revenue": 289.99
+      "PayingUsers": 55,
+      "Transactions": 55,
+      "Revenue": 465.5
     },
     {
       "VipLV": 0,
-      "PayingUsers": 46,
-      "Transactions": 62,
-      "Revenue": 1066.7
+      "PayingUsers": 32,
+      "Transactions": 38,
+      "Revenue": 270.34
     },
     {
       "VipLV": 9,
       "PayingUsers": 2,
-      "Transactions": 35,
-      "Revenue": 4412.5
+      "Transactions": 15,
+      "Revenue": 2416.5
     },
     {
       "VipLV": 8,
       "PayingUsers": 3,
-      "Transactions": 12,
-      "Revenue": 4091.8
+      "Transactions": 10,
+      "Revenue": 3111
     },
     {
       "VipLV": 7,
-      "PayingUsers": 318,
-      "Transactions": 1409,
-      "Revenue": 58264.7
+      "PayingUsers": 333,
+      "Transactions": 1440,
+      "Revenue": 66208.49
     },
     {
       "VipLV": 5,
-      "PayingUsers": 187,
-      "Transactions": 722,
-      "Revenue": 15694.93
+      "PayingUsers": 179,
+      "Transactions": 683,
+      "Revenue": 16726.55
     },
     {
       "VipLV": 3,
-      "PayingUsers": 682,
-      "Transactions": 1480,
-      "Revenue": 21520.09
+      "PayingUsers": 655,
+      "Transactions": 1463,
+      "Revenue": 20334.11
     },
     {
       "VipLV": 2,
-      "PayingUsers": 431,
-      "Transactions": 604,
-      "Revenue": 5981.52
+      "PayingUsers": 408,
+      "Transactions": 595,
+      "Revenue": 5737.26
     },
     {
       "VipLV": 1,
-      "PayingUsers": 51,
-      "Transactions": 51,
-      "Revenue": 289.99
+      "PayingUsers": 55,
+      "Transactions": 55,
+      "Revenue": 465.5
     },
     {
       "VipLV": 0,
-      "PayingUsers": 46,
-      "Transactions": 62,
-      "Revenue": 1066.7
+      "PayingUsers": 32,
+      "Transactions": 38,
+      "Revenue": 270.34
     },
     {
       "VipLV": 9,
       "PayingUsers": 2,
-      "Transactions": 35,
-      "Revenue": 4412.5
+      "Transactions": 15,
+      "Revenue": 2416.5
     },
     {
       "VipLV": 8,
       "PayingUsers": 3,
-      "Transactions": 12,
-      "Revenue": 4091.8
+      "Transactions": 10,
+      "Revenue": 3111
     },
     {
       "VipLV": 7,
-      "PayingUsers": 318,
-      "Transactions": 1409,
-      "Revenue": 58264.7
+      "PayingUsers": 333,
+      "Transactions": 1440,
+      "Revenue": 66208.49
     },
     {
       "VipLV": 5,
-      "PayingUsers": 187,
-      "Transactions": 722,
-      "Revenue": 15694.93
+      "PayingUsers": 179,
+      "Transactions": 683,
+      "Revenue": 16726.55
     },
     {
       "VipLV": 3,
-      "PayingUsers": 682,
-      "Transactions": 1480,
-      "Revenue": 21520.09
+      "PayingUsers": 655,
+      "Transactions": 1463,
+      "Revenue": 20334.11
     },
     {
       "VipLV": 2,
-      "PayingUsers": 431,
-      "Transactions": 604,
-      "Revenue": 5981.52
+      "PayingUsers": 408,
+      "Transactions": 595,
+      "Revenue": 5737.26
     },
     {
       "VipLV": 1,
-      "PayingUsers": 51,
-      "Transactions": 51,
-      "Revenue": 289.99
+      "PayingUsers": 55,
+      "Transactions": 55,
+      "Revenue": 465.5
     },
     {
       "VipLV": 0,
-      "PayingUsers": 46,
-      "Transactions": 62,
-      "Revenue": 1066.7
+      "PayingUsers": 32,
+      "Transactions": 38,
+      "Revenue": 270.34
     },
     {
       "VipLV": 9,
       "PayingUsers": 2,
-      "Transactions": 35,
-      "Revenue": 4412.5
+      "Transactions": 15,
+      "Revenue": 2416.5
     },
     {
       "VipLV": 8,
       "PayingUsers": 3,
-      "Transactions": 12,
-      "Revenue": 4091.8
+      "Transactions": 10,
+      "Revenue": 3111
     },
     {
       "VipLV": 7,
-      "PayingUsers": 318,
-      "Transactions": 1409,
-      "Revenue": 58264.7
+      "PayingUsers": 333,
+      "Transactions": 1440,
+      "Revenue": 66208.49
     },
     {
       "VipLV": 5,
-      "PayingUsers": 187,
-      "Transactions": 722,
-      "Revenue": 15694.93
+      "PayingUsers": 179,
+      "Transactions": 683,
+      "Revenue": 16726.55
     },
     {
       "VipLV": 3,
-      "PayingUsers": 682,
-      "Transactions": 1480,
-      "Revenue": 21520.09
+      "PayingUsers": 655,
+      "Transactions": 1463,
+      "Revenue": 20334.11
     },
     {
       "VipLV": 2,
-      "PayingUsers": 431,
-      "Transactions": 604,
-      "Revenue": 5981.52
+      "PayingUsers": 408,
+      "Transactions": 595,
+      "Revenue": 5737.26
     },
     {
       "VipLV": 1,
-      "PayingUsers": 51,
-      "Transactions": 51,
-      "Revenue": 289.99
+      "PayingUsers": 55,
+      "Transactions": 55,
+      "Revenue": 465.5
     },
     {
       "VipLV": 0,
-      "PayingUsers": 46,
-      "Transactions": 62,
-      "Revenue": 1066.7
+      "PayingUsers": 32,
+      "Transactions": 38,
+      "Revenue": 270.34
     },
     {
       "VipLV": 9,
       "PayingUsers": 2,
-      "Transactions": 35,
-      "Revenue": 4412.5
+      "Transactions": 15,
+      "Revenue": 2416.5
     },
     {
       "VipLV": 8,
       "PayingUsers": 3,
-      "Transactions": 12,
-      "Revenue": 4091.8
+      "Transactions": 10,
+      "Revenue": 3111
     },
     {
       "VipLV": 7,
-      "PayingUsers": 318,
-      "Transactions": 1409,
-      "Revenue": 58264.7
+      "PayingUsers": 333,
+      "Transactions": 1440,
+      "Revenue": 66208.49
     },
     {
       "VipLV": 5,
-      "PayingUsers": 187,
-      "Transactions": 722,
-      "Revenue": 15694.93
+      "PayingUsers": 179,
+      "Transactions": 683,
+      "Revenue": 16726.55
     },
     {
       "VipLV": 3,
-      "PayingUsers": 682,
-      "Transactions": 1480,
-      "Revenue": 21520.09
+      "PayingUsers": 655,
+      "Transactions": 1463,
+      "Revenue": 20334.11
     },
     {
       "VipLV": 2,
-      "PayingUsers": 431,
-      "Transactions": 604,
-      "Revenue": 5981.52
+      "PayingUsers": 408,
+      "Transactions": 595,
+      "Revenue": 5737.26
     },
     {
       "VipLV": 1,
-      "PayingUsers": 51,
-      "Transactions": 51,
-      "Revenue": 289.99
+      "PayingUsers": 55,
+      "Transactions": 55,
+      "Revenue": 465.5
     },
     {
       "VipLV": 0,
-      "PayingUsers": 46,
-      "Transactions": 62,
-      "Revenue": 1066.7
+      "PayingUsers": 32,
+      "Transactions": 38,
+      "Revenue": 270.34
     }
   ],
   "saleType": [
     {
       "SaleType": "1",
-      "paying_users": 668,
-      "total_amount": 40424.805,
-      "revenue_percentage": 36.31
+      "paying_users": 664,
+      "total_amount": 43145.872,
+      "revenue_percentage": 37.43
     },
     {
       "SaleType": "6",
-      "paying_users": 332,
-      "total_amount": 29253.583,
-      "revenue_percentage": 26.28
+      "paying_users": 306,
+      "total_amount": 29210.253,
+      "revenue_percentage": 25.34
     },
     {
       "SaleType": "4",
-      "paying_users": 234,
-      "total_amount": 18612.586,
-      "revenue_percentage": 16.72
+      "paying_users": 216,
+      "total_amount": 18333.297,
+      "revenue_percentage": 15.9
     },
     {
       "SaleType": "10",
-      "paying_users": 167,
-      "total_amount": 15129.302,
-      "revenue_percentage": 13.59
+      "paying_users": 176,
+      "total_amount": 18007.813,
+      "revenue_percentage": 15.62
     },
     {
       "SaleType": "3",
-      "paying_users": 153,
-      "total_amount": 4048.059,
-      "revenue_percentage": 3.64
+      "paying_users": 168,
+      "total_amount": 3521.446,
+      "revenue_percentage": 3.05
     },
     {
       "SaleType": "7",
-      "paying_users": 729,
-      "total_amount": 2846.9365,
-      "revenue_percentage": 2.56
+      "paying_users": 711,
+      "total_amount": 2778.5175,
+      "revenue_percentage": 2.41
+    },
+    {
+      "SaleType": "2",
+      "paying_users": 56,
+      "total_amount": 232.5585,
+      "revenue_percentage": 0.2
     },
     {
       "SaleType": "5",
       "paying_users": 1,
-      "total_amount": 730,
-      "revenue_percentage": 0.66
-    },
-    {
-      "SaleType": "2",
-      "paying_users": 66,
-      "total_amount": 276.9615,
-      "revenue_percentage": 0.25
+      "total_amount": 40,
+      "revenue_percentage": 0.03
     }
   ]
 }
