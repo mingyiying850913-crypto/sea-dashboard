@@ -144,6 +144,40 @@
 </div>
 
 <div class="section">
+  <div class="section-title">🤝 社交玩家儲值營收</div>
+  <div class="compare-cards" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="ccard current">
+      <div class="ccard-label">本月社交玩家儲值</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="socialCurrRevenue">-</span>
+        <span class="ccard-change" id="socialRevenueChange"></span>
+      </div>
+    </div>
+    <div class="ccard prev">
+      <div class="ccard-label">上月同期儲值</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="socialPrevRevenue">-</span>
+      </div>
+    </div>
+    <div class="ccard current">
+      <div class="ccard-label">本月付費玩家數</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="socialCurrPlayers">-</span>
+        <span class="ccard-unit">人</span>
+        <span class="ccard-change" id="socialPlayersChange"></span>
+      </div>
+    </div>
+    <div class="ccard prev">
+      <div class="ccard-label">上月同期玩家數</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="socialPrevPlayers">-</span>
+        <span class="ccard-unit">人</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
   <div class="section-title">🏪 月份同期儲值品項比較</div>
   <table class="stc-table">
     <thead>
@@ -276,6 +310,17 @@ function render(d) {
   document.getElementById('payingChange').innerHTML       = pct(c.may_avg_paying, c.apr_avg_paying);
   document.getElementById('arppuChange').innerHTML        = pct(c.may_avg_arppu,  c.apr_avg_arppu);
   document.getElementById('revenueChange').innerHTML      = pctDirect(c.revenue_growth_pct);
+
+  // 社交玩家儲值
+  const sp    = d.socialPlayers || {};
+  const spCur = sp.curr || {};
+  const spPrv = sp.prev || {};
+  document.getElementById('socialCurrRevenue').textContent  = '$' + fmtMoney(spCur.total_recharge || 0);
+  document.getElementById('socialPrevRevenue').textContent  = '$' + fmtMoney(spPrv.total_recharge || 0);
+  document.getElementById('socialCurrPlayers').textContent  = fmt(spCur.player_count || 0);
+  document.getElementById('socialPrevPlayers').textContent  = fmt(spPrv.player_count || 0);
+  document.getElementById('socialRevenueChange').innerHTML  = pct(spCur.total_recharge, spPrv.total_recharge);
+  document.getElementById('socialPlayersChange').innerHTML  = pct(spCur.player_count,   spPrv.player_count);
 
   // 月份同期儲值品項比較
   document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
