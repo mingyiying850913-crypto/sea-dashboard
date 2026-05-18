@@ -221,12 +221,14 @@
     "curr": {
       "player_count": 10,
       "total_recharge": 160169.69999999998,
-      "recharge_count": 122
+      "recharge_count": 122,
+      "arppu": 16017
     },
     "prev": {
       "player_count": 10,
       "total_recharge": 160669.69999999998,
-      "recharge_count": 120
+      "recharge_count": 120,
+      "arppu": 16067
     }
   }
 }
