@@ -26,21 +26,21 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #fffbf0; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
-    .compare-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .ccard { border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .ccard.current { background: #ede9fe; border-left: 5px solid #7c3aed; }
+    .compare-cards { display: grid; grid-template-columns: repeat(9, 1fr); gap: 10px; }
+    .ccard { border-radius: 12px; padding: 14px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .ccard.current { background: #ede9fe; border-left: 4px solid #7c3aed; }
     .ccard.prev { background: #fff; border: 1px solid #e2d9b3; }
-    .ccard-label { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+    .ccard-label { font-size: 11px; font-weight: 600; margin-bottom: 10px; }
     .ccard.current .ccard-label { color: #5b21b6; }
     .ccard.prev .ccard-label { color: #92400e; }
-    .ccard-main { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-    .ccard-value { font-size: 34px; font-weight: 700; }
+    .ccard-main { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+    .ccard-value { font-size: 22px; font-weight: 700; }
     .ccard.current .ccard-value { color: #3730a3; }
     .ccard.prev .ccard-value { color: #2c2c2c; }
-    .ccard-unit { font-size: 13px; font-weight: 500; }
+    .ccard-unit { font-size: 11px; font-weight: 500; }
     .ccard.current .ccard-unit { color: #6d28d9; }
     .ccard.prev .ccard-unit { color: #92400e; }
-    .ccard-change { font-size: 20px; font-weight: 700; }
+    .ccard-change { font-size: 13px; font-weight: 700; }
     .change-up { color: #16a34a; }
     .change-down { color: #dc2626; }
     .currency-badge { position: fixed; top: 16px; right: 20px; display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e2d9b3; border-radius: 10px; padding: 4px 6px; font-size: 13px; font-weight: 600; z-index: 999; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
@@ -97,12 +97,12 @@
 <div class="section">
   <div class="section-title">📊 月份同期比較</div>
   <div class="compare-cards">
-    <!-- 平均付費人數 -->
+    <!-- 付費人數 -->
     <div class="ccard current">
       <div class="ccard-label" id="labelCurrPaying">本月平均付費人數</div>
       <div class="ccard-main">
         <span class="ccard-value" id="mayPaying">-</span>
-        <span class="ccard-unit">人 / 日</span>
+        <span class="ccard-unit">人/日</span>
         <span class="ccard-change" id="payingChange"></span>
       </div>
     </div>
@@ -110,15 +110,15 @@
       <div class="ccard-label" id="labelPrevPaying">上月同期付費人數</div>
       <div class="ccard-main">
         <span class="ccard-value" id="aprPaying">-</span>
-        <span class="ccard-unit">人 / 日</span>
+        <span class="ccard-unit">人/日</span>
       </div>
     </div>
-    <!-- 平均 ARPPU -->
+    <!-- ARPPU -->
     <div class="ccard current">
       <div class="ccard-label" id="labelCurrArppu">本月平均 ARPPU</div>
       <div class="ccard-main">
         <span class="ccard-value" id="mayArppu">-</span>
-        <span class="ccard-unit">元 / 人</span>
+        <span class="ccard-unit">元/人</span>
         <span class="ccard-change" id="arppuChange"></span>
       </div>
     </div>
@@ -126,7 +126,7 @@
       <div class="ccard-label" id="labelPrevArppu">上月同期 ARPPU</div>
       <div class="ccard-main">
         <span class="ccard-value" id="aprArppu">-</span>
-        <span class="ccard-unit">元 / 人</span>
+        <span class="ccard-unit">元/人</span>
       </div>
     </div>
     <!-- 社交玩家儲值 -->
@@ -143,29 +143,23 @@
         <span class="ccard-value" id="socialPrevRevenue">-</span>
       </div>
     </div>
-    <!-- 扣掉社交後流水 -->
+    <!-- 扣除社交後流水（僅當月，不做同期比較） -->
     <div class="ccard current">
-      <div class="ccard-label" id="labelCurrExSocial">扣掉社交後流水</div>
+      <div class="ccard-label" id="labelCurrExSocial">扣除社交後流水</div>
       <div class="ccard-main">
         <span class="ccard-value" id="currExSocial">-</span>
         <span class="ccard-change" id="exSocialChange"></span>
       </div>
     </div>
-    <div class="ccard prev">
-      <div class="ccard-label" id="labelPrevExSocial">上月同期</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="prevExSocial">-</span>
-      </div>
-    </div>
-    <!-- 累計流水（各佔 2 欄讓最後一列對稱） -->
-    <div class="ccard current" style="grid-column: span 2;">
+    <!-- 累計流水 -->
+    <div class="ccard current">
       <div class="ccard-label" id="labelCurrRevenue">本月累計流水</div>
       <div class="ccard-main">
         <span class="ccard-value" id="currRevenue">-</span>
         <span class="ccard-change" id="revenueChange"></span>
       </div>
     </div>
-    <div class="ccard prev" style="grid-column: span 2;">
+    <div class="ccard prev">
       <div class="ccard-label" id="labelPrevRevenue">上月同期流水</div>
       <div class="ccard-main">
         <span class="ccard-value" id="prevRevenue">-</span>
@@ -319,10 +313,8 @@ function render(d) {
   // 扣掉社交後流水
   const currExSocial = n(c.curr_revenue) - n(spCur.total_recharge);
   const prevExSocial = n(c.prev_revenue) - n(spPrv.total_recharge);
-  document.getElementById('labelCurrExSocial').textContent = cm + '扣掉社交後流水';
-  document.getElementById('labelPrevExSocial').textContent = pm + '同期';
+  document.getElementById('labelCurrExSocial').textContent = cm + '扣除社交後流水';
   document.getElementById('currExSocial').textContent      = '$' + fmtMoney(currExSocial);
-  document.getElementById('prevExSocial').textContent      = '$' + fmtMoney(prevExSocial);
   document.getElementById('exSocialChange').innerHTML      = pct(currExSocial, prevExSocial);
 
   // 月份同期儲值品項比較
