@@ -43,7 +43,12 @@
     .ccard-change { font-size: 20px; font-weight: 700; }
     .change-up { color: #16a34a; }
     .change-down { color: #dc2626; }
-    .currency-badge { position: fixed; top: 16px; right: 20px; background: #ede9fe; border: 1px solid #c4b5fd; border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; color: #5b21b6; z-index: 999; }
+    .currency-badge { position: fixed; top: 16px; right: 20px; display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e2d9b3; border-radius: 10px; padding: 4px 6px; font-size: 13px; font-weight: 600; z-index: 999; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .currency-badge span { color: #aaa; font-size: 12px; margin-right: 2px; }
+    .cur-btn { border: none; border-radius: 7px; padding: 5px 14px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .cur-btn.active { background: #7c3aed; color: #fff; }
+    .cur-btn:not(.active) { background: transparent; color: #999; }
+    .cur-btn:not(.active):hover { background: #f3f0ff; color: #7c3aed; }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
     .two-col .section { margin-bottom: 0; }
     .stc-table th.apr-header { background: #fef9ec; color: #92400e; text-align: right; }
@@ -56,7 +61,11 @@
 </head>
 <body>
 
-<div class="currency-badge">金額：台幣</div>
+<div class="currency-badge">
+  <span>金額</span>
+  <button class="cur-btn active" id="btnTWD" onclick="setCurrency('TWD')">台幣</button>
+  <button class="cur-btn" id="btnMYR" onclick="setCurrency('MYR')">馬幣</button>
+</div>
 <h1>🏦 SEA版營運日報</h1>
 <div class="subtitle" id="subtitle">載入中...</div>
 
@@ -159,13 +168,13 @@ const SALE_TYPE_NAMES = {
   11:'CRM禮包', 12:'Web產包', 13:'登入禮包'
 };
 
-const MYR_TO_TWD = 7.56; // 馬幣 → 台幣匯率
+const MYR_TO_TWD = 7.56;
+let currentRate = MYR_TO_TWD; // 預設台幣
+let cachedData  = null;
 
-// 所有數字強制轉型（BigQuery in n8n 回傳字串）
 function n(v) { return parseFloat(v) || 0; }
 function fmt(v) { return Math.round(n(v)).toLocaleString('en-US'); }
-function fmtTWD(v) { return Math.round(n(v) * MYR_TO_TWD).toLocaleString('en-US'); }
-function fmtDec(v) { return n(v).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+function fmtMoney(v) { return Math.round(n(v) * currentRate).toLocaleString('en-US'); }
 
 function pct(curr, prev) {
   curr = n(curr); prev = n(prev);
@@ -187,109 +196,113 @@ function changeCell(may, apr) {
   return `<span class="${cls}">${diff >= 0 ? '▲' : '▼'}${Math.abs(diff)}%</span>`;
 }
 
+// ── 幣別切換 ──
+function setCurrency(cur) {
+  currentRate = cur === 'TWD' ? MYR_TO_TWD : 1;
+  document.getElementById('btnTWD').classList.toggle('active', cur === 'TWD');
+  document.getElementById('btnMYR').classList.toggle('active', cur === 'MYR');
+  if (cachedData) render(cachedData);
+}
+
+// ── 主渲染函式 ──
+function render(d) {
+
+  document.getElementById('subtitle').textContent = '資料日期：' + (d.date || '-');
+
+  // VIP 去重
+  const seenLv = new Set();
+  const uniqueVip = (d.vip || []).filter(v => {
+    const lv = String(v.VipLV);
+    if (seenLv.has(lv)) return false;
+    seenLv.add(lv);
+    return true;
+  }).filter(v => v.VipLV != 4 && v.VipLV != 6);
+
+  // 四大指標（daily 為 0 時從 VIP 加總）
+  let paying = n(d.daily && d.daily.PayingUsers);
+  let trans  = n(d.daily && d.daily.Transactions);
+  let rev    = n(d.daily && d.daily.Revenue);
+  let arppu  = n(d.daily && d.daily.ARPPU);
+  if (!paying && uniqueVip.length > 0) {
+    paying = uniqueVip.reduce((s, v) => s + n(v.PayingUsers), 0);
+    trans  = uniqueVip.reduce((s, v) => s + n(v.Transactions), 0);
+    rev    = uniqueVip.reduce((s, v) => s + n(v.Revenue), 0);
+    arppu  = paying > 0 ? Math.round(rev / paying) : 0;
+  }
+  document.getElementById('payingUsers').textContent  = fmt(paying);
+  document.getElementById('transactions').textContent = fmt(trans);
+  document.getElementById('revenue').textContent      = '$' + fmtMoney(rev);
+  document.getElementById('arppu').textContent        = '$' + fmtMoney(arppu);
+
+  // VIP 表格
+  const vipOrder = [9, 8, 7, 5, 3, 2, 1, 0];
+  document.getElementById('vipTable').innerHTML = vipOrder.map(lv => {
+    const row = uniqueVip.find(r => Number(r.VipLV) === lv) || {};
+    return `<tr>
+      <td>VIP ${lv}</td>
+      <td class="num">${fmt(row.PayingUsers || 0)}</td>
+      <td class="num">${fmt(row.Transactions || 0)}</td>
+      <td class="num">$${fmtMoney(row.Revenue || 0)}</td>
+    </tr>`;
+  }).join('');
+
+  // 儲值品項表格
+  const saleRows = d.saleType || [];
+  document.getElementById('saleTable').innerHTML = saleRows.length
+    ? saleRows.map(r => `<tr>
+        <td>${SALE_TYPE_NAMES[n(r.SaleType)] || r.SaleType}</td>
+        <td class="num">${fmt(r.paying_users)}</td>
+        <td class="num">$${fmtMoney(r.total_amount)}</td>
+        <td class="num">${n(r.revenue_percentage).toFixed(2)}%</td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
+
+  // 月份同期比較
+  const c  = d.comparison || {};
+  const pm = c.prev_month || '4月';
+  const cm = c.curr_month || '5月';
+  document.getElementById('labelCurrPaying').textContent  = cm + '平均付費人數';
+  document.getElementById('labelPrevPaying').textContent  = pm + '同期付費人數';
+  document.getElementById('labelCurrArppu').textContent   = cm + '平均 ARPPU';
+  document.getElementById('labelPrevArppu').textContent   = pm + '同期 ARPPU';
+  document.getElementById('labelCurrRevenue').textContent = cm + '累計流水';
+  document.getElementById('labelPrevRevenue').textContent = pm + '同期流水';
+  document.getElementById('mayPaying').textContent        = fmt(c.may_avg_paying);
+  document.getElementById('aprPaying').textContent        = fmt(c.apr_avg_paying);
+  document.getElementById('mayArppu').textContent         = '$' + fmtMoney(c.may_avg_arppu);
+  document.getElementById('aprArppu').textContent         = '$' + fmtMoney(c.apr_avg_arppu);
+  document.getElementById('currRevenue').textContent      = '$' + fmtMoney(c.curr_revenue);
+  document.getElementById('prevRevenue').textContent      = '$' + fmtMoney(c.prev_revenue);
+  document.getElementById('payingChange').innerHTML       = pct(c.may_avg_paying, c.apr_avg_paying);
+  document.getElementById('arppuChange').innerHTML        = pct(c.may_avg_arppu,  c.apr_avg_arppu);
+  document.getElementById('revenueChange').innerHTML      = pctDirect(c.revenue_growth_pct);
+
+  // 月份同期儲值品項比較
+  document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
+  document.getElementById('stcAprLabel2').textContent = pm + '流水';
+  document.getElementById('stcMayLabel1').textContent = cm + '付費人數';
+  document.getElementById('stcMayLabel2').textContent = cm + '流水';
+  const stc = d.saleTypeComparison || [];
+  document.getElementById('stcTable').innerHTML = stc.length
+    ? stc.map(r => {
+        const name = r.name || SALE_TYPE_NAMES[n(r.SaleType)] || `類型${r.SaleType}`;
+        return `<tr>
+          <td><strong>${name}</strong></td>
+          <td class="apr-cell">${fmt(r.apr_paying_users)}</td>
+          <td class="may-cell">${fmt(r.may_paying_users)}</td>
+          <td class="change-cell">${changeCell(r.may_paying_users, r.apr_paying_users)}</td>
+          <td class="apr-cell">$${fmtMoney(r.apr_total_amount)}</td>
+          <td class="may-cell">$${fmtMoney(r.may_total_amount)}</td>
+          <td class="change-cell">${changeCell(r.may_total_amount, r.apr_total_amount)}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="7" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
+}
+
+// ── 資料載入 ──
 fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
   .then(r => r.json())
-  .then(d => {
-
-    // ── 日期 ──
-    document.getElementById('subtitle').textContent = '資料日期：' + (d.date || '-');
-
-    // ── VIP：去重（每個 VipLV 只保留第一筆）──
-    const seenLv = new Set();
-    const uniqueVip = (d.vip || []).filter(v => {
-      const lv = String(v.VipLV);
-      if (seenLv.has(lv)) return false;
-      seenLv.add(lv);
-      return true;
-    }).filter(v => v.VipLV != 4 && v.VipLV != 6);
-
-    // ── 四大指標：若 daily 全為 0，從 VIP 加總推算 ──
-    let paying = n(d.daily && d.daily.PayingUsers);
-    let trans  = n(d.daily && d.daily.Transactions);
-    let rev    = n(d.daily && d.daily.Revenue);
-    let arppu  = n(d.daily && d.daily.ARPPU);
-
-    if (!paying && uniqueVip.length > 0) {
-      paying = uniqueVip.reduce((s, v) => s + n(v.PayingUsers), 0);
-      trans  = uniqueVip.reduce((s, v) => s + n(v.Transactions), 0);
-      rev    = uniqueVip.reduce((s, v) => s + n(v.Revenue), 0);
-      arppu  = paying > 0 ? Math.round(rev / paying) : 0;
-    }
-
-    document.getElementById('payingUsers').textContent = fmt(paying);
-    document.getElementById('transactions').textContent = fmt(trans);
-    document.getElementById('revenue').textContent = '$' + fmtTWD(rev);
-    document.getElementById('arppu').textContent = '$' + fmtTWD(arppu);
-
-    // ── VIP 表格 ──
-    const vipOrder = [9, 8, 7, 5, 3, 2, 1, 0];
-    document.getElementById('vipTable').innerHTML = vipOrder.map(lv => {
-      const row = uniqueVip.find(r => Number(r.VipLV) === lv) || {};
-      return `<tr>
-        <td>VIP ${lv}</td>
-        <td class="num">${fmt(row.PayingUsers || 0)}</td>
-        <td class="num">${fmt(row.Transactions || 0)}</td>
-        <td class="num">$${fmtTWD(row.Revenue || 0)}</td>
-      </tr>`;
-    }).join('');
-
-    // ── 儲值品項表格 ──
-    const saleRows = d.saleType || [];
-    document.getElementById('saleTable').innerHTML = saleRows.length
-      ? saleRows.map(r => `<tr>
-          <td>${SALE_TYPE_NAMES[n(r.SaleType)] || r.SaleType}</td>
-          <td class="num">${fmt(r.paying_users)}</td>
-          <td class="num">$${fmtTWD(r.total_amount)}</td>
-          <td class="num">${n(r.revenue_percentage).toFixed(2)}%</td>
-        </tr>`).join('')
-      : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
-
-    // ── 月份同期比較 ──
-    const c = d.comparison || {};
-    const pm = c.prev_month || '4月';
-    const cm = c.curr_month || '5月';
-
-    document.getElementById('labelCurrPaying').textContent  = cm + '平均付費人數';
-    document.getElementById('labelPrevPaying').textContent  = pm + '同期付費人數';
-    document.getElementById('labelCurrArppu').textContent   = cm + '平均 ARPPU';
-    document.getElementById('labelPrevArppu').textContent   = pm + '同期 ARPPU';
-    document.getElementById('labelCurrRevenue').textContent = cm + '累計流水';
-    document.getElementById('labelPrevRevenue').textContent = pm + '同期流水';
-
-    document.getElementById('mayPaying').textContent   = fmt(c.may_avg_paying);
-    document.getElementById('aprPaying').textContent   = fmt(c.apr_avg_paying);
-    document.getElementById('mayArppu').textContent    = '$' + fmtTWD(c.may_avg_arppu);
-    document.getElementById('aprArppu').textContent    = '$' + fmtTWD(c.apr_avg_arppu);
-    document.getElementById('currRevenue').textContent = '$' + fmtTWD(c.curr_revenue);
-    document.getElementById('prevRevenue').textContent = '$' + fmtTWD(c.prev_revenue);
-
-    document.getElementById('payingChange').innerHTML  = pct(c.may_avg_paying,  c.apr_avg_paying);
-    document.getElementById('arppuChange').innerHTML   = pct(c.may_avg_arppu,   c.apr_avg_arppu);
-    document.getElementById('revenueChange').innerHTML = pctDirect(c.revenue_growth_pct);
-
-    // ── 月份同期儲值品項比較 ──
-    document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
-    document.getElementById('stcAprLabel2').textContent = pm + '流水';
-    document.getElementById('stcMayLabel1').textContent = cm + '付費人數';
-    document.getElementById('stcMayLabel2').textContent = cm + '流水';
-
-    const stc = d.saleTypeComparison || [];
-    document.getElementById('stcTable').innerHTML = stc.length
-      ? stc.map(r => {
-          const name = r.name || SALE_TYPE_NAMES[n(r.SaleType)] || `類型${r.SaleType}`;
-          return `<tr>
-            <td><strong>${name}</strong></td>
-            <td class="apr-cell">${fmt(r.apr_paying_users)}</td>
-            <td class="may-cell">${fmt(r.may_paying_users)}</td>
-            <td class="change-cell">${changeCell(r.may_paying_users, r.apr_paying_users)}</td>
-            <td class="apr-cell">$${fmtTWD(r.apr_total_amount)}</td>
-            <td class="may-cell">$${fmtTWD(r.may_total_amount)}</td>
-            <td class="change-cell">${changeCell(r.may_total_amount, r.apr_total_amount)}</td>
-          </tr>`;
-        }).join('')
-      : '<tr><td colspan="8" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
-
-  })
+  .then(d => { cachedData = d; render(d); })
   .catch(err => {
     document.getElementById('subtitle').textContent = '資料載入失敗：' + err.message;
   });
