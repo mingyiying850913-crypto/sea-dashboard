@@ -18,6 +18,9 @@
     .card-label { font-size: 13px; color: #888; margin-bottom: 8px; }
     .card-value { font-size: 30px; font-weight: 700; color: #2c2c2c; }
     .card-icon { font-size: 22px; margin-bottom: 8px; }
+    .card-diff { font-size: 13px; font-weight: 700; margin-top: 6px; }
+    .diff-up { color: #16a34a; }
+    .diff-down { color: #dc2626; }
     .section { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #444; }
     table { width: 100%; border-collapse: collapse; font-size: 15px; }
@@ -70,10 +73,10 @@
 <div class="subtitle" id="subtitle">載入中...</div>
 
 <div class="cards">
-  <div class="card"><div class="card-icon">👥</div><div class="card-label">付費人數</div><div class="card-value" id="payingUsers">-</div></div>
-  <div class="card"><div class="card-icon">💳</div><div class="card-label">交易筆數</div><div class="card-value" id="transactions">-</div></div>
-  <div class="card"><div class="card-icon">💰</div><div class="card-label">總營收</div><div class="card-value" id="revenue">-</div></div>
-  <div class="card"><div class="card-icon">📈</div><div class="card-label">ARPPU</div><div class="card-value" id="arppu">-</div></div>
+  <div class="card"><div class="card-icon">👥</div><div class="card-label">付費人數</div><div class="card-value" id="payingUsers">-</div><div class="card-diff" id="payingUsersDiff"></div></div>
+  <div class="card"><div class="card-icon">💳</div><div class="card-label">交易筆數</div><div class="card-value" id="transactions">-</div><div class="card-diff" id="transactionsDiff"></div></div>
+  <div class="card"><div class="card-icon">💰</div><div class="card-label">總營收</div><div class="card-value" id="revenue">-</div><div class="card-diff" id="revenueDiff"></div></div>
+  <div class="card"><div class="card-icon">📈</div><div class="card-label">ARPPU</div><div class="card-value" id="arppu">-</div><div class="card-diff" id="arppuDiff"></div></div>
 </div>
 
 <div class="two-col">
@@ -201,6 +204,15 @@ function n(v) { return parseFloat(v) || 0; }
 function fmt(v) { return Math.round(n(v)).toLocaleString('en-US'); }
 function fmtMoney(v) { return Math.round(n(v) * currentRate).toLocaleString('en-US'); }
 
+function diffTag(curr, prev) {
+  curr = n(curr); prev = n(prev);
+  if (!prev) return '';
+  const diff = curr - prev;
+  const cls  = diff >= 0 ? 'diff-up' : 'diff-down';
+  const arr  = diff >= 0 ? '↑' : '↓';
+  return `<span class="${cls}">${arr} ${Math.abs(Math.round(diff)).toLocaleString('en-US')}</span>`;
+}
+
 function pct(curr, prev) {
   curr = n(curr); prev = n(prev);
   if (!prev) return '';
@@ -256,6 +268,13 @@ function render(d) {
   document.getElementById('transactions').textContent = fmt(trans);
   document.getElementById('revenue').textContent      = '$' + fmtMoney(rev);
   document.getElementById('arppu').textContent        = '$' + fmtMoney(arppu);
+
+  // 與前天比較
+  const pd = d.prevDay || {};
+  document.getElementById('payingUsersDiff').innerHTML = diffTag(paying,       n(pd.PayingUsers));
+  document.getElementById('transactionsDiff').innerHTML= diffTag(trans,        n(pd.Transactions));
+  document.getElementById('revenueDiff').innerHTML     = diffTag(rev,          n(pd.Revenue));
+  document.getElementById('arppuDiff').innerHTML       = diffTag(arppu,        n(pd.ARPPU));
 
   // VIP 表格
   const vipOrder = [9, 8, 7, 5, 3, 2, 1, 0];
