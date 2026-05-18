@@ -26,7 +26,7 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #fffbf0; }
     .num { text-align: right; font-variant-numeric: tabular-nums; }
-    .compare-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    .compare-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .ccard { border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .ccard.current { background: #ede9fe; border-left: 5px solid #7c3aed; }
     .ccard.prev { background: #fff; border: 1px solid #e2d9b3; }
@@ -97,6 +97,7 @@
 <div class="section">
   <div class="section-title">📊 月份同期比較</div>
   <div class="compare-cards">
+    <!-- 平均付費人數 -->
     <div class="ccard current">
       <div class="ccard-label" id="labelCurrPaying">本月平均付費人數</div>
       <div class="ccard-main">
@@ -112,6 +113,7 @@
         <span class="ccard-unit">人 / 日</span>
       </div>
     </div>
+    <!-- 平均 ARPPU -->
     <div class="ccard current">
       <div class="ccard-label" id="labelCurrArppu">本月平均 ARPPU</div>
       <div class="ccard-main">
@@ -127,25 +129,7 @@
         <span class="ccard-unit">元 / 人</span>
       </div>
     </div>
-    <div class="ccard current">
-      <div class="ccard-label" id="labelCurrRevenue">本月累計流水</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="currRevenue">-</span>
-        <span class="ccard-change" id="revenueChange"></span>
-      </div>
-    </div>
-    <div class="ccard prev">
-      <div class="ccard-label" id="labelPrevRevenue">上月同期流水</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="prevRevenue">-</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-title">🤝 社交玩家儲值營收</div>
-  <div class="compare-cards" style="grid-template-columns: repeat(2, 1fr);">
+    <!-- 社交玩家儲值 -->
     <div class="ccard current">
       <div class="ccard-label" id="socialLabelCurrRev">社交玩家儲值</div>
       <div class="ccard-main">
@@ -157,6 +141,36 @@
       <div class="ccard-label" id="socialLabelPrevRev">上月同期儲值</div>
       <div class="ccard-main">
         <span class="ccard-value" id="socialPrevRevenue">-</span>
+      </div>
+    </div>
+    <!-- 社交玩家 ARPPU -->
+    <div class="ccard current">
+      <div class="ccard-label" id="socialLabelCurrArppu">社交玩家 ARPPU</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="socialCurrArppu">-</span>
+        <span class="ccard-unit">元 / 人</span>
+        <span class="ccard-change" id="socialArppuChange"></span>
+      </div>
+    </div>
+    <div class="ccard prev">
+      <div class="ccard-label" id="socialLabelPrevArppu">上月同期 ARPPU</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="socialPrevArppu">-</span>
+        <span class="ccard-unit">元 / 人</span>
+      </div>
+    </div>
+    <!-- 累計流水（各佔 2 欄讓最後一列對稱） -->
+    <div class="ccard current" style="grid-column: span 2;">
+      <div class="ccard-label" id="labelCurrRevenue">本月累計流水</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="currRevenue">-</span>
+        <span class="ccard-change" id="revenueChange"></span>
+      </div>
+    </div>
+    <div class="ccard prev" style="grid-column: span 2;">
+      <div class="ccard-label" id="labelPrevRevenue">上月同期流水</div>
+      <div class="ccard-main">
+        <span class="ccard-value" id="prevRevenue">-</span>
       </div>
     </div>
   </div>
@@ -298,11 +312,16 @@ function render(d) {
   const sp    = d.socialPlayers || {};
   const spCur = sp.curr || {};
   const spPrv = sp.prev || {};
-  document.getElementById('socialLabelCurrRev').textContent = cm + '社交玩家儲值';
-  document.getElementById('socialLabelPrevRev').textContent = pm + '同期儲值';
-  document.getElementById('socialCurrRevenue').textContent  = '$' + fmtMoney(spCur.total_recharge || 0);
-  document.getElementById('socialPrevRevenue').textContent  = '$' + fmtMoney(spPrv.total_recharge || 0);
-  document.getElementById('socialRevenueChange').innerHTML  = pct(spCur.total_recharge, spPrv.total_recharge);
+  document.getElementById('socialLabelCurrRev').textContent   = cm + '社交玩家儲值';
+  document.getElementById('socialLabelPrevRev').textContent   = pm + '同期儲值';
+  document.getElementById('socialLabelCurrArppu').textContent = cm + '社交玩家 ARPPU';
+  document.getElementById('socialLabelPrevArppu').textContent = pm + '同期 ARPPU';
+  document.getElementById('socialCurrRevenue').textContent    = '$' + fmtMoney(spCur.total_recharge || 0);
+  document.getElementById('socialPrevRevenue').textContent    = '$' + fmtMoney(spPrv.total_recharge || 0);
+  document.getElementById('socialCurrArppu').textContent      = '$' + fmtMoney(spCur.arppu || 0);
+  document.getElementById('socialPrevArppu').textContent      = '$' + fmtMoney(spPrv.arppu || 0);
+  document.getElementById('socialRevenueChange').innerHTML    = pct(spCur.total_recharge, spPrv.total_recharge);
+  document.getElementById('socialArppuChange').innerHTML      = pct(spCur.arppu, spPrv.arppu);
 
   // 月份同期儲值品項比較
   document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
