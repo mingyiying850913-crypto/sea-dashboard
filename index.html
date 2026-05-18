@@ -143,20 +143,18 @@
         <span class="ccard-value" id="socialPrevRevenue">-</span>
       </div>
     </div>
-    <!-- 社交玩家 ARPPU -->
+    <!-- 扣掉社交後流水 -->
     <div class="ccard current">
-      <div class="ccard-label" id="socialLabelCurrArppu">社交玩家 ARPPU</div>
+      <div class="ccard-label" id="labelCurrExSocial">扣掉社交後流水</div>
       <div class="ccard-main">
-        <span class="ccard-value" id="socialCurrArppu">-</span>
-        <span class="ccard-unit">元 / 人</span>
-        <span class="ccard-change" id="socialArppuChange"></span>
+        <span class="ccard-value" id="currExSocial">-</span>
+        <span class="ccard-change" id="exSocialChange"></span>
       </div>
     </div>
     <div class="ccard prev">
-      <div class="ccard-label" id="socialLabelPrevArppu">上月同期 ARPPU</div>
+      <div class="ccard-label" id="labelPrevExSocial">上月同期</div>
       <div class="ccard-main">
-        <span class="ccard-value" id="socialPrevArppu">-</span>
-        <span class="ccard-unit">元 / 人</span>
+        <span class="ccard-value" id="prevExSocial">-</span>
       </div>
     </div>
     <!-- 累計流水（各佔 2 欄讓最後一列對稱） -->
@@ -312,16 +310,20 @@ function render(d) {
   const sp    = d.socialPlayers || {};
   const spCur = sp.curr || {};
   const spPrv = sp.prev || {};
-  document.getElementById('socialLabelCurrRev').textContent   = cm + '社交玩家儲值';
-  document.getElementById('socialLabelPrevRev').textContent   = pm + '同期儲值';
-  document.getElementById('socialLabelCurrArppu').textContent = cm + '社交玩家 ARPPU';
-  document.getElementById('socialLabelPrevArppu').textContent = pm + '同期 ARPPU';
-  document.getElementById('socialCurrRevenue').textContent    = '$' + fmtMoney(spCur.total_recharge || 0);
-  document.getElementById('socialPrevRevenue').textContent    = '$' + fmtMoney(spPrv.total_recharge || 0);
-  document.getElementById('socialCurrArppu').textContent      = '$' + fmtMoney(spCur.arppu || 0);
-  document.getElementById('socialPrevArppu').textContent      = '$' + fmtMoney(spPrv.arppu || 0);
-  document.getElementById('socialRevenueChange').innerHTML    = pct(spCur.total_recharge, spPrv.total_recharge);
-  document.getElementById('socialArppuChange').innerHTML      = pct(spCur.arppu, spPrv.arppu);
+  document.getElementById('socialLabelCurrRev').textContent = cm + '社交玩家儲值';
+  document.getElementById('socialLabelPrevRev').textContent = pm + '同期儲值';
+  document.getElementById('socialCurrRevenue').textContent  = '$' + fmtMoney(spCur.total_recharge || 0);
+  document.getElementById('socialPrevRevenue').textContent  = '$' + fmtMoney(spPrv.total_recharge || 0);
+  document.getElementById('socialRevenueChange').innerHTML  = pct(spCur.total_recharge, spPrv.total_recharge);
+
+  // 扣掉社交後流水
+  const currExSocial = n(c.curr_revenue) - n(spCur.total_recharge);
+  const prevExSocial = n(c.prev_revenue) - n(spPrv.total_recharge);
+  document.getElementById('labelCurrExSocial').textContent = cm + '扣掉社交後流水';
+  document.getElementById('labelPrevExSocial').textContent = pm + '同期';
+  document.getElementById('currExSocial').textContent      = '$' + fmtMoney(currExSocial);
+  document.getElementById('prevExSocial').textContent      = '$' + fmtMoney(prevExSocial);
+  document.getElementById('exSocialChange').innerHTML      = pct(currExSocial, prevExSocial);
 
   // 月份同期儲值品項比較
   document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
