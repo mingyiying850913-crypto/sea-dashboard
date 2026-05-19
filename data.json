@@ -1,5 +1,13 @@
 {
   "date": "2026-05-18",
+  "dau": {
+    "today": "19568",
+    "prev": "20889"
+  },
+  "newPlayers": {
+    "today": "813",
+    "prev": "914"
+  },
   "daily": {
     "PayingUsers": "1645",
     "Transactions": "4252",
