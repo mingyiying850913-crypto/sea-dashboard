@@ -9,12 +9,14 @@
     body { background: #fdf6e3; color: #333; font-family: 'Segoe UI', sans-serif; padding: 24px; }
     h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #2c2c2c; }
     .subtitle { color: #999; font-size: 14px; margin-bottom: 24px; }
-    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 32px; }
     .card { background: #fff; border-radius: 12px; padding: 20px; border-top: 3px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .card:nth-child(1) { border-top-color: #7c6af7; }
-    .card:nth-child(2) { border-top-color: #3b9eff; }
-    .card:nth-child(3) { border-top-color: #f5a623; }
-    .card:nth-child(4) { border-top-color: #4cd964; }
+    .card:nth-child(1) { border-top-color: #06b6d4; }
+    .card:nth-child(2) { border-top-color: #f43f5e; }
+    .card:nth-child(3) { border-top-color: #7c6af7; }
+    .card:nth-child(4) { border-top-color: #3b9eff; }
+    .card:nth-child(5) { border-top-color: #f5a623; }
+    .card:nth-child(6) { border-top-color: #4cd964; }
     .card-label { font-size: 13px; color: #888; margin-bottom: 8px; }
     .card-value { font-size: 30px; font-weight: 700; color: #2c2c2c; }
     .card-icon { font-size: 22px; margin-bottom: 8px; }
@@ -73,7 +75,9 @@
 <div class="subtitle" id="subtitle">載入中...</div>
 
 <div class="cards">
-  <div class="card"><div class="card-icon">👥</div><div class="card-label">付費人數</div><div class="card-value" id="payingUsers">-</div><div class="card-diff" id="payingUsersDiff"></div></div>
+  <div class="card"><div class="card-icon">🧑‍🤝‍🧑</div><div class="card-label">DAU</div><div class="card-value" id="dau">-</div><div class="card-diff" id="dauDiff"></div></div>
+  <div class="card"><div class="card-icon">🆕</div><div class="card-label">新增人數</div><div class="card-value" id="newPlayers">-</div><div class="card-diff" id="newPlayersDiff"></div></div>
+  <div class="card"><div class="card-icon">💵</div><div class="card-label">付費人數</div><div class="card-value" id="payingUsers">-</div><div class="card-diff" id="payingUsersDiff"></div></div>
   <div class="card"><div class="card-icon">💳</div><div class="card-label">交易筆數</div><div class="card-value" id="transactions">-</div><div class="card-diff" id="transactionsDiff"></div></div>
   <div class="card"><div class="card-icon">💰</div><div class="card-label">總營收</div><div class="card-value" id="revenue">-</div><div class="card-diff" id="revenueDiff"></div></div>
   <div class="card"><div class="card-icon">📈</div><div class="card-label">ARPPU</div><div class="card-value" id="arppu">-</div><div class="card-diff" id="arppuDiff"></div></div>
@@ -275,6 +279,14 @@ function render(d) {
     rev    = uniqueVip.reduce((s, v) => s + n(v.Revenue), 0);
     arppu  = paying > 0 ? Math.round(rev / paying) : 0;
   }
+  // DAU & 新增人數
+  const da = d.dau        || {};
+  const np = d.newPlayers || {};
+  document.getElementById('dau').textContent             = fmt(da.today || 0);
+  document.getElementById('newPlayers').textContent      = fmt(np.today || 0);
+  document.getElementById('dauDiff').innerHTML           = diffTag(da.today, da.prev);
+  document.getElementById('newPlayersDiff').innerHTML    = diffTag(np.today, np.prev);
+
   document.getElementById('payingUsers').textContent  = fmt(paying);
   document.getElementById('transactions').textContent = fmt(trans);
   document.getElementById('revenue').textContent      = '$' + fmtMoney(rev);
