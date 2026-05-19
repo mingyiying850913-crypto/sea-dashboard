@@ -66,8 +66,8 @@
 
 <div class="currency-badge">
   <span>金額</span>
-  <button class="cur-btn active" id="btnTWD" onclick="setCurrency('TWD')">台幣</button>
-  <button class="cur-btn" id="btnMYR" onclick="setCurrency('MYR')">馬幣</button>
+  <button class="cur-btn" id="btnTWD" onclick="setCurrency('TWD')">台幣</button>
+  <button class="cur-btn active" id="btnMYR" onclick="setCurrency('MYR')">馬幣</button>
 </div>
 <h1>🏦 SEA版營運日報</h1>
 <div class="subtitle" id="subtitle">載入中...</div>
@@ -197,7 +197,7 @@ const SALE_TYPE_NAMES = {
 };
 
 const MYR_TO_TWD = 7.56;
-let currentRate = MYR_TO_TWD;
+let currentRate = 1;       // 預設馬幣
 let cachedData  = null;
 
 function n(v) { return parseFloat(v) || 0; }
