@@ -212,6 +212,17 @@ function diffTag(curr, prev) {
   const arr  = diff >= 0 ? '↑' : '↓';
   return `<span class="${cls}">${arr} ${Math.abs(Math.round(diff)).toLocaleString('en-US')}</span>`;
 }
+function diffInline(curr, prev, isMoney = false) {
+  curr = n(curr); prev = n(prev);
+  if (!prev || curr === prev) return '';
+  const diff = curr - prev;
+  const cls  = diff > 0 ? 'diff-up' : 'diff-down';
+  const arr  = diff > 0 ? '↑' : '↓';
+  const val  = isMoney
+    ? Math.abs(Math.round(diff * currentRate)).toLocaleString('en-US')
+    : Math.abs(Math.round(diff)).toLocaleString('en-US');
+  return `<span class="${cls}" style="font-size:11px;font-weight:700;margin-left:4px;">${arr}${val}</span>`;
+}
 
 function pct(curr, prev) {
   curr = n(curr); prev = n(prev);
@@ -277,26 +288,34 @@ function render(d) {
   document.getElementById('arppuDiff').innerHTML       = diffTag(arppu,        n(pd.ARPPU));
 
   // VIP 表格
+  const vipPrevMap = {};
+  (d.vipPrev || []).forEach(v => { vipPrevMap[Number(v.VipLV)] = v; });
   const vipOrder = [9, 8, 7, 5, 3, 2, 1, 0];
   document.getElementById('vipTable').innerHTML = vipOrder.map(lv => {
-    const row = uniqueVip.find(r => Number(r.VipLV) === lv) || {};
+    const row  = uniqueVip.find(r => Number(r.VipLV) === lv) || {};
+    const prev = vipPrevMap[lv] || {};
     return `<tr>
       <td>VIP ${lv}</td>
-      <td class="num">${fmt(row.PayingUsers || 0)}</td>
-      <td class="num">${fmt(row.Transactions || 0)}</td>
-      <td class="num">$${fmtMoney(row.Revenue || 0)}</td>
+      <td class="num">${fmt(row.PayingUsers || 0)}${diffInline(row.PayingUsers, prev.PayingUsers)}</td>
+      <td class="num">${fmt(row.Transactions || 0)}${diffInline(row.Transactions, prev.Transactions)}</td>
+      <td class="num">$${fmtMoney(row.Revenue || 0)}${diffInline(row.Revenue, prev.Revenue, true)}</td>
     </tr>`;
   }).join('');
 
   // 儲值品項表格
   const saleRows = d.saleType || [];
+  const salePrevMap = {};
+  (d.saleTypePrev || []).forEach(s => { salePrevMap[Number(s.SaleType)] = s; });
   document.getElementById('saleTable').innerHTML = saleRows.length
-    ? saleRows.map(r => `<tr>
-        <td>${SALE_TYPE_NAMES[n(r.SaleType)] || r.SaleType}</td>
-        <td class="num">${fmt(r.paying_users)}</td>
-        <td class="num">$${fmtMoney(r.total_amount)}</td>
-        <td class="num">${n(r.revenue_percentage).toFixed(2)}%</td>
-      </tr>`).join('')
+    ? saleRows.map(r => {
+        const prev = salePrevMap[n(r.SaleType)] || {};
+        return `<tr>
+          <td>${SALE_TYPE_NAMES[n(r.SaleType)] || r.SaleType}</td>
+          <td class="num">${fmt(r.paying_users)}${diffInline(r.paying_users, prev.paying_users)}</td>
+          <td class="num">$${fmtMoney(r.total_amount)}${diffInline(r.total_amount, prev.total_amount, true)}</td>
+          <td class="num">${n(r.revenue_percentage).toFixed(2)}%</td>
+        </tr>`;
+      }).join('')
     : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 
   // 月份同期比較
