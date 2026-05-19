@@ -18,112 +18,253 @@
       "VipLV": "9",
       "PayingUsers": "2",
       "Transactions": "11",
-      "Revenue": "2373.9"
+      "Revenue": "2373.9",
+      "ARPPU": "1187"
     },
     {
       "ProDate": "2026-05-18",
       "VipLV": "8",
       "PayingUsers": "3",
       "Transactions": "7",
-      "Revenue": "1623.6"
+      "Revenue": "1623.6",
+      "ARPPU": "541.2"
     },
     {
       "ProDate": "2026-05-18",
       "VipLV": "7",
       "PayingUsers": "329",
       "Transactions": "1400",
-      "Revenue": "76379.25"
+      "Revenue": "76379.25",
+      "ARPPU": "232.2"
     },
     {
       "ProDate": "2026-05-18",
       "VipLV": "5",
       "PayingUsers": "175",
       "Transactions": "694",
-      "Revenue": "16327.04"
+      "Revenue": "16327.04",
+      "ARPPU": "93.3"
     },
     {
       "ProDate": "2026-05-18",
       "VipLV": "3",
       "PayingUsers": "658",
       "Transactions": "1434",
-      "Revenue": "19961.65"
+      "Revenue": "19961.65",
+      "ARPPU": "30.3"
     },
     {
       "ProDate": "2026-05-18",
       "VipLV": "2",
       "PayingUsers": "441",
       "Transactions": "617",
-      "Revenue": "6226.25"
+      "Revenue": "6226.25",
+      "ARPPU": "14.1"
     },
     {
       "ProDate": "2026-05-18",
       "VipLV": "1",
       "PayingUsers": "49",
       "Transactions": "49",
-      "Revenue": "511.04"
+      "Revenue": "511.04",
+      "ARPPU": "10.4"
     },
     {
       "ProDate": "2026-05-18",
       "VipLV": "0",
       "PayingUsers": "34",
       "Transactions": "40",
-      "Revenue": "450"
+      "Revenue": "450",
+      "ARPPU": "13.2"
+    }
+  ],
+  "vipPrev": [
+    {
+      "ProDate": "2026-05-17",
+      "VipLV": "9",
+      "PayingUsers": "2",
+      "Transactions": "17",
+      "Revenue": "2471.3",
+      "ARPPU": "1235.7"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "VipLV": "8",
+      "PayingUsers": "2",
+      "Transactions": "11",
+      "Revenue": "4202.9",
+      "ARPPU": "2101.5"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "VipLV": "7",
+      "PayingUsers": "321",
+      "Transactions": "1515",
+      "Revenue": "65965.56",
+      "ARPPU": "205.5"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "VipLV": "5",
+      "PayingUsers": "184",
+      "Transactions": "767",
+      "Revenue": "20333.31",
+      "ARPPU": "110.5"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "VipLV": "3",
+      "PayingUsers": "698",
+      "Transactions": "1481",
+      "Revenue": "22641.69",
+      "ARPPU": "32.4"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "VipLV": "2",
+      "PayingUsers": "427",
+      "Transactions": "619",
+      "Revenue": "6051.75",
+      "ARPPU": "14.2"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "VipLV": "1",
+      "PayingUsers": "39",
+      "Transactions": "39",
+      "Revenue": "468.1",
+      "ARPPU": "12"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "VipLV": "0",
+      "PayingUsers": "41",
+      "Transactions": "46",
+      "Revenue": "376.04",
+      "ARPPU": "9.2"
     }
   ],
   "saleType": [
     {
+      "ProDate": "2026-05-18",
       "SaleType": "1",
       "paying_users": "635",
       "total_amount": "43463.4849",
       "revenue_percentage": "35.09"
     },
     {
+      "ProDate": "2026-05-18",
       "SaleType": "6",
       "paying_users": "276",
       "total_amount": "26608.277",
       "revenue_percentage": "21.48"
     },
     {
+      "ProDate": "2026-05-18",
       "SaleType": "4",
       "paying_users": "260",
       "total_amount": "25981.938",
       "revenue_percentage": "20.98"
     },
     {
+      "ProDate": "2026-05-18",
       "SaleType": "10",
       "paying_users": "166",
       "total_amount": "14614.346",
       "revenue_percentage": "11.8"
     },
     {
+      "ProDate": "2026-05-18",
       "SaleType": "12",
       "paying_users": "1",
       "total_amount": "6000",
       "revenue_percentage": "4.84"
     },
     {
+      "ProDate": "2026-05-18",
       "SaleType": "3",
       "paying_users": "162",
       "total_amount": "3889.473",
       "revenue_percentage": "3.14"
     },
     {
+      "ProDate": "2026-05-18",
       "SaleType": "7",
       "paying_users": "720",
       "total_amount": "2816.8705",
       "revenue_percentage": "2.27"
     },
     {
+      "ProDate": "2026-05-18",
       "SaleType": "2",
       "paying_users": "68",
       "total_amount": "280.3445",
       "revenue_percentage": "0.23"
     },
     {
+      "ProDate": "2026-05-18",
       "SaleType": "5",
       "paying_users": "1",
       "total_amount": "198",
       "revenue_percentage": "0.16"
+    }
+  ],
+  "saleTypePrev": [
+    {
+      "ProDate": "2026-05-17",
+      "SaleType": "1",
+      "paying_users": "730",
+      "total_amount": "62565.3908",
+      "revenue_percentage": "51.07"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "SaleType": "6",
+      "paying_users": "255",
+      "total_amount": "21277.486",
+      "revenue_percentage": "17.37"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "SaleType": "4",
+      "paying_users": "247",
+      "total_amount": "20188.767",
+      "revenue_percentage": "16.48"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "SaleType": "10",
+      "paying_users": "150",
+      "total_amount": "11527.147",
+      "revenue_percentage": "9.41"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "SaleType": "3",
+      "paying_users": "159",
+      "total_amount": "3858.935",
+      "revenue_percentage": "3.15"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "SaleType": "7",
+      "paying_users": "694",
+      "total_amount": "2711.634",
+      "revenue_percentage": "2.21"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "SaleType": "2",
+      "paying_users": "56",
+      "total_amount": "236.489",
+      "revenue_percentage": "0.19"
+    },
+    {
+      "ProDate": "2026-05-17",
+      "SaleType": "5",
+      "paying_users": "2",
+      "total_amount": "144.8",
+      "revenue_percentage": "0.12"
     }
   ],
   "comparison": {
