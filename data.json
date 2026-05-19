@@ -6,6 +6,12 @@
     "Revenue": "123852.7339",
     "ARPPU": "75"
   },
+  "prevDay": {
+    "PayingUsers": "1673",
+    "Transactions": "4495",
+    "Revenue": "122510.6488",
+    "ARPPU": "73"
+  },
   "vip": [
     {
       "ProDate": "2026-05-18",
