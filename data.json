@@ -398,5 +398,20 @@
       "recharge_count": 123,
       "arppu": 14879
     }
-  }
+  },
+  "topRegularPlayers": [],
+  "todaySocialPlayers": [
+    {
+      "UserID": "11721575",
+      "NickName": "CJshop",
+      "total_recharge": 6000,
+      "transaction_count": 6
+    },
+    {
+      "UserID": "13179452",
+      "NickName": "SuperBoss",
+      "total_recharge": 3000,
+      "transaction_count": 3
+    }
+  ]
 }
