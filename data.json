@@ -399,7 +399,38 @@
       "arppu": 14879
     }
   },
-  "topRegularPlayers": [],
+  "topRegularPlayers": [
+    {
+      "UserID": "12315355",
+      "NickName": "LUK315355",
+      "total_recharge": 4699.7,
+      "transaction_count": 7
+    },
+    {
+      "UserID": "11144729",
+      "NickName": "OTOMO",
+      "total_recharge": 4670.2,
+      "transaction_count": 18
+    },
+    {
+      "UserID": "13144952",
+      "NickName": "T1234",
+      "total_recharge": 4078.7,
+      "transaction_count": 13
+    },
+    {
+      "UserID": "12553393",
+      "NickName": "LUK553393",
+      "total_recharge": 2633.6,
+      "transaction_count": 14
+    },
+    {
+      "UserID": "12507133",
+      "NickName": "我只要赢",
+      "total_recharge": 2496.4,
+      "transaction_count": 16
+    }
+  ],
   "todaySocialPlayers": [
     {
       "UserID": "11721575",
