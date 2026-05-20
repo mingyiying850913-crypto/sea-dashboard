@@ -1,26 +1,92 @@
 {
-  "date": "2026-05-18",
+  "date": "2026-05-19",
   "dau": {
-    "today": "19568",
-    "prev": "20889"
+    "today": "19893",
+    "prev": "19568"
   },
   "newPlayers": {
-    "today": "813",
-    "prev": "914"
+    "today": "911",
+    "prev": "813"
   },
   "daily": {
+    "PayingUsers": "1635",
+    "Transactions": "4419",
+    "Revenue": "127425.6275",
+    "ARPPU": "78"
+  },
+  "prevDay": {
     "PayingUsers": "1645",
     "Transactions": "4252",
     "Revenue": "123852.7339",
     "ARPPU": "75"
   },
-  "prevDay": {
-    "PayingUsers": "1673",
-    "Transactions": "4495",
-    "Revenue": "122510.6488",
-    "ARPPU": "73"
-  },
   "vip": [
+    {
+      "ProDate": "2026-05-19",
+      "VipLV": "9",
+      "PayingUsers": "2",
+      "Transactions": "21",
+      "Revenue": "2629.9",
+      "ARPPU": "1315"
+    },
+    {
+      "ProDate": "2026-05-19",
+      "VipLV": "8",
+      "PayingUsers": "1",
+      "Transactions": "13",
+      "Revenue": "4078.7",
+      "ARPPU": "4078.7"
+    },
+    {
+      "ProDate": "2026-05-19",
+      "VipLV": "7",
+      "PayingUsers": "327",
+      "Transactions": "1458",
+      "Revenue": "73262.46",
+      "ARPPU": "224"
+    },
+    {
+      "ProDate": "2026-05-19",
+      "VipLV": "5",
+      "PayingUsers": "167",
+      "Transactions": "660",
+      "Revenue": "17245.86",
+      "ARPPU": "103.3"
+    },
+    {
+      "ProDate": "2026-05-19",
+      "VipLV": "3",
+      "PayingUsers": "667",
+      "Transactions": "1522",
+      "Revenue": "22019.2",
+      "ARPPU": "33"
+    },
+    {
+      "ProDate": "2026-05-19",
+      "VipLV": "2",
+      "PayingUsers": "432",
+      "Transactions": "665",
+      "Revenue": "6843.39",
+      "ARPPU": "15.8"
+    },
+    {
+      "ProDate": "2026-05-19",
+      "VipLV": "1",
+      "PayingUsers": "45",
+      "Transactions": "45",
+      "Revenue": "390.11",
+      "ARPPU": "8.7"
+    },
+    {
+      "ProDate": "2026-05-19",
+      "VipLV": "0",
+      "PayingUsers": "30",
+      "Transactions": "35",
+      "Revenue": "956.01",
+      "ARPPU": "31.9"
+    }
+  ],
+  "vipPrev": [
     {
       "ProDate": "2026-05-18",
       "VipLV": "9",
@@ -86,73 +152,72 @@
       "ARPPU": "13.2"
     }
   ],
-  "vipPrev": [
+  "saleType": [
     {
-      "ProDate": "2026-05-17",
-      "VipLV": "9",
-      "PayingUsers": "2",
-      "Transactions": "17",
-      "Revenue": "2471.3",
-      "ARPPU": "1235.7"
+      "ProDate": "2026-05-19",
+      "SaleType": "1",
+      "paying_users": "619",
+      "total_amount": "48139.05",
+      "revenue_percentage": "37.68"
     },
     {
-      "ProDate": "2026-05-17",
-      "VipLV": "8",
-      "PayingUsers": "2",
-      "Transactions": "11",
-      "Revenue": "4202.9",
-      "ARPPU": "2101.5"
+      "ProDate": "2026-05-19",
+      "SaleType": "6",
+      "paying_users": "280",
+      "total_amount": "24947.604",
+      "revenue_percentage": "19.53"
     },
     {
-      "ProDate": "2026-05-17",
-      "VipLV": "7",
-      "PayingUsers": "321",
-      "Transactions": "1515",
-      "Revenue": "65965.56",
-      "ARPPU": "205.5"
+      "ProDate": "2026-05-19",
+      "SaleType": "4",
+      "paying_users": "236",
+      "total_amount": "22116.128",
+      "revenue_percentage": "17.31"
     },
     {
-      "ProDate": "2026-05-17",
-      "VipLV": "5",
-      "PayingUsers": "184",
-      "Transactions": "767",
-      "Revenue": "20333.31",
-      "ARPPU": "110.5"
+      "ProDate": "2026-05-19",
+      "SaleType": "10",
+      "paying_users": "196",
+      "total_amount": "16350.969",
+      "revenue_percentage": "12.8"
     },
     {
-      "ProDate": "2026-05-17",
-      "VipLV": "3",
-      "PayingUsers": "698",
-      "Transactions": "1481",
-      "Revenue": "22641.69",
-      "ARPPU": "32.4"
+      "ProDate": "2026-05-19",
+      "SaleType": "12",
+      "paying_users": "2",
+      "total_amount": "9000",
+      "revenue_percentage": "7.04"
     },
     {
-      "ProDate": "2026-05-17",
-      "VipLV": "2",
-      "PayingUsers": "427",
-      "Transactions": "619",
-      "Revenue": "6051.75",
-      "ARPPU": "14.2"
+      "ProDate": "2026-05-19",
+      "SaleType": "3",
+      "paying_users": "178",
+      "total_amount": "3629.067",
+      "revenue_percentage": "2.84"
     },
     {
-      "ProDate": "2026-05-17",
-      "VipLV": "1",
-      "PayingUsers": "39",
-      "Transactions": "39",
-      "Revenue": "468.1",
-      "ARPPU": "12"
+      "ProDate": "2026-05-19",
+      "SaleType": "7",
+      "paying_users": "702",
+      "total_amount": "2746.6095",
+      "revenue_percentage": "2.15"
     },
     {
-      "ProDate": "2026-05-17",
-      "VipLV": "0",
-      "PayingUsers": "41",
-      "Transactions": "46",
-      "Revenue": "376.04",
-      "ARPPU": "9.2"
+      "ProDate": "2026-05-19",
+      "SaleType": "5",
+      "paying_users": "4",
+      "total_amount": "576",
+      "revenue_percentage": "0.45"
+    },
+    {
+      "ProDate": "2026-05-19",
+      "SaleType": "2",
+      "paying_users": "61",
+      "total_amount": "250.2",
+      "revenue_percentage": "0.2"
     }
   ],
-  "saleType": [
+  "saleTypePrev": [
     {
       "ProDate": "2026-05-18",
       "SaleType": "1",
@@ -217,173 +282,115 @@
       "revenue_percentage": "0.16"
     }
   ],
-  "saleTypePrev": [
-    {
-      "ProDate": "2026-05-17",
-      "SaleType": "1",
-      "paying_users": "730",
-      "total_amount": "62565.3908",
-      "revenue_percentage": "51.07"
-    },
-    {
-      "ProDate": "2026-05-17",
-      "SaleType": "6",
-      "paying_users": "255",
-      "total_amount": "21277.486",
-      "revenue_percentage": "17.37"
-    },
-    {
-      "ProDate": "2026-05-17",
-      "SaleType": "4",
-      "paying_users": "247",
-      "total_amount": "20188.767",
-      "revenue_percentage": "16.48"
-    },
-    {
-      "ProDate": "2026-05-17",
-      "SaleType": "10",
-      "paying_users": "150",
-      "total_amount": "11527.147",
-      "revenue_percentage": "9.41"
-    },
-    {
-      "ProDate": "2026-05-17",
-      "SaleType": "3",
-      "paying_users": "159",
-      "total_amount": "3858.935",
-      "revenue_percentage": "3.15"
-    },
-    {
-      "ProDate": "2026-05-17",
-      "SaleType": "7",
-      "paying_users": "694",
-      "total_amount": "2711.634",
-      "revenue_percentage": "2.21"
-    },
-    {
-      "ProDate": "2026-05-17",
-      "SaleType": "2",
-      "paying_users": "56",
-      "total_amount": "236.489",
-      "revenue_percentage": "0.19"
-    },
-    {
-      "ProDate": "2026-05-17",
-      "SaleType": "5",
-      "paying_users": "2",
-      "total_amount": "144.8",
-      "revenue_percentage": "0.12"
-    }
-  ],
   "comparison": {
     "curr_month": "5月",
     "prev_month": "4月",
-    "may_avg_paying": "1727.0",
-    "apr_avg_paying": "1685.0",
+    "may_avg_paying": "1723.0",
+    "apr_avg_paying": "1690.0",
     "may_avg_arppu": "77",
     "apr_avg_arppu": "81",
-    "curr_revenue": "2395511.6354",
-    "prev_revenue": "2469526.2427",
-    "revenue_growth_pct": "-3"
+    "curr_revenue": "2523267.2629",
+    "prev_revenue": "2595383.0399",
+    "revenue_growth_pct": "-2.78"
   },
   "saleTypeComparison": [
     {
       "SaleType": "1",
       "name": "一般商店",
-      "apr_paying_users": "3778",
-      "apr_total_amount": "920779.4682",
-      "apr_revenue_percentage": "37.29",
-      "may_paying_users": "3855",
-      "may_total_amount": "876187.8009",
-      "may_revenue_percentage": "36.58"
+      "apr_paying_users": "3908",
+      "apr_total_amount": "972906.5599",
+      "apr_revenue_percentage": "37.49",
+      "may_paying_users": "3946",
+      "may_total_amount": "924326.8509",
+      "may_revenue_percentage": "36.63"
     },
     {
       "SaleType": "6",
       "name": "產包",
-      "apr_paying_users": "1561",
-      "apr_total_amount": "513891.005",
+      "apr_paying_users": "1612",
+      "apr_total_amount": "540037.639",
       "apr_revenue_percentage": "20.81",
-      "may_paying_users": "1627",
-      "may_total_amount": "517681.015",
-      "may_revenue_percentage": "21.61"
+      "may_paying_users": "1667",
+      "may_total_amount": "542628.619",
+      "may_revenue_percentage": "21.5"
     },
     {
       "SaleType": "4",
       "name": "WEB金流",
-      "apr_paying_users": "1025",
-      "apr_total_amount": "464591.356",
-      "apr_revenue_percentage": "18.81",
-      "may_paying_users": "1065",
-      "may_total_amount": "434647.715",
-      "may_revenue_percentage": "18.14"
+      "apr_paying_users": "1043",
+      "apr_total_amount": "489350.389",
+      "apr_revenue_percentage": "18.85",
+      "may_paying_users": "1092",
+      "may_total_amount": "456763.843",
+      "may_revenue_percentage": "18.1"
     },
     {
       "SaleType": "10",
       "name": "TACO",
-      "apr_paying_users": "1432",
-      "apr_total_amount": "301190.803",
-      "apr_revenue_percentage": "12.2",
-      "may_paying_users": "1455",
-      "may_total_amount": "283965.461",
-      "may_revenue_percentage": "11.85"
+      "apr_paying_users": "1487",
+      "apr_total_amount": "315799.916",
+      "apr_revenue_percentage": "12.17",
+      "may_paying_users": "1508",
+      "may_total_amount": "300316.43",
+      "may_revenue_percentage": "11.9"
     },
     {
       "SaleType": "5",
       "name": "社交包",
       "apr_paying_users": "22",
-      "apr_total_amount": "118952",
-      "apr_revenue_percentage": "4.82",
-      "may_paying_users": "22",
-      "may_total_amount": "115055.8",
-      "may_revenue_percentage": "4.8"
+      "apr_total_amount": "119834",
+      "apr_revenue_percentage": "4.62",
+      "may_paying_users": "23",
+      "may_total_amount": "115631.8",
+      "may_revenue_percentage": "4.58"
     },
     {
       "SaleType": "3",
       "name": "再銷包",
-      "apr_paying_users": "1262",
-      "apr_total_amount": "58761.053",
-      "apr_revenue_percentage": "2.38",
-      "may_paying_users": "1313",
-      "may_total_amount": "64996.368",
-      "may_revenue_percentage": "2.71"
-    },
-    {
-      "SaleType": "7",
-      "name": "付費蛋",
-      "apr_paying_users": "3554",
-      "apr_total_amount": "50684.571",
-      "apr_revenue_percentage": "2.05",
-      "may_paying_users": "3630",
-      "may_total_amount": "51978.9545",
-      "may_revenue_percentage": "2.17"
+      "apr_paying_users": "1318",
+      "apr_total_amount": "62814.142",
+      "apr_revenue_percentage": "2.42",
+      "may_paying_users": "1352",
+      "may_total_amount": "68625.435",
+      "may_revenue_percentage": "2.72"
     },
     {
       "SaleType": "12",
       "name": "Web產包",
       "apr_paying_users": "4",
       "apr_total_amount": "36000",
-      "apr_revenue_percentage": "1.46",
-      "may_paying_users": "3",
-      "may_total_amount": "46000",
-      "may_revenue_percentage": "1.92"
+      "apr_revenue_percentage": "1.39",
+      "may_paying_users": "4",
+      "may_total_amount": "55000",
+      "may_revenue_percentage": "2.18"
+    },
+    {
+      "SaleType": "7",
+      "name": "付費蛋",
+      "apr_paying_users": "3665",
+      "apr_total_amount": "53629.0075",
+      "apr_revenue_percentage": "2.07",
+      "may_paying_users": "3731",
+      "may_total_amount": "54725.564",
+      "may_revenue_percentage": "2.17"
     },
     {
       "SaleType": "2",
       "name": "首購包",
-      "apr_paying_users": "1114",
-      "apr_total_amount": "4675.9865",
+      "apr_paying_users": "1194",
+      "apr_total_amount": "5011.3865",
       "apr_revenue_percentage": "0.19",
-      "may_paying_users": "1190",
-      "may_total_amount": "4998.521",
+      "may_paying_users": "1249",
+      "may_total_amount": "5248.721",
       "may_revenue_percentage": "0.21"
     }
   ],
   "socialPlayers": {
     "curr": {
-      "player_count": 10,
-      "total_recharge": 166169.69999999998,
-      "recharge_count": 128,
-      "arppu": 16617
+      "player_count": 11,
+      "total_recharge": 175169.69999999998,
+      "recharge_count": 137,
+      "arppu": 15925
     },
     "prev": {
       "player_count": 11,
