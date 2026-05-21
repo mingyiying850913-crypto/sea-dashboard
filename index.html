@@ -5,6 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SEA版營運日報</title>
   <style>
+    /* ── 密碼遮罩 ── */
+    #lockScreen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #fdf6e3;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+    }
+    #lockScreen h2 { font-size: 22px; font-weight: 700; color: #2c2c2c; }
+    #lockScreen p  { font-size: 14px; color: #999; }
+    #pinDisplay {
+      display: flex; gap: 12px; margin: 8px 0;
+    }
+    .pin-dot {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid #7c3aed; background: transparent;
+      transition: background 0.15s;
+    }
+    .pin-dot.filled { background: #7c3aed; }
+    #pinPad {
+      display: grid; grid-template-columns: repeat(3, 72px); gap: 10px;
+    }
+    .pin-btn {
+      height: 72px; border-radius: 14px; border: 1.5px solid #e2d9b3;
+      background: #fff; font-size: 22px; font-weight: 600; color: #333;
+      cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: background 0.1s, transform 0.08s;
+    }
+    .pin-btn:active { background: #ede9fe; transform: scale(0.95); }
+    .pin-btn.del { font-size: 18px; color: #999; }
+    #pinError {
+      font-size: 13px; color: #dc2626; font-weight: 600;
+      min-height: 20px; transition: opacity 0.3s;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #fdf6e3; color: #333; font-family: 'Segoe UI', sans-serif; padding: 24px; }
     h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #2c2c2c; }
@@ -65,6 +99,34 @@
   </style>
 </head>
 <body>
+
+<!-- 密碼遮罩 -->
+<div id="lockScreen">
+  <div style="font-size:36px;">🔒</div>
+  <h2>SEA版營運日報</h2>
+  <p>請輸入 4 位數字密碼</p>
+  <div id="pinDisplay">
+    <div class="pin-dot" id="d0"></div>
+    <div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div>
+    <div class="pin-dot" id="d3"></div>
+  </div>
+  <div id="pinError"></div>
+  <div id="pinPad">
+    <button class="pin-btn" onclick="pinInput('1')">1</button>
+    <button class="pin-btn" onclick="pinInput('2')">2</button>
+    <button class="pin-btn" onclick="pinInput('3')">3</button>
+    <button class="pin-btn" onclick="pinInput('4')">4</button>
+    <button class="pin-btn" onclick="pinInput('5')">5</button>
+    <button class="pin-btn" onclick="pinInput('6')">6</button>
+    <button class="pin-btn" onclick="pinInput('7')">7</button>
+    <button class="pin-btn" onclick="pinInput('8')">8</button>
+    <button class="pin-btn" onclick="pinInput('9')">9</button>
+    <button class="pin-btn del" onclick="pinClear()">清除</button>
+    <button class="pin-btn" onclick="pinInput('0')">0</button>
+    <button class="pin-btn del" onclick="pinDel()">⌫</button>
+  </div>
+</div>
 
 <div class="currency-badge">
   <span>金額</span>
@@ -212,6 +274,100 @@
 </div>
 
 <script>
+// ── 密碼鎖 + RC4 解密 ────────────────────────────────────────────────
+const SESSION_KEY = 'sea_pin';
+const SALT        = 'SEA_DASHBOARD_2026';   // 與 n8n Code JS 保持一致
+let pinBuffer        = '';
+let encryptedPayload = null;
+
+// RC4 解密（純 JS，與 n8n 對稱）
+function rc4Init(pin, salt, nonce) {
+  const keyBytes = [];
+  const raw = pin + ':' + salt;
+  for (let i = 0; i < raw.length; i++) keyBytes.push(raw.charCodeAt(i) & 0xFF);
+  nonce.forEach(b => keyBytes.push(b));
+  const S = new Uint8Array(256);
+  for (let i = 0; i < 256; i++) S[i] = i;
+  let j = 0;
+  for (let i = 0; i < 256; i++) {
+    j = (j + S[i] + keyBytes[i % keyBytes.length]) & 0xFF;
+    const t = S[i]; S[i] = S[j]; S[j] = t;
+  }
+  return S;
+}
+function rc4Stream(S, data) {
+  const out = new Uint8Array(data.length);
+  let a = 0, b = 0;
+  for (let k = 0; k < data.length; k++) {
+    a = (a + 1) & 0xFF;
+    b = (b + S[a]) & 0xFF;
+    const t = S[a]; S[a] = S[b]; S[b] = t;
+    out[k] = data[k] ^ S[(S[a] + S[b]) & 0xFF];
+  }
+  return out;
+}
+async function decryptData(base64, pin) {
+  try {
+    const combined = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    const nonce    = combined.slice(0, 16);
+    const cipher   = combined.slice(16);
+    const S        = rc4Init(pin, SALT, nonce);
+    const plain    = rc4Stream(S, cipher);
+    return new TextDecoder().decode(plain);
+  } catch { return null; }
+}
+
+async function decryptAndRender(pin) {
+  const plain = await decryptData(encryptedPayload, pin);
+  if (plain) {
+    cachedData = JSON.parse(plain);
+    sessionStorage.setItem(SESSION_KEY, pin);
+    document.getElementById('lockScreen').style.display = 'none';
+    render(cachedData);
+    return true;
+  }
+  return false;
+}
+
+function pinInput(n) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += n;
+  updateDots();
+  if (pinBuffer.length === 4) setTimeout(verifyPin, 150);
+}
+function pinDel() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updateDots();
+  document.getElementById('pinError').textContent = '';
+}
+function pinClear() {
+  pinBuffer = '';
+  updateDots();
+  document.getElementById('pinError').textContent = '';
+}
+function updateDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('d' + i).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+async function verifyPin() {
+  if (!encryptedPayload) {
+    document.getElementById('pinError').textContent = '資料載入中，請稍候再試';
+    pinBuffer = ''; updateDots(); return;
+  }
+  const ok = await decryptAndRender(pinBuffer);
+  if (!ok) {
+    document.getElementById('pinError').textContent = '密碼錯誤，請重試';
+    pinBuffer = ''; updateDots();
+  }
+}
+document.addEventListener('keydown', e => {
+  if (document.getElementById('lockScreen').style.display === 'none') return;
+  if (e.key >= '0' && e.key <= '9') pinInput(e.key);
+  if (e.key === 'Backspace') pinDel();
+  if (e.key === 'Escape') pinClear();
+});
+
 const SALE_TYPE_NAMES = {
   1:'一般商店', 2:'首購包', 3:'再銷包', 4:'WEB金流', 5:'社交包',
   6:'產包', 7:'付費蛋', 8:'小額付費', 9:'定製禮包', 10:'TACO',
@@ -432,7 +588,15 @@ function render(d) {
 
 fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
   .then(r => r.json())
-  .then(d => { cachedData = d; render(d); })
+  .then(async d => {
+    encryptedPayload = d.encryptedData;
+    // 同一 Session 已驗證過 → 自動解密
+    const savedPin = sessionStorage.getItem(SESSION_KEY);
+    if (savedPin) {
+      const ok = await decryptAndRender(savedPin);
+      if (!ok) sessionStorage.removeItem(SESSION_KEY); // PIN 不符則清除
+    }
+  })
   .catch(err => {
     document.getElementById('subtitle').textContent = '資料載入失敗：' + err.message;
   });
