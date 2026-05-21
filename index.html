@@ -112,7 +112,8 @@
     <div class="pin-dot" id="d3"></div>
   </div>
   <div id="pinError"></div>
-  <div id="pinPad">
+  <div id="pinLoading" style="font-size:13px;color:#aaa;">⏳ 資料載入中...</div>
+  <div id="pinPad" style="opacity:0.3;pointer-events:none;">
     <button class="pin-btn" onclick="pinInput('1')">1</button>
     <button class="pin-btn" onclick="pinInput('2')">2</button>
     <button class="pin-btn" onclick="pinInput('3')">3</button>
@@ -590,11 +591,15 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
   .then(r => r.json())
   .then(async d => {
     encryptedPayload = d.encryptedData;
+    // 資料載入完成 → 解鎖鍵盤
+    document.getElementById('pinLoading').style.display = 'none';
+    document.getElementById('pinPad').style.opacity = '1';
+    document.getElementById('pinPad').style.pointerEvents = 'auto';
     // 同一 Session 已驗證過 → 自動解密
     const savedPin = sessionStorage.getItem(SESSION_KEY);
     if (savedPin) {
       const ok = await decryptAndRender(savedPin);
-      if (!ok) sessionStorage.removeItem(SESSION_KEY); // PIN 不符則清除
+      if (!ok) sessionStorage.removeItem(SESSION_KEY);
     }
   })
   .catch(err => {
