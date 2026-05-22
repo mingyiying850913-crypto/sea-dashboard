@@ -141,7 +141,7 @@
   <div class="card"><div class="card-icon">🧑‍🤝‍🧑</div><div class="card-label">DAU</div><div class="card-value" id="dau">-</div><div class="card-diff" id="dauDiff"></div></div>
   <div class="card"><div class="card-icon">🆕</div><div class="card-label">新增人數</div><div class="card-value" id="newPlayers">-</div><div class="card-diff" id="newPlayersDiff"></div></div>
   <div class="card"><div class="card-icon">💵</div><div class="card-label">付費人數</div><div class="card-value" id="payingUsers">-</div><div class="card-diff" id="payingUsersDiff"></div></div>
-  <div class="card"><div class="card-icon">💳</div><div class="card-label">交易筆數</div><div class="card-value" id="transactions">-</div><div class="card-diff" id="transactionsDiff"></div></div>
+  <div class="card"><div class="card-icon">💳</div><div class="card-label">儲值次數</div><div class="card-value" id="transactions">-</div><div class="card-diff" id="transactionsDiff"></div></div>
   <div class="card"><div class="card-icon">💰</div><div class="card-label">總營收</div><div class="card-value" id="revenue">-</div><div class="card-diff" id="revenueDiff"></div></div>
   <div class="card"><div class="card-icon">📈</div><div class="card-label">ARPPU</div><div class="card-value" id="arppu">-</div><div class="card-diff" id="arppuDiff"></div></div>
 </div>
@@ -150,7 +150,7 @@
   <div class="section">
     <div class="section-title">👑 VIP 付費分析</div>
     <table>
-      <thead><tr><th>VIP</th><th class="num">付費人數</th><th class="num">交易筆數</th><th class="num">總儲值</th></tr></thead>
+      <thead><tr><th>VIP</th><th class="num">付費人數</th><th class="num">儲值次數</th><th class="num">總儲值</th></tr></thead>
       <tbody id="vipTable"></tbody>
     </table>
   </div>
@@ -168,7 +168,7 @@
   <div class="section">
     <div class="section-title">🏆 一般玩家儲值前五名</div>
     <table>
-      <thead><tr><th>排名</th><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">交易筆數</th></tr></thead>
+      <thead><tr><th>排名</th><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">儲值次數</th></tr></thead>
       <tbody id="topRegularTable"></tbody>
     </table>
   </div>
@@ -176,7 +176,7 @@
   <div class="section">
     <div class="section-title">🤝 社交玩家今日儲值</div>
     <table>
-      <thead><tr><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">交易筆數</th></tr></thead>
+      <thead><tr><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">儲值次數</th></tr></thead>
       <tbody id="todaySocialTable"></tbody>
     </table>
   </div>
@@ -474,6 +474,9 @@ function render(d) {
   document.getElementById('revenueDiff').innerHTML     = diffTag(rev,          n(pd.Revenue));
   document.getElementById('arppuDiff').innerHTML       = diffTag(arppu,        n(pd.ARPPU));
 
+  // VIP 等級名稱對照
+  const VIP_NAMES = { 9: '星耀', 8: '榮耀', 7: '皇家', 5: '藍鑽', 3: '金卡', 2: '銀卡', 1: '銅卡', 0: '試玩' };
+
   // VIP 表格
   const vipPrevMap = {};
   (d.vipPrev || []).forEach(v => { vipPrevMap[Number(v.VipLV)] = v; });
@@ -481,8 +484,9 @@ function render(d) {
   document.getElementById('vipTable').innerHTML = vipOrder.map(lv => {
     const row  = uniqueVip.find(r => Number(r.VipLV) === lv) || {};
     const prev = vipPrevMap[lv] || {};
+    const name = VIP_NAMES[lv] ? `${VIP_NAMES[lv]} <span style="color:#bbb;font-size:12px;">VIP${lv}</span>` : `VIP ${lv}`;
     return `<tr>
-      <td>VIP ${lv}</td>
+      <td>${name}</td>
       <td class="num">${fmt(row.PayingUsers || 0)}${diffInline(row.PayingUsers, prev.PayingUsers)}</td>
       <td class="num">${fmt(row.Transactions || 0)}${diffInline(row.Transactions, prev.Transactions)}</td>
       <td class="num">$${fmtMoney(row.Revenue || 0)}${diffInline(row.Revenue, prev.Revenue, true)}</td>
