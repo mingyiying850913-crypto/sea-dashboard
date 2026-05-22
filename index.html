@@ -174,7 +174,7 @@
   </div>
 
   <div class="section">
-    <div class="section-title">🤝 社交玩家今日儲值</div>
+    <div class="section-title">🤝 社交玩家儲值</div>
     <table>
       <thead><tr><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">儲值次數</th></tr></thead>
       <tbody id="todaySocialTable"></tbody>
@@ -558,7 +558,7 @@ function render(d) {
       </tr>`).join('')
     : '<tr><td colspan="5" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 
-  // 社交玩家今日儲值
+  // 社交玩家儲值
   const todaySocial = (d.todaySocialPlayers || []).sort((a, b) => b.total_recharge - a.total_recharge);
   document.getElementById('todaySocialTable').innerHTML = todaySocial.length
     ? todaySocial.map(r => `<tr>
