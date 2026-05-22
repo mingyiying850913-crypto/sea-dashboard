@@ -591,10 +591,19 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
   .then(r => r.json())
   .then(async d => {
     encryptedPayload = d.encryptedData;
-    // 資料載入完成 → 解鎖鍵盤
     document.getElementById('pinLoading').style.display = 'none';
+
+    // 資料格式檢查：若 data.json 缺少 encryptedData，顯示維護中
+    if (!encryptedPayload) {
+      document.getElementById('pinError').textContent = '⚠️ 資料尚未更新，請稍後再試或通知管理員重新執行 n8n 工作流程';
+      // PIN 鍵盤保持鎖定
+      return;
+    }
+
+    // 解鎖鍵盤
     document.getElementById('pinPad').style.opacity = '1';
     document.getElementById('pinPad').style.pointerEvents = 'auto';
+
     // 同一 Session 已驗證過 → 自動解密
     const savedPin = sessionStorage.getItem(SESSION_KEY);
     if (savedPin) {
@@ -603,7 +612,8 @@ fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/m
     }
   })
   .catch(err => {
-    document.getElementById('subtitle').textContent = '資料載入失敗：' + err.message;
+    document.getElementById('pinLoading').style.display = 'none';
+    document.getElementById('pinError').textContent = '❌ 資料載入失敗：' + err.message;
   });
 </script>
 </body>
