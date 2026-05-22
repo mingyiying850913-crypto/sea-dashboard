@@ -1,1 +1,427 @@
-{"encryptedData":"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"}
+{
+  "date": "2026-05-21",
+  "dau": {
+    "today": "20151",
+    "prev": "20322"
+  },
+  "newPlayers": {
+    "today": "858",
+    "prev": "876"
+  },
+  "daily": {
+    "PayingUsers": "1702",
+    "Transactions": "4336",
+    "Revenue": "122168.3555",
+    "ARPPU": "72"
+  },
+  "prevDay": {
+    "PayingUsers": "1781",
+    "Transactions": "4642",
+    "Revenue": "216389.6445",
+    "ARPPU": "121"
+  },
+  "vip": [
+    {
+      "ProDate": "2026-05-21",
+      "VipLV": "9",
+      "PayingUsers": "2",
+      "Transactions": "16",
+      "Revenue": "2448.4",
+      "ARPPU": "1224.2"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "VipLV": "7",
+      "PayingUsers": "326",
+      "Transactions": "1356",
+      "Revenue": "71993.95",
+      "ARPPU": "220.8"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "VipLV": "5",
+      "PayingUsers": "185",
+      "Transactions": "707",
+      "Revenue": "16231.76",
+      "ARPPU": "87.7"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "VipLV": "3",
+      "PayingUsers": "710",
+      "Transactions": "1522",
+      "Revenue": "23338.38",
+      "ARPPU": "32.9"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "VipLV": "2",
+      "PayingUsers": "410",
+      "Transactions": "611",
+      "Revenue": "6488.69",
+      "ARPPU": "15.8"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "VipLV": "1",
+      "PayingUsers": "59",
+      "Transactions": "59",
+      "Revenue": "436.49",
+      "ARPPU": "7.4"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "VipLV": "0",
+      "PayingUsers": "52",
+      "Transactions": "65",
+      "Revenue": "1230.69",
+      "ARPPU": "23.7"
+    }
+  ],
+  "vipPrev": [
+    {
+      "ProDate": "2026-05-20",
+      "VipLV": "9",
+      "PayingUsers": "2",
+      "Transactions": "20",
+      "Revenue": "2864",
+      "ARPPU": "1432"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "VipLV": "8",
+      "PayingUsers": "3",
+      "Transactions": "17",
+      "Revenue": "6558.3",
+      "ARPPU": "2186.1"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "VipLV": "7",
+      "PayingUsers": "343",
+      "Transactions": "1567",
+      "Revenue": "156393.04",
+      "ARPPU": "456"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "VipLV": "5",
+      "PayingUsers": "175",
+      "Transactions": "646",
+      "Revenue": "12815.38",
+      "ARPPU": "73.2"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "VipLV": "3",
+      "PayingUsers": "756",
+      "Transactions": "1620",
+      "Revenue": "27093.34",
+      "ARPPU": "35.8"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "VipLV": "2",
+      "PayingUsers": "452",
+      "Transactions": "659",
+      "Revenue": "7783.29",
+      "ARPPU": "17.2"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "VipLV": "1",
+      "PayingUsers": "70",
+      "Transactions": "70",
+      "Revenue": "1829.6",
+      "ARPPU": "26.1"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "VipLV": "0",
+      "PayingUsers": "37",
+      "Transactions": "43",
+      "Revenue": "1052.7",
+      "ARPPU": "28.5"
+    }
+  ],
+  "saleType": [
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "1",
+      "paying_users": "674",
+      "total_amount": "48698.023",
+      "revenue_percentage": "39.86"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "6",
+      "paying_users": "296",
+      "total_amount": "31888.861",
+      "revenue_percentage": "26.1"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "4",
+      "paying_users": "228",
+      "total_amount": "17482.409",
+      "revenue_percentage": "14.31"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "10",
+      "paying_users": "194",
+      "total_amount": "11532.824",
+      "revenue_percentage": "9.44"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "12",
+      "paying_users": "1",
+      "total_amount": "6000",
+      "revenue_percentage": "4.91"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "3",
+      "paying_users": "154",
+      "total_amount": "3138.557",
+      "revenue_percentage": "2.57"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "7",
+      "paying_users": "727",
+      "total_amount": "2846.7815",
+      "revenue_percentage": "2.33"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "2",
+      "paying_users": "83",
+      "total_amount": "341.9",
+      "revenue_percentage": "0.28"
+    },
+    {
+      "ProDate": "2026-05-21",
+      "SaleType": "5",
+      "paying_users": "5",
+      "total_amount": "239",
+      "revenue_percentage": "0.2"
+    }
+  ],
+  "saleTypePrev": [
+    {
+      "ProDate": "2026-05-20",
+      "SaleType": "5",
+      "paying_users": "6",
+      "total_amount": "76483",
+      "revenue_percentage": "35.35"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "SaleType": "1",
+      "paying_users": "680",
+      "total_amount": "65376.011",
+      "revenue_percentage": "30.21"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "SaleType": "6",
+      "paying_users": "316",
+      "total_amount": "26371.617",
+      "revenue_percentage": "12.19"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "SaleType": "10",
+      "paying_users": "208",
+      "total_amount": "22162.07",
+      "revenue_percentage": "10.24"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "SaleType": "4",
+      "paying_users": "253",
+      "total_amount": "19508.383",
+      "revenue_percentage": "9.02"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "SaleType": "3",
+      "paying_users": "168",
+      "total_amount": "3249.312",
+      "revenue_percentage": "1.5"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "SaleType": "7",
+      "paying_users": "750",
+      "total_amount": "2938.9375",
+      "revenue_percentage": "1.36"
+    },
+    {
+      "ProDate": "2026-05-20",
+      "SaleType": "2",
+      "paying_users": "73",
+      "total_amount": "300.314",
+      "revenue_percentage": "0.14"
+    }
+  ],
+  "comparison": {
+    "curr_month": "5月",
+    "prev_month": "4月",
+    "may_avg_paying": "1724.0",
+    "apr_avg_paying": "1685.0",
+    "may_avg_arppu": "79",
+    "apr_avg_arppu": "81",
+    "curr_revenue": "2861825.2629",
+    "prev_revenue": "2852467.0941",
+    "revenue_growth_pct": "0.33"
+  },
+  "saleTypeComparison": [
+    {
+      "SaleType": "1",
+      "name": "一般商店",
+      "apr_paying_users": "4111",
+      "apr_total_amount": "1067251.2266",
+      "apr_revenue_percentage": "37.42",
+      "may_paying_users": "4141",
+      "may_total_amount": "1038400.8849",
+      "may_revenue_percentage": "36.28"
+    },
+    {
+      "SaleType": "6",
+      "name": "產包",
+      "apr_paying_users": "1705",
+      "apr_total_amount": "609450.579",
+      "apr_revenue_percentage": "21.37",
+      "may_paying_users": "1756",
+      "may_total_amount": "600889.097",
+      "may_revenue_percentage": "21"
+    },
+    {
+      "SaleType": "4",
+      "name": "WEB金流",
+      "apr_paying_users": "1079",
+      "apr_total_amount": "533332.578",
+      "apr_revenue_percentage": "18.7",
+      "may_paying_users": "1132",
+      "may_total_amount": "493754.635",
+      "may_revenue_percentage": "17.25"
+    },
+    {
+      "SaleType": "10",
+      "name": "TACO",
+      "apr_paying_users": "1604",
+      "apr_total_amount": "351886.009",
+      "apr_revenue_percentage": "12.34",
+      "may_paying_users": "1647",
+      "may_total_amount": "334011.324",
+      "may_revenue_percentage": "11.67"
+    },
+    {
+      "SaleType": "5",
+      "name": "社交包",
+      "apr_paying_users": "23",
+      "apr_total_amount": "120062",
+      "apr_revenue_percentage": "4.21",
+      "may_paying_users": "24",
+      "may_total_amount": "192353.8",
+      "may_revenue_percentage": "6.72"
+    },
+    {
+      "SaleType": "3",
+      "name": "再銷包",
+      "apr_paying_users": "1408",
+      "apr_total_amount": "70047.432",
+      "apr_revenue_percentage": "2.46",
+      "may_paying_users": "1435",
+      "may_total_amount": "75013.304",
+      "may_revenue_percentage": "2.62"
+    },
+    {
+      "SaleType": "12",
+      "name": "Web產包",
+      "apr_paying_users": "4",
+      "apr_total_amount": "36000",
+      "apr_revenue_percentage": "1.26",
+      "may_paying_users": "4",
+      "may_total_amount": "61000",
+      "may_revenue_percentage": "2.13"
+    },
+    {
+      "SaleType": "7",
+      "name": "付費蛋",
+      "apr_paying_users": "3827",
+      "apr_total_amount": "58937.2385",
+      "apr_revenue_percentage": "2.07",
+      "may_paying_users": "3915",
+      "may_total_amount": "60511.283",
+      "may_revenue_percentage": "2.11"
+    },
+    {
+      "SaleType": "2",
+      "name": "首購包",
+      "apr_paying_users": "1309",
+      "apr_total_amount": "5500.031",
+      "apr_revenue_percentage": "0.19",
+      "may_paying_users": "1403",
+      "may_total_amount": "5890.935",
+      "may_revenue_percentage": "0.21"
+    }
+  ],
+  "socialPlayers": {
+    "curr": {
+      "player_count": 11,
+      "total_recharge": 256169.69999999998,
+      "recharge_count": 193,
+      "arppu": 23288
+    },
+    "prev": {
+      "player_count": 11,
+      "total_recharge": 163669.69999999998,
+      "recharge_count": 123,
+      "arppu": 14879
+    }
+  },
+  "topRegularPlayers": [
+    {
+      "UserID": "11871989",
+      "NickName": "Super8899",
+      "total_recharge": 8633.391,
+      "transaction_count": 19
+    },
+    {
+      "UserID": "12315355",
+      "NickName": "LUK315355",
+      "total_recharge": 4854.5,
+      "transaction_count": 9
+    },
+    {
+      "UserID": "11144729",
+      "NickName": "OTOMO",
+      "total_recharge": 3504,
+      "transaction_count": 40
+    },
+    {
+      "UserID": "12810082",
+      "NickName": "sky880131",
+      "total_recharge": 1683.112,
+      "transaction_count": 8
+    },
+    {
+      "UserID": "13435638",
+      "NickName": "Howardho",
+      "total_recharge": 1269.1,
+      "transaction_count": 9
+    }
+  ],
+  "todaySocialPlayers": [
+    {
+      "UserID": "11721575",
+      "NickName": "CJshop",
+      "total_recharge": 6000,
+      "transaction_count": 6
+    }
+  ]
+}
