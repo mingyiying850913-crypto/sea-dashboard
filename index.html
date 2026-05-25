@@ -96,6 +96,24 @@
     .stc-table td.apr-cell { background: #fef9ec; text-align: right; }
     .stc-table td.may-cell { background: #ede9fe; text-align: right; font-weight: 600; }
     .stc-table td.change-cell { text-align: right; font-weight: 700; }
+    /* ── 每日摘要 ── */
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .summary-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 14px; border-radius: 10px;
+      background: #fafaf7; border-left: 4px solid #e2d9b3;
+      font-size: 14px; line-height: 1.6;
+    }
+    .summary-item.up   { border-left-color: #f43f5e; background: #fff5f5; }
+    .summary-item.down { border-left-color: #16a34a; background: #f0fdf4; }
+    .summary-item.info { border-left-color: #7c3aed; background: #f5f3ff; }
+    .summary-item.warn { border-left-color: #f59e0b; background: #fffbeb; }
+    .summary-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .summary-text { color: #444; }
+    .summary-text strong { color: #222; }
+    .summary-text .tag-up   { color: #dc2626; font-weight: 700; }
+    .summary-text .tag-down { color: #16a34a; font-weight: 700; }
+    .summary-text .tag-neu  { color: #7c3aed; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -180,6 +198,11 @@
       <tbody id="todaySocialTable"></tbody>
     </table>
   </div>
+</div>
+
+<div class="section" id="summarySection">
+  <div class="section-title">📋 每日摘要分析</div>
+  <div id="summaryContent" style="padding: 4px 0;"></div>
 </div>
 
 <div class="section">
@@ -569,6 +592,9 @@ function render(d) {
       </tr>`).join('')
     : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 
+  // 每日摘要
+  renderSummary(d, paying, trans, rev, uniqueVip, saleRows);
+
   // 月份同期儲值品項比較
   document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
   document.getElementById('stcAprLabel2').textContent = pm + '流水';
@@ -589,6 +615,111 @@ function render(d) {
         </tr>`;
       }).join('')
     : '<tr><td colspan="7" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
+}
+
+function renderSummary(d, paying, trans, rev, uniqueVip, saleRows) {
+  const VIP_NAMES = { 9:'星耀', 8:'榮耀', 7:'皇家', 5:'藍鑽', 3:'金卡', 2:'銀卡', 1:'銅卡', 0:'試玩' };
+  const da  = d.dau        || {};
+  const np  = d.newPlayers || {};
+  const pd  = d.prevDay    || {};
+  const items = [];
+
+  // ① DAU 分析
+  const dauToday = n(da.today), dauPrev = n(da.prev);
+  const dauDiff  = dauToday - dauPrev;
+  const dauPct   = dauPrev ? (dauDiff / dauPrev * 100).toFixed(1) : null;
+  if (dauToday > 0) {
+    const cls = dauDiff > 0 ? 'up' : dauDiff < 0 ? 'down' : '';
+    const tag = dauDiff > 0 ? 'tag-up' : dauDiff < 0 ? 'tag-down' : 'tag-neu';
+    const arrow = dauDiff > 0 ? '▲' : dauDiff < 0 ? '▼' : '→';
+    const diffStr = dauPrev ? `，較昨日 <span class="${tag}">${arrow}${Math.abs(Math.round(dauDiff)).toLocaleString('en-US')}（${dauPct}%）</span>` : '';
+    items.push({ cls, icon: '🧑‍🤝‍🧑', html: `<strong>DAU</strong> ${dauToday.toLocaleString('en-US')} 人${diffStr}` });
+  }
+
+  // ② 新增人數
+  const npToday = n(np.today), npPrev = n(np.prev);
+  const npDiff  = npToday - npPrev;
+  if (npToday > 0) {
+    const cls = npDiff > 0 ? 'up' : npDiff < 0 ? 'down' : '';
+    const tag = npDiff > 0 ? 'tag-up' : npDiff < 0 ? 'tag-down' : 'tag-neu';
+    const arrow = npDiff > 0 ? '▲' : npDiff < 0 ? '▼' : '→';
+    const diffStr = npPrev ? `，較昨日 <span class="${tag}">${arrow}${Math.abs(Math.round(npDiff)).toLocaleString('en-US')}</span>` : '';
+    items.push({ cls, icon: '🆕', html: `<strong>新增人數</strong> ${npToday.toLocaleString('en-US')} 人${diffStr}` });
+  }
+
+  // ③ 付費人數 & 付費率
+  const pdPaying = n(pd.PayingUsers);
+  const payDiff  = paying - pdPaying;
+  const payPct   = pdPaying ? (payDiff / pdPaying * 100).toFixed(1) : null;
+  const payRate  = dauToday > 0 ? (paying / dauToday * 100).toFixed(2) : null;
+  if (paying > 0) {
+    const cls = payDiff > 0 ? 'up' : payDiff < 0 ? 'down' : '';
+    const tag = payDiff > 0 ? 'tag-up' : payDiff < 0 ? 'tag-down' : 'tag-neu';
+    const arrow = payDiff > 0 ? '▲' : payDiff < 0 ? '▼' : '→';
+    const diffStr = pdPaying ? `，較昨日 <span class="${tag}">${arrow}${Math.abs(Math.round(payDiff)).toLocaleString('en-US')}（${payPct}%）</span>` : '';
+    const rateStr = payRate ? `，付費率 <span class="tag-neu">${payRate}%</span>` : '';
+    items.push({ cls, icon: '💵', html: `<strong>付費人數</strong> ${paying.toLocaleString('en-US')} 人${diffStr}${rateStr}` });
+  }
+
+  // ④ 儲值次數
+  const pdTrans = n(pd.Transactions);
+  const trDiff  = trans - pdTrans;
+  if (trans > 0) {
+    const cls = trDiff > 0 ? 'up' : trDiff < 0 ? 'down' : '';
+    const tag = trDiff > 0 ? 'tag-up' : trDiff < 0 ? 'tag-down' : 'tag-neu';
+    const arrow = trDiff > 0 ? '▲' : trDiff < 0 ? '▼' : '→';
+    const avgStr = paying > 0 ? `，人均 <span class="tag-neu">${(trans/paying).toFixed(1)} 次</span>` : '';
+    const diffStr = pdTrans ? `，較昨日 <span class="${tag}">${arrow}${Math.abs(Math.round(trDiff)).toLocaleString('en-US')}</span>` : '';
+    items.push({ cls, icon: '💳', html: `<strong>儲值次數</strong> ${trans.toLocaleString('en-US')} 次${diffStr}${avgStr}` });
+  }
+
+  // ⑤ 主力 VIP（貢獻最高）
+  if (uniqueVip.length > 0 && rev > 0) {
+    const topVip = [...uniqueVip].sort((a, b) => n(b.Revenue) - n(a.Revenue))[0];
+    const lvNum  = Number(topVip.VipLV);
+    const name   = VIP_NAMES[lvNum] ? `${VIP_NAMES[lvNum]}（VIP${lvNum}）` : `VIP${lvNum}`;
+    const share  = (n(topVip.Revenue) / rev * 100).toFixed(1);
+    items.push({ cls: 'info', icon: '👑', html: `今日 <strong>主力 VIP：${name}</strong>，流水 $${fmtMoney(topVip.Revenue)}，佔全體 <span class="tag-neu">${share}%</span>` });
+  }
+
+  // ⑥ 主力品項
+  if (saleRows.length > 0 && rev > 0) {
+    const topSale = [...saleRows].sort((a, b) => n(b.total_amount) - n(a.total_amount))[0];
+    const saleName = SALE_TYPE_NAMES[n(topSale.SaleType)] || `品項${topSale.SaleType}`;
+    const saleShare = n(topSale.revenue_percentage).toFixed(1);
+    items.push({ cls: 'info', icon: '🏪', html: `今日 <strong>最熱品項：${saleName}</strong>，流水 $${fmtMoney(topSale.total_amount)}，佔比 <span class="tag-neu">${saleShare}%</span>` });
+  }
+
+  // ⑦ 總收入變化
+  const pdRev   = n(pd.Revenue);
+  const revDiff = rev - pdRev;
+  const revPct  = pdRev ? (revDiff / pdRev * 100).toFixed(1) : null;
+  if (rev > 0 && pdRev > 0) {
+    const cls = revDiff > 0 ? 'up' : revDiff < 0 ? 'down' : '';
+    const tag = revDiff > 0 ? 'tag-up' : revDiff < 0 ? 'tag-down' : 'tag-neu';
+    const arrow = revDiff > 0 ? '▲' : revDiff < 0 ? '▼' : '→';
+    items.push({ cls, icon: '💰', html: `<strong>日收入</strong> $${fmtMoney(rev)}，較昨日 <span class="${tag}">${arrow}${fmtMoney(Math.abs(revDiff))}（${revPct}%）</span>` });
+  }
+
+  // ⑧ 社交玩家今日儲值
+  const todaySocial = d.todaySocialPlayers || [];
+  if (todaySocial.length > 0) {
+    const socialRev = todaySocial.reduce((s, r) => s + n(r.total_recharge), 0);
+    const socialNames = todaySocial.slice(0, 2).map(r => r.NickName || r.UserID).join('、');
+    const moreStr = todaySocial.length > 2 ? ` 等 ${todaySocial.length} 人` : '';
+    items.push({ cls: 'warn', icon: '🤝', html: `<strong>社交玩家儲值</strong> $${fmtMoney(socialRev)}（${socialNames}${moreStr}）` });
+  } else {
+    items.push({ cls: '', icon: '🤝', html: `今日 <strong>無社交玩家儲值</strong>` });
+  }
+
+  // 輸出
+  document.getElementById('summaryContent').innerHTML =
+    `<div class="summary-grid">${items.map(it =>
+      `<div class="summary-item ${it.cls}">
+        <span class="summary-icon">${it.icon}</span>
+        <span class="summary-text">${it.html}</span>
+      </div>`
+    ).join('')}</div>`;
 }
 
 fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
