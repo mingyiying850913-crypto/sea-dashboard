@@ -96,11 +96,17 @@
     .stc-table td.apr-cell { background: #fef9ec; text-align: right; }
     .stc-table td.may-cell { background: #ede9fe; text-align: right; font-weight: 600; }
     .stc-table td.change-cell { text-align: right; font-weight: 700; }
-    /* ── 每日營運摘要（合併） ── */
-    .report-divider {
-      border: none; border-top: 1.5px dashed #e8e0cc;
-      margin: 20px 0;
-    }
+    /* ── 每日營運摘要（簡潔文字版） ── */
+    .dr-title { font-size: 15px; font-weight: 700; color: #2c2c2c; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f0e8d0; }
+    .dr-date  { font-weight: 400; color: #999; font-size: 14px; }
+    .dr-section-label { font-size: 13px; font-weight: 700; color: #7c3aed; margin: 14px 0 6px; }
+    .dr-para  { font-size: 14px; line-height: 1.75; color: #444; margin: 0; }
+    .dr-list  { margin: 0; padding-left: 18px; }
+    .dr-list li { font-size: 14px; line-height: 1.75; color: #444; margin-bottom: 2px; }
+    .alert-badge { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; vertical-align: middle; margin-right: 4px; }
+    .alert-badge.normal  { background: #dcfce7; color: #15803d; }
+    .alert-badge.warning { background: #fef9c3; color: #92400e; }
+    .alert-badge.danger  { background: #fee2e2; color: #b91c1c; }
     /* ── 營運分析判斷 ── */
     .analysis-overall {
       font-size: 16px; font-weight: 700; padding: 14px 18px;
@@ -242,13 +248,7 @@
   </div>
 </div>
 
-<div class="section" id="dailyReportSection">
-  <div class="section-title">📋 每日營運摘要</div>
-  <div id="reportOverall"></div>
-  <div id="reportSummary" style="margin-top:14px;"></div>
-  <div class="report-divider"></div>
-  <div id="reportAnalysis"></div>
-</div>
+<div class="section" id="dailyReportSection"></div>
 
 <div class="section">
   <div class="section-title">📊 月份同期比較</div>
@@ -662,285 +662,126 @@ function render(d) {
     : '<tr><td colspan="7" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 }
 
-function renderSummary(d, paying, trans, rev, uniqueVip, saleRows) {
+// ── 每日營運摘要（簡潔文字版） ──────────────────────────────────────
+function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
   const VIP_NAMES = { 9:'星耀', 8:'榮耀', 7:'皇家', 5:'藍鑽', 3:'金卡', 2:'銀卡', 1:'銅卡', 0:'試玩' };
-  const da  = d.dau        || {};
-  const np  = d.newPlayers || {};
-  const pd  = d.prevDay    || {};
-  const items = [];
-
-  // ① DAU 分析
-  const dauToday = n(da.today), dauPrev = n(da.prev);
-  const dauDiff  = dauToday - dauPrev;
-  const dauPct   = dauPrev ? (dauDiff / dauPrev * 100).toFixed(1) : null;
-  if (dauToday > 0) {
-    const cls = dauDiff > 0 ? 'up' : dauDiff < 0 ? 'down' : '';
-    const tag = dauDiff > 0 ? 'tag-up' : dauDiff < 0 ? 'tag-down' : 'tag-neu';
-    const arrow = dauDiff > 0 ? '▲' : dauDiff < 0 ? '▼' : '→';
-    const diffStr = dauPrev ? `，較昨日 <span class="${tag}">${arrow}${Math.abs(Math.round(dauDiff)).toLocaleString('en-US')}（${dauPct}%）</span>` : '';
-    items.push({ cls, icon: '🧑‍🤝‍🧑', html: `<strong>DAU</strong> ${dauToday.toLocaleString('en-US')} 人${diffStr}` });
-  }
-
-  // ② 新增人數
-  const npToday = n(np.today), npPrev = n(np.prev);
-  const npDiff  = npToday - npPrev;
-  if (npToday > 0) {
-    const cls = npDiff > 0 ? 'up' : npDiff < 0 ? 'down' : '';
-    const tag = npDiff > 0 ? 'tag-up' : npDiff < 0 ? 'tag-down' : 'tag-neu';
-    const arrow = npDiff > 0 ? '▲' : npDiff < 0 ? '▼' : '→';
-    const diffStr = npPrev ? `，較昨日 <span class="${tag}">${arrow}${Math.abs(Math.round(npDiff)).toLocaleString('en-US')}</span>` : '';
-    items.push({ cls, icon: '🆕', html: `<strong>新增人數</strong> ${npToday.toLocaleString('en-US')} 人${diffStr}` });
-  }
-
-  // ③ 付費人數 & 付費率
-  const pdPaying = n(pd.PayingUsers);
-  const payDiff  = paying - pdPaying;
-  const payPct   = pdPaying ? (payDiff / pdPaying * 100).toFixed(1) : null;
-  const payRate  = dauToday > 0 ? (paying / dauToday * 100).toFixed(2) : null;
-  if (paying > 0) {
-    const cls = payDiff > 0 ? 'up' : payDiff < 0 ? 'down' : '';
-    const tag = payDiff > 0 ? 'tag-up' : payDiff < 0 ? 'tag-down' : 'tag-neu';
-    const arrow = payDiff > 0 ? '▲' : payDiff < 0 ? '▼' : '→';
-    const diffStr = pdPaying ? `，較昨日 <span class="${tag}">${arrow}${Math.abs(Math.round(payDiff)).toLocaleString('en-US')}（${payPct}%）</span>` : '';
-    const rateStr = payRate ? `，付費率 <span class="tag-neu">${payRate}%</span>` : '';
-    items.push({ cls, icon: '💵', html: `<strong>付費人數</strong> ${paying.toLocaleString('en-US')} 人${diffStr}${rateStr}` });
-  }
-
-  // ④ 儲值次數
-  const pdTrans = n(pd.Transactions);
-  const trDiff  = trans - pdTrans;
-  if (trans > 0) {
-    const cls = trDiff > 0 ? 'up' : trDiff < 0 ? 'down' : '';
-    const tag = trDiff > 0 ? 'tag-up' : trDiff < 0 ? 'tag-down' : 'tag-neu';
-    const arrow = trDiff > 0 ? '▲' : trDiff < 0 ? '▼' : '→';
-    const avgStr = paying > 0 ? `，人均 <span class="tag-neu">${(trans/paying).toFixed(1)} 次</span>` : '';
-    const diffStr = pdTrans ? `，較昨日 <span class="${tag}">${arrow}${Math.abs(Math.round(trDiff)).toLocaleString('en-US')}</span>` : '';
-    items.push({ cls, icon: '💳', html: `<strong>儲值次數</strong> ${trans.toLocaleString('en-US')} 次${diffStr}${avgStr}` });
-  }
-
-  // ⑤ 主力 VIP（貢獻最高）
-  if (uniqueVip.length > 0 && rev > 0) {
-    const topVip = [...uniqueVip].sort((a, b) => n(b.Revenue) - n(a.Revenue))[0];
-    const lvNum  = Number(topVip.VipLV);
-    const name   = VIP_NAMES[lvNum] ? `${VIP_NAMES[lvNum]}（VIP${lvNum}）` : `VIP${lvNum}`;
-    const share  = (n(topVip.Revenue) / rev * 100).toFixed(1);
-    items.push({ cls: 'info', icon: '👑', html: `今日 <strong>主力 VIP：${name}</strong>，流水 $${fmtMoney(topVip.Revenue)}，佔全體 <span class="tag-neu">${share}%</span>` });
-  }
-
-  // ⑥ 主力品項
-  if (saleRows.length > 0 && rev > 0) {
-    const topSale = [...saleRows].sort((a, b) => n(b.total_amount) - n(a.total_amount))[0];
-    const saleName = SALE_TYPE_NAMES[n(topSale.SaleType)] || `品項${topSale.SaleType}`;
-    const saleShare = n(topSale.revenue_percentage).toFixed(1);
-    items.push({ cls: 'info', icon: '🏪', html: `今日 <strong>最熱品項：${saleName}</strong>，流水 $${fmtMoney(topSale.total_amount)}，佔比 <span class="tag-neu">${saleShare}%</span>` });
-  }
-
-  // ⑦ 總收入變化
-  const pdRev   = n(pd.Revenue);
-  const revDiff = rev - pdRev;
-  const revPct  = pdRev ? (revDiff / pdRev * 100).toFixed(1) : null;
-  if (rev > 0 && pdRev > 0) {
-    const cls = revDiff > 0 ? 'up' : revDiff < 0 ? 'down' : '';
-    const tag = revDiff > 0 ? 'tag-up' : revDiff < 0 ? 'tag-down' : 'tag-neu';
-    const arrow = revDiff > 0 ? '▲' : revDiff < 0 ? '▼' : '→';
-    items.push({ cls, icon: '💰', html: `<strong>日收入</strong> $${fmtMoney(rev)}，較昨日 <span class="${tag}">${arrow}${fmtMoney(Math.abs(revDiff))}（${revPct}%）</span>` });
-  }
-
-  // ⑧ 社交玩家今日儲值
+  const da  = d.dau           || {};
+  const np  = d.newPlayers    || {};
+  const pd  = d.prevDay       || {};
+  const topRegular  = d.topRegularPlayers  || [];
   const todaySocial = d.todaySocialPlayers || [];
-  if (todaySocial.length > 0) {
-    const socialRev = todaySocial.reduce((s, r) => s + n(r.total_recharge), 0);
-    const socialNames = todaySocial.slice(0, 2).map(r => r.NickName || r.UserID).join('、');
-    const moreStr = todaySocial.length > 2 ? ` 等 ${todaySocial.length} 人` : '';
-    items.push({ cls: 'warn', icon: '🤝', html: `<strong>社交玩家儲值</strong> $${fmtMoney(socialRev)}（${socialNames}${moreStr}）` });
-  } else {
-    items.push({ cls: '', icon: '🤝', html: `今日 <strong>無社交玩家儲值</strong>` });
-  }
-
-  // 輸出到合併區塊
-  document.getElementById('reportSummary').innerHTML =
-    `<div class="summary-grid">${items.map(it =>
-      `<div class="summary-item ${it.cls}">
-        <span class="summary-icon">${it.icon}</span>
-        <span class="summary-text">${it.html}</span>
-      </div>`
-    ).join('')}</div>`;
-}
-
-// ── 營運分析判斷（判斷框架） ──────────────────────────────────────────
-function renderAnalysis(d, paying, trans, rev, uniqueVip, saleRows) {
-  const VIP_NAMES = { 9:'星耀', 8:'榮耀', 7:'皇家', 5:'藍鑽', 3:'金卡', 2:'銀卡', 1:'銅卡', 0:'試玩' };
-  const da  = d.dau        || {};
-  const np  = d.newPlayers || {};
-  const pd  = d.prevDay    || {};
   const dauToday = n(da.today), dauPrev = n(da.prev);
+  const npToday  = n(np.today);
   const pdPaying = n(pd.PayingUsers), pdRev = n(pd.Revenue);
-  const todaySocial = d.todaySocialPlayers || [];
 
-  const signals   = [];
-  const concerns  = [];
-  const questions = [];
-  const recs      = [];
-  let score = 0;
-
-  // ① 量質背離：付費人數↓但營收↑ = 結構風險
-  if (pdPaying > 0 && pdRev > 0) {
-    const payingDown = paying < pdPaying;
-    const payingUp   = paying > pdPaying;
-    const revUp      = rev > pdRev;
-    const revDown    = rev < pdRev;
-    if (payingDown && revUp) {
-      const dropP = Math.round(pdPaying - paying);
-      const gainR = fmtMoney(Math.abs(rev - pdRev));
-      concerns.push(`<strong>量質背離</strong>：付費人數少 ${dropP} 人，但營收反增 $${gainR}，貢獻高度集中於少數高消，結構需警戒`);
-      questions.push('哪個 VIP 等級今日 ARPPU 異常偏高？是否有單筆大額儲值拉抬整體？');
-      score -= 1;
-    } else if (payingUp && revUp) {
-      signals.push(`<strong>量質齊升</strong>：付費人數 +${Math.round(paying - pdPaying)} 人，營收同步提升，健康成長`);
-      score += 1;
-    } else if (payingDown && revDown) {
-      const dropP = Math.round(pdPaying - paying);
-      concerns.push(`<strong>量質雙降</strong>：付費人數少 ${dropP} 人，營收同步下滑，需確認是否為假日效應或活動空窗`);
-      questions.push('今日是否有活動結束、福利發放空窗，或特定渠道異常流失？');
-      score -= 1;
-    } else if (payingUp && revDown) {
-      concerns.push(`<strong>逆向稀釋</strong>：付費人數增加但 ARPPU 下滑，低單價品項佔比可能上升`);
-      score -= 0.5;
-    }
+  // 彩色差值輔助
+  function colDiff(curr, prev) {
+    if (!prev) return '';
+    const d = curr - prev, pct = (d / prev * 100).toFixed(1);
+    const col = d >= 0 ? '#dc2626' : '#16a34a';
+    return ` <span style="color:${col};font-weight:600;">${d >= 0 ? '▲' : '▼'}${Math.abs(pct)}%</span>`;
+  }
+  function colDiffN(curr, prev) {
+    if (!prev) return '';
+    const d = curr - prev;
+    const col = d >= 0 ? '#dc2626' : '#16a34a';
+    return ` <span style="color:${col};font-weight:600;">${d >= 0 ? '▲' : '▼'}${Math.abs(Math.round(d)).toLocaleString('en-US')}</span>`;
   }
 
-  // ② VIP 集中度：單一層級 >50% = 高風險
+  // ── 一、整體表現 ──
+  let perfWord = '表現平穩';
+  if (pdRev > 0 && pdPaying > 0) {
+    if (rev > pdRev * 1.05 && paying >= pdPaying) perfWord = '表現良好';
+    else if (rev < pdRev * 0.95 && paying < pdPaying) perfWord = '表現偏弱';
+    else if (rev > pdRev && paying < pdPaying) perfWord = '量少質高，結構需留意';
+  }
+  let retainWord = '活躍留存相對穩定';
+  if (dauPrev && (dauToday - dauPrev) / dauPrev < -0.05) retainWord = '活躍人數明顯下滑，留存需追蹤';
+  else if (dauPrev && (dauToday - dauPrev) / dauPrev > 0.05) retainWord = '活躍人數上升，留存表現良好';
+
+  const sec1 = `今日流水 <strong>$${fmtMoney(rev)}</strong>，較前日${colDiff(rev, pdRev)}，${perfWord}。DAU ${fmt(dauToday)}（${colDiff(dauToday, dauPrev).trim() || '—'}）、付費人數 ${fmt(paying)}（${colDiff(paying, pdPaying).trim() || '—'}），${retainWord}。`;
+
+  // ── 二、重點觀察 ──
+  const obs = [];
   if (uniqueVip.length > 0 && rev > 0) {
-    const sorted  = [...uniqueVip].sort((a, b) => n(b.Revenue) - n(a.Revenue));
-    const topVip  = sorted[0];
-    const lvNum   = Number(topVip.VipLV);
-    const name    = VIP_NAMES[lvNum] ? `${VIP_NAMES[lvNum]}（VIP${lvNum}）` : `VIP${lvNum}`;
-    const share   = n(topVip.Revenue) / rev * 100;
-    if (share > 50) {
-      concerns.push(`<strong>VIP 集中風險</strong>：${name} 貢獻佔比 ${share.toFixed(1)}%，超過 50% 警戒線，高度依賴單一層級`);
-      questions.push(`${name} 今日付費玩家數是否集中在少數人？是否有鯨魚單次拉高？`);
-      recs.push(`推動 ${VIP_NAMES[lvNum > 5 ? 5 : 3] || '中階 VIP'} 等級的活動，分散流水來源`);
-      score -= 1.5;
-    } else if (share > 35) {
-      concerns.push(`<strong>VIP 集中度偏高</strong>：${name} 佔比 ${share.toFixed(1)}%，尚在可接受範圍但需持續監控`);
-      score -= 0.5;
-    } else {
-      signals.push(`<strong>VIP 分布均衡</strong>：最大貢獻層級 ${name} 佔比 ${share.toFixed(1)}%，多層付費結構健康`);
-      score += 1;
-    }
+    const top = [...uniqueVip].sort((a, b) => n(b.Revenue) - n(a.Revenue))[0];
+    const lv  = Number(top.VipLV);
+    obs.push(`<strong>${VIP_NAMES[lv] || 'VIP'+lv}（VIP${lv}）</strong> 為主力付費層，貢獻流水 $${fmtMoney(top.Revenue)}（佔 VIP 總流水 ${(n(top.Revenue)/rev*100).toFixed(1)}%），付費人數 ${fmt(top.PayingUsers)} 人。`);
+  }
+  if (saleRows.length > 0) {
+    const top = [...saleRows].sort((a, b) => n(b.total_amount) - n(a.total_amount))[0];
+    obs.push(`<strong>${SALE_TYPE_NAMES[n(top.SaleType)] || '品項'+top.SaleType}</strong> 為最大收入品項，流水 $${fmtMoney(top.total_amount)}（佔比 ${n(top.revenue_percentage).toFixed(1)}%）。`);
+  }
+  if (topRegular.length > 0) {
+    const r = topRegular[0];
+    obs.push(`一般玩家最高儲值：<strong>${r.NickName || r.UserID}</strong>，金額 $${fmtMoney(r.total_recharge)}（${fmt(r.transaction_count)} 次）。`);
+  }
+  if (todaySocial.length > 0) {
+    const socialRev   = todaySocial.reduce((s, r) => s + n(r.total_recharge), 0);
+    const names = todaySocial.slice(0, 2).map(r => r.NickName || r.UserID).join('、');
+    const more  = todaySocial.length > 2 ? ` 等 ${todaySocial.length} 人` : '';
+    obs.push(`社交玩家今日合計儲值 <strong>$${fmtMoney(socialRev)}</strong>（${names}${more}）。`);
+  }
+  // 高頻玩家
+  if (topRegular.length > 0) {
+    const hf = [...topRegular].sort((a, b) => n(b.transaction_count) - n(a.transaction_count))[0];
+    if (n(hf.transaction_count) >= 10)
+      obs.push(`<strong>${hf.NickName || hf.UserID}</strong> 高頻消費達 ${fmt(hf.transaction_count)} 次，屬小額高頻模式，可評估精準推送。`);
   }
 
-  // ③ 新客轉換：首購率 <10% = 變現能力弱
-  const npToday = n(np.today);
-  const firstRow = saleRows.find(r => n(r.SaleType) === 2); // 首購包
-  const firstUsers = firstRow ? n(firstRow.paying_users) : 0;
-  if (npToday > 0) {
-    const rate = (firstUsers / npToday * 100).toFixed(1);
-    if (firstUsers > 0) {
-      if (parseFloat(rate) < 10) {
-        concerns.push(`<strong>新客轉換弱</strong>：首購率 ${rate}%（首購包 ${Math.round(firstUsers)} 人 / 新增 ${Math.round(npToday)} 人），低於 10% 警戒線`);
-        recs.push('優化新手首日禮包吸引力或觸達時機，提升首購轉換率');
-        score -= 1;
-      } else {
-        signals.push(`<strong>新客轉換良好</strong>：首購率 ${rate}%（${Math.round(firstUsers)} 人購買首購包），高於 10% 基準`);
-        score += 1;
-      }
-    } else {
-      questions.push(`今日新增 ${Math.round(npToday)} 人，但首購包無紀錄，新客是否有收到首購觸達？`);
-    }
+  // ── 三、異常提醒 ──
+  const alerts = [];
+  let alertLv = 'normal';
+  if (pdPaying > 0 && pdRev > 0 && paying < pdPaying && rev > pdRev)
+    { alerts.push('付費人數下滑但營收逆增，高消費集中，需確認是否有大額單筆異常。'); alertLv = 'warning'; }
+  if (uniqueVip.length > 0 && rev > 0) {
+    const sh = n([...uniqueVip].sort((a,b)=>n(b.Revenue)-n(a.Revenue))[0].Revenue) / rev * 100;
+    if (sh > 60) { alerts.push(`單一 VIP 等級貢獻超過 60%，依賴集中風險高。`); alertLv = 'danger'; }
+    else if (sh > 50) { alerts.push(`單一 VIP 等級貢獻 ${sh.toFixed(1)}%，超過 50% 警戒線。`); if (alertLv==='normal') alertLv='warning'; }
   }
-
-  // ④ 頂層厚度：VIP 8+9 <10 人 = 儲備不足
   const vip8 = uniqueVip.find(v => Number(v.VipLV) === 8) || {};
   const vip9 = uniqueVip.find(v => Number(v.VipLV) === 9) || {};
   const topCount = n(vip8.PayingUsers) + n(vip9.PayingUsers);
-  const topRev   = n(vip8.Revenue)     + n(vip9.Revenue);
-  if (topCount === 0) {
-    concerns.push(`<strong>頂層完全缺席</strong>：榮耀+星耀（VIP8+9）今日無付費紀錄，高端層完全空洞`);
-    recs.push('啟動 VIP8/9 專屬召回活動或客服主動觸達，喚醒頂層沉睡玩家');
-    score -= 1.5;
-  } else if (topCount < 10) {
-    concerns.push(`<strong>頂層厚度不足</strong>：榮耀+星耀（VIP8+9）今日付費僅 ${Math.round(topCount)} 人，流水 $${fmtMoney(topRev)}，高端儲備薄弱`);
-    recs.push('定期推出頂層 VIP 限定活動，維持高端玩家活躍黏著度');
-    score -= 1;
-  } else {
-    signals.push(`<strong>頂層活躍</strong>：榮耀+星耀（VIP8+9）付費 ${Math.round(topCount)} 人，流水 $${fmtMoney(topRev)}，高端基盤穩健`);
-    score += 1;
+  if (topCount === 0) { alerts.push('榮耀+星耀（VIP8+9）今日無付費紀錄，頂層完全缺席。'); if (alertLv==='normal') alertLv='warning'; }
+  if (dauPrev && (dauToday-dauPrev)/dauPrev < -0.1)
+    { alerts.push(`DAU 較昨日下滑 ${Math.abs(((dauToday-dauPrev)/dauPrev*100)).toFixed(1)}%，幅度偏大。`); if (alertLv==='normal') alertLv='warning'; }
+
+  const badgeMap = { normal:'normal', warning:'warning', danger:'danger' };
+  const badgeTxt = { normal:'正常', warning:'注意', danger:'警示' };
+  const sec3 = `<span class="alert-badge ${badgeMap[alertLv]}">${badgeTxt[alertLv]}</span> ${alerts.length ? alerts.join(' ') : '本日各項指標無明顯異常。'}`;
+
+  // ── 四、營運建議 ──
+  const recs = [];
+  if (uniqueVip.length > 0 && rev > 0) {
+    const top = [...uniqueVip].sort((a,b)=>n(b.Revenue)-n(a.Revenue))[0];
+    const lv  = Number(top.VipLV);
+    recs.push(`${VIP_NAMES[lv]||'VIP'+lv} 為今日主力付費層，建議持續觀察次日留存，適時投放專屬禮包。`);
   }
-
-  // ⑤ DAU 明顯波動（>5%）
-  if (dauPrev > 0) {
-    const dauDiff = dauToday - dauPrev;
-    const dauPct  = dauDiff / dauPrev * 100;
-    if (Math.abs(dauPct) > 5) {
-      if (dauDiff > 0) {
-        signals.push(`<strong>DAU 顯著增長</strong>：較昨日 +${Math.round(dauDiff).toLocaleString('en-US')} 人（+${dauPct.toFixed(1)}%），整體活躍度上揚`);
-        score += 0.5;
-      } else {
-        concerns.push(`<strong>DAU 明顯下滑</strong>：較昨日 ${Math.round(dauDiff).toLocaleString('en-US')} 人（${dauPct.toFixed(1)}%），留存狀況需追蹤`);
-        questions.push('DAU 下滑是否來自特定渠道或地區？次日留存率有無同步惡化？');
-        score -= 0.5;
-      }
-    }
+  if (topRegular.length > 0) {
+    const hf = [...topRegular].sort((a,b)=>n(b.transaction_count)-n(a.transaction_count))[0];
+    if (n(hf.transaction_count) >= 10)
+      recs.push(`${hf.NickName || hf.UserID} 高頻消費（${fmt(hf.transaction_count)} 次），可推送週期訂閱包或累充回饋以提升 ARPPU。`);
   }
+  const firstRow   = saleRows.find(r => n(r.SaleType) === 2);
+  const firstUsers = firstRow ? n(firstRow.paying_users) : 0;
+  if (npToday > 0 && firstUsers / npToday < 0.1)
+    recs.push(`新客首購率 ${(firstUsers/npToday*100).toFixed(1)}%，低於 10% 基準，建議優化首日觸達與禮包吸引力。`);
+  if (topCount < 10)
+    recs.push(`榮耀+星耀（VIP8+9）付費人數不足（${Math.round(topCount)} 人），建議定期舉辦頂層 VIP 限定活動，維持高端黏著度。`);
+  if (recs.length === 0) recs.push('整體表現穩健，維持現有策略，重點追蹤次日留存與轉換率。');
 
-  // ⑥ 社交玩家佔比
-  const socialRev   = todaySocial.reduce((s, r) => s + n(r.total_recharge), 0);
-  if (rev > 0 && socialRev > 0) {
-    const socialShare = (socialRev / rev * 100).toFixed(1);
-    if (parseFloat(socialShare) > 30) {
-      concerns.push(`<strong>社交依賴偏高</strong>：社交玩家儲值佔今日流水 ${socialShare}%，比重偏高，需評估可持續性`);
-      questions.push('社交玩家的付費行為是否穩定？這些玩家明日是否還會回來？');
-    } else {
-      signals.push(`<strong>社交玩家有貢獻</strong>：佔今日流水 ${socialShare}%，為一般流水以外的補充來源`);
-    }
-  }
-
-  // 補預設值
-  if (signals.length === 0)   signals.push('暫無明顯正向訊號，各項指標維持平穩');
-  if (concerns.length === 0)  concerns.push('暫無明顯警示訊號，整體結構穩定');
-  if (questions.length === 0) questions.push('今日數據穩定，可持續觀察明日留存與轉換率變化趨勢');
-  if (recs.length === 0)      recs.push('維持現有策略，重點追蹤高 VIP 回流進度與新客首購轉換率');
-
-  // 整體評價
-  let emoji, overall;
-  if (score >= 2)        { emoji = '🟢'; overall = '整體表現良好，付費結構健康，多項指標同步正向'; }
-  else if (score >= 0.5) { emoji = '🟢'; overall = '整體表現尚可，有正向訊號，部分細節仍需追蹤'; }
-  else if (score >= -0.5){ emoji = '🟡'; overall = '整體表現平穩，無明顯成長也無重大警示'; }
-  else if (score >= -2)  { emoji = '🟡'; overall = '整體偏弱，存在若干結構性問題需密切關注'; }
-  else                   { emoji = '🔴'; overall = '整體表現偏差，多項警示同時觸發，建議立即評估並啟動對應行動'; }
-
-  const cls = emoji === '🟢' ? 'green' : emoji === '🟡' ? 'yellow' : 'red';
-  const li  = arr => arr.map(t => `<li>${t}</li>`).join('');
-  // 整體評價輸出到頂部 banner
-  document.getElementById('reportOverall').innerHTML =
-    `<div class="analysis-overall ${cls}">${emoji} ${overall}</div>`;
-  // 四格分析輸出到下方
-  document.getElementById('reportAnalysis').innerHTML = `
-    <div class="analysis-grid">
-      <div class="analysis-block good">
-        <div class="analysis-block-title">✅ 好的訊號</div>
-        <ul>${li(signals)}</ul>
-      </div>
-      <div class="analysis-block bad">
-        <div class="analysis-block-title">⚠️ 擔心的點</div>
-        <ul>${li(concerns)}</ul>
-      </div>
-      <div class="analysis-block question">
-        <div class="analysis-block-title">❓ 建議追問</div>
-        <ul>${li(questions)}</ul>
-      </div>
-      <div class="analysis-block rec">
-        <div class="analysis-block-title">💡 營運建議</div>
-        <ul>${li(recs)}</ul>
-      </div>
-    </div>`;
-}
-
-// ── 合併入口 ──────────────────────────────────────────────────────────
-function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
-  renderSummary(d, paying, trans, rev, uniqueVip, saleRows);
-  renderAnalysis(d, paying, trans, rev, uniqueVip, saleRows);
+  // ── 輸出 ──
+  const liHtml = arr => arr.map(t => `<li>${t}</li>`).join('');
+  document.getElementById('dailyReportSection').innerHTML = `
+    <div class="dr-title">📋 每日營運摘要 <span class="dr-date">(${d.date || ''})</span></div>
+    <div class="dr-section-label">一、整體表現</div>
+    <p class="dr-para">${sec1}</p>
+    <div class="dr-section-label">二、重點觀察</div>
+    <ul class="dr-list">${liHtml(obs)}</ul>
+    <div class="dr-section-label">三、異常提醒</div>
+    <p class="dr-para">${sec3}</p>
+    <div class="dr-section-label">四、營運建議</div>
+    <ul class="dr-list">${liHtml(recs)}</ul>`;
 }
 
 fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
