@@ -96,6 +96,11 @@
     .stc-table td.apr-cell { background: #fef9ec; text-align: right; }
     .stc-table td.may-cell { background: #ede9fe; text-align: right; font-weight: 600; }
     .stc-table td.change-cell { text-align: right; font-weight: 700; }
+    /* ── 每日營運摘要（合併） ── */
+    .report-divider {
+      border: none; border-top: 1.5px dashed #e8e0cc;
+      margin: 20px 0;
+    }
     /* ── 營運分析判斷 ── */
     .analysis-overall {
       font-size: 16px; font-weight: 700; padding: 14px 18px;
@@ -237,14 +242,12 @@
   </div>
 </div>
 
-<div class="section" id="summarySection">
-  <div class="section-title">📋 每日摘要分析</div>
-  <div id="summaryContent" style="padding: 4px 0;"></div>
-</div>
-
-<div class="section" id="analysisSection">
-  <div class="section-title">🧠 營運分析判斷</div>
-  <div id="analysisContent"></div>
+<div class="section" id="dailyReportSection">
+  <div class="section-title">📋 每日營運摘要</div>
+  <div id="reportOverall"></div>
+  <div id="reportSummary" style="margin-top:14px;"></div>
+  <div class="report-divider"></div>
+  <div id="reportAnalysis"></div>
 </div>
 
 <div class="section">
@@ -634,9 +637,8 @@ function render(d) {
       </tr>`).join('')
     : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 
-  // 每日摘要 + 營運分析
-  renderSummary(d, paying, trans, rev, uniqueVip, saleRows);
-  renderAnalysis(d, paying, trans, rev, uniqueVip, saleRows);
+  // 每日營運摘要（合併區塊）
+  renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows);
 
   // 月份同期儲值品項比較
   document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
@@ -755,8 +757,8 @@ function renderSummary(d, paying, trans, rev, uniqueVip, saleRows) {
     items.push({ cls: '', icon: '🤝', html: `今日 <strong>無社交玩家儲值</strong>` });
   }
 
-  // 輸出
-  document.getElementById('summaryContent').innerHTML =
+  // 輸出到合併區塊
+  document.getElementById('reportSummary').innerHTML =
     `<div class="summary-grid">${items.map(it =>
       `<div class="summary-item ${it.cls}">
         <span class="summary-icon">${it.icon}</span>
@@ -910,8 +912,11 @@ function renderAnalysis(d, paying, trans, rev, uniqueVip, saleRows) {
 
   const cls = emoji === '🟢' ? 'green' : emoji === '🟡' ? 'yellow' : 'red';
   const li  = arr => arr.map(t => `<li>${t}</li>`).join('');
-  document.getElementById('analysisContent').innerHTML = `
-    <div class="analysis-overall ${cls}">${emoji} ${overall}</div>
+  // 整體評價輸出到頂部 banner
+  document.getElementById('reportOverall').innerHTML =
+    `<div class="analysis-overall ${cls}">${emoji} ${overall}</div>`;
+  // 四格分析輸出到下方
+  document.getElementById('reportAnalysis').innerHTML = `
     <div class="analysis-grid">
       <div class="analysis-block good">
         <div class="analysis-block-title">✅ 好的訊號</div>
@@ -930,6 +935,12 @@ function renderAnalysis(d, paying, trans, rev, uniqueVip, saleRows) {
         <ul>${li(recs)}</ul>
       </div>
     </div>`;
+}
+
+// ── 合併入口 ──────────────────────────────────────────────────────────
+function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
+  renderSummary(d, paying, trans, rev, uniqueVip, saleRows);
+  renderAnalysis(d, paying, trans, rev, uniqueVip, saleRows);
 }
 
 fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
