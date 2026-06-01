@@ -162,9 +162,64 @@
     .summary-text .tag-up   { color: #dc2626; font-weight: 700; }
     .summary-text .tag-down { color: #16a34a; font-weight: 700; }
     .summary-text .tag-neu  { color: #7c3aed; font-weight: 700; }
+    /* ── 工具列（下載 + 歷史） ── */
+    #toolBar {
+      display: none; position: fixed; bottom: 20px; right: 20px;
+      z-index: 998; display: none; flex-direction: column; gap: 8px; align-items: flex-end;
+    }
+    .tool-btn {
+      padding: 9px 16px; border-radius: 10px; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15); transition: opacity 0.15s;
+    }
+    .tool-btn:hover { opacity: 0.85; }
+    .tool-btn.download { background: #7c3aed; color: #fff; }
+    .tool-btn.history  { background: #fff; color: #7c3aed; border: 1.5px solid #7c3aed; }
+    #historyPanel {
+      display: none; position: fixed; bottom: 110px; right: 20px;
+      background: #fff; border-radius: 12px; padding: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 997;
+      width: 240px;
+    }
+    #historyPanel label { font-size: 12px; color: #888; font-weight: 600; display: block; margin-bottom: 6px; }
+    #historyDateInput {
+      width: 100%; padding: 7px 10px; border-radius: 8px;
+      border: 1.5px solid #e2d9b3; font-size: 14px; margin-bottom: 8px;
+      outline: none; box-sizing: border-box;
+    }
+    #historyDateInput:focus { border-color: #7c3aed; }
+    #historyLoadBtn {
+      width: 100%; padding: 8px; border-radius: 8px; border: none;
+      background: #7c3aed; color: #fff; font-size: 13px; font-weight: 600;
+      cursor: pointer;
+    }
+    #historyStatus { font-size: 12px; color: #999; margin-top: 6px; min-height: 16px; }
+    #historyBadge {
+      display: none; position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
+      background: #fef9c3; border: 1.5px solid #f59e0b; color: #92400e;
+      padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      z-index: 996;
+    }
   </style>
 </head>
 <body>
+
+<!-- 歷史資料提示 -->
+<div id="historyBadge"></div>
+
+<!-- 工具列（驗證後顯示） -->
+<div id="toolBar">
+  <button class="tool-btn history" onclick="toggleHistoryPanel()">📅 歷史報表</button>
+  <button class="tool-btn download" onclick="downloadReport()">💾 下載報表</button>
+</div>
+
+<!-- 歷史日期選擇器 -->
+<div id="historyPanel">
+  <label>輸入日期載入歷史報表</label>
+  <input type="date" id="historyDateInput">
+  <button id="historyLoadBtn" onclick="loadHistory()">載入</button>
+  <div id="historyStatus"></div>
+</div>
 
 <!-- 密碼遮罩 -->
 <div id="lockScreen">
@@ -639,6 +694,7 @@ function render(d) {
 
   // 每日營運摘要（合併區塊）
   renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows);
+  showToolBar();
 
   // 月份同期儲值品項比較
   document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
@@ -663,6 +719,111 @@ function render(d) {
 }
 
 // ── 每日營運摘要（簡潔文字版） ──────────────────────────────────────
+// ── 工具列顯示 ────────────────────────────────────────────────────────
+function showToolBar() {
+  const tb = document.getElementById('toolBar');
+  tb.style.display = 'flex';
+}
+
+// ── 下載今日報表 HTML ──────────────────────────────────────────────────
+function downloadReport() {
+  if (!cachedData) return;
+  const date = cachedData.date || new Date().toISOString().slice(0, 10);
+  const styles = document.querySelector('style')?.textContent || '';
+
+  // 複製畫面（去掉不需要的元素）
+  const bodyClone = document.body.cloneNode(true);
+  ['#lockScreen','#toolBar','#historyPanel','#historyBadge'].forEach(sel => {
+    bodyClone.querySelector(sel)?.remove();
+  });
+
+  const html = `<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEA版營運日報 ${date}</title>
+  <style>
+    .currency-badge { display:none; }
+    ${styles}
+  </style>
+</head>
+<body style="pointer-events:none;">
+${bodyClone.innerHTML}
+</body>
+</html>`;
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
+  a.download = `SEA日報_${date}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ── 歷史報表面板切換 ──────────────────────────────────────────────────
+function toggleHistoryPanel() {
+  const panel = document.getElementById('historyPanel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  if (panel.style.display === 'block' && !document.getElementById('historyDateInput').value) {
+    // 預設昨天
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    document.getElementById('historyDateInput').value = y.toISOString().slice(0, 10);
+  }
+}
+
+// ── 載入歷史報表 ──────────────────────────────────────────────────────
+async function loadHistory() {
+  const dateVal = document.getElementById('historyDateInput').value;
+  if (!dateVal) return;
+  const status = document.getElementById('historyStatus');
+  status.textContent = '載入中...';
+  document.getElementById('historyLoadBtn').disabled = true;
+
+  const pin = sessionStorage.getItem(SESSION_KEY);
+  if (!pin) { status.textContent = '❌ 請先驗證密碼'; return; }
+
+  try {
+    const url = `https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/history/${dateVal}.json?t=${Date.now()}`;
+    const r = await fetch(url);
+    if (!r.ok) { status.textContent = `❌ ${dateVal} 無歷史資料`; return; }
+    const j = await r.json();
+    if (!j.encryptedData) { status.textContent = '❌ 資料格式錯誤'; return; }
+
+    const plain = await decryptData(j.encryptedData, pin);
+    if (!plain) { status.textContent = '❌ 解密失敗'; return; }
+
+    cachedData = JSON.parse(plain);
+    render(cachedData);
+    status.textContent = `✅ 已載入 ${dateVal}`;
+
+    // 顯示歷史提示 badge
+    const badge = document.getElementById('historyBadge');
+    badge.textContent = `📅 目前顯示歷史報表：${dateVal}　（點此回到今日）`;
+    badge.style.display = 'block';
+    badge.style.cursor = 'pointer';
+    badge.onclick = loadToday;
+
+    document.getElementById('historyPanel').style.display = 'none';
+  } catch(e) {
+    status.textContent = '❌ 載入失敗：' + e.message;
+  } finally {
+    document.getElementById('historyLoadBtn').disabled = false;
+  }
+}
+
+// ── 回到今日 ──────────────────────────────────────────────────────────
+function loadToday() {
+  document.getElementById('historyBadge').style.display = 'none';
+  fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(async d => {
+      const pin = sessionStorage.getItem(SESSION_KEY);
+      const plain = await decryptData(d.encryptedData, pin);
+      if (plain) { cachedData = JSON.parse(plain); render(cachedData); }
+    });
+}
+
 function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
   const VIP_NAMES = { 9:'星耀', 8:'榮耀', 7:'皇家', 5:'藍鑽', 3:'金卡', 2:'銀卡', 1:'銅卡', 0:'試玩' };
   const da  = d.dau           || {};
