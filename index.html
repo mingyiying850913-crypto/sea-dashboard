@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SEA版營運日報</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* ── 密碼遮罩 ── */
     #lockScreen {
@@ -200,6 +201,29 @@
       padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
       z-index: 996;
     }
+    /* ── 頁籤 ── */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: #fff; padding: 4px; border-radius: 10px; width: fit-content; }
+    .tab-btn { padding: 10px 24px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; background: transparent; color: #666; transition: all 0.2s; }
+    .tab-btn.active { background: #7c3aed; color: #fff; }
+    .tab-btn:hover:not(.active) { background: #f5f5f5; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .chart-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+    .chart-container { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .chart-title { font-size: 14px; font-weight: 600; color: #444; margin-bottom: 12px; }
+    .chart-wrapper { height: 220px; position: relative; }
+    .summary-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px; }
+    .summary-card { background: #fff; border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: center; }
+    .summary-card-title { font-size: 11px; color: #888; margin-bottom: 6px; }
+    .summary-card-value { font-size: 20px; font-weight: 700; }
+    .summary-card-change { font-size: 12px; font-weight: 600; margin-top: 4px; }
+    .mtd-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    .mtd-card { background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border-radius: 10px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e8e8e8; }
+    .mtd-card-title { font-size: 12px; color: #888; margin-bottom: 8px; }
+    .mtd-card-value { font-size: 22px; font-weight: 700; color: #2c2c2c; margin-bottom: 6px; }
+    .mtd-card-compare { font-size: 12px; color: #999; margin-bottom: 4px; }
+    .mtd-card-change { font-size: 13px; font-weight: 600; }
+    @media (max-width: 1200px) { .chart-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -258,153 +282,190 @@
 <h1>🏦 SEA版營運日報</h1>
 <div class="subtitle" id="subtitle">載入中...</div>
 
-<div class="cards">
-  <div class="card"><div class="card-icon">🧑‍🤝‍🧑</div><div class="card-label">DAU</div><div class="card-value" id="dau">-</div><div class="card-diff" id="dauDiff"></div></div>
-  <div class="card"><div class="card-icon">🆕</div><div class="card-label">新增人數</div><div class="card-value" id="newPlayers">-</div><div class="card-diff" id="newPlayersDiff"></div></div>
-  <div class="card"><div class="card-icon">💵</div><div class="card-label">付費人數</div><div class="card-value" id="payingUsers">-</div><div class="card-diff" id="payingUsersDiff"></div></div>
-  <div class="card"><div class="card-icon">💳</div><div class="card-label">儲值次數</div><div class="card-value" id="transactions">-</div><div class="card-diff" id="transactionsDiff"></div></div>
-  <div class="card"><div class="card-icon">💰</div><div class="card-label">總營收</div><div class="card-value" id="revenue">-</div><div class="card-diff" id="revenueDiff"></div></div>
-  <div class="card"><div class="card-icon">📈</div><div class="card-label">ARPPU</div><div class="card-value" id="arppu">-</div><div class="card-diff" id="arppuDiff"></div></div>
+<!-- 頁籤按鈕 -->
+<div class="tabs">
+  <button class="tab-btn active" data-tab="daily">📅 日報</button>
+  <button class="tab-btn" data-tab="weekly">📊 週報</button>
+  <button class="tab-btn" data-tab="monthly">📈 月報</button>
 </div>
 
-<div class="two-col">
+<!-- ── 日報頁籤 ── -->
+<div class="tab-content active" id="tab-daily">
+
+  <div class="cards">
+    <div class="card"><div class="card-icon">🧑‍🤝‍🧑</div><div class="card-label">DAU</div><div class="card-value" id="dau">-</div><div class="card-diff" id="dauDiff"></div></div>
+    <div class="card"><div class="card-icon">🆕</div><div class="card-label">新增人數</div><div class="card-value" id="newPlayers">-</div><div class="card-diff" id="newPlayersDiff"></div></div>
+    <div class="card"><div class="card-icon">💵</div><div class="card-label">付費人數</div><div class="card-value" id="payingUsers">-</div><div class="card-diff" id="payingUsersDiff"></div></div>
+    <div class="card"><div class="card-icon">💳</div><div class="card-label">儲值次數</div><div class="card-value" id="transactions">-</div><div class="card-diff" id="transactionsDiff"></div></div>
+    <div class="card"><div class="card-icon">💰</div><div class="card-label">總營收</div><div class="card-value" id="revenue">-</div><div class="card-diff" id="revenueDiff"></div></div>
+    <div class="card"><div class="card-icon">📈</div><div class="card-label">ARPPU</div><div class="card-value" id="arppu">-</div><div class="card-diff" id="arppuDiff"></div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-title">👑 VIP 付費分析</div>
+      <table>
+        <thead><tr><th>VIP</th><th class="num">付費人數</th><th class="num">儲值次數</th><th class="num">總儲值</th></tr></thead>
+        <tbody id="vipTable"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💳 儲值品項分析</div>
+      <table>
+        <thead><tr><th>品項</th><th class="num">付費人數</th><th class="num">金額</th><th class="num">佔比</th></tr></thead>
+        <tbody id="saleTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-title">🏆 一般玩家儲值前五名</div>
+      <table>
+        <thead><tr><th>排名</th><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">儲值次數</th></tr></thead>
+        <tbody id="topRegularTable"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🤝 社交玩家儲值</div>
+      <table>
+        <thead><tr><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">儲值次數</th></tr></thead>
+        <tbody id="todaySocialTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section" id="dailyReportSection"></div>
+
+</div>
+
+<!-- ── 週報頁籤 ── -->
+<div class="tab-content" id="tab-weekly">
+  <div class="summary-cards" id="weeklySummaryCards"></div>
+  <div class="chart-grid">
+    <div class="chart-container"><div class="chart-title">📊 DAU 趨勢（本週 vs 上週）</div><div class="chart-wrapper"><canvas id="weeklyDauChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">🆕 新增人數趨勢</div><div class="chart-wrapper"><canvas id="weeklyNewPlayersChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💵 付費人數趨勢</div><div class="chart-wrapper"><canvas id="weeklyPayingChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💳 儲值次數趨勢</div><div class="chart-wrapper"><canvas id="weeklyTransactionsChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💰 營收趨勢</div><div class="chart-wrapper"><canvas id="weeklyRevenueChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">📈 ARPPU 趨勢</div><div class="chart-wrapper"><canvas id="weeklyArppuChart"></canvas></div></div>
+  </div>
+  <div class="section" id="weeklyReportSection"></div>
+</div>
+
+<!-- ── 月報頁籤 ── -->
+<div class="tab-content" id="tab-monthly">
+  <div class="summary-cards" id="monthlySummaryCards"></div>
+  <div class="chart-grid">
+    <div class="chart-container"><div class="chart-title">📊 DAU 趨勢（本月 vs 上月）</div><div class="chart-wrapper"><canvas id="monthlyDauChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">🆕 新增人數趨勢</div><div class="chart-wrapper"><canvas id="monthlyNewPlayersChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💵 付費人數趨勢</div><div class="chart-wrapper"><canvas id="monthlyPayingChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💳 儲值次數趨勢</div><div class="chart-wrapper"><canvas id="monthlyTransactionsChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💰 營收趨勢</div><div class="chart-wrapper"><canvas id="monthlyRevenueChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">📈 ARPPU 趨勢</div><div class="chart-wrapper"><canvas id="monthlyArppuChart"></canvas></div></div>
+  </div>
+
+  <!-- 月份同期比較（從日報搬來） -->
   <div class="section">
-    <div class="section-title">👑 VIP 付費分析</div>
-    <table>
-      <thead><tr><th>VIP</th><th class="num">付費人數</th><th class="num">儲值次數</th><th class="num">總儲值</th></tr></thead>
-      <tbody id="vipTable"></tbody>
+    <div class="section-title">📊 月份同期比較</div>
+    <div class="compare-cards">
+      <div class="ccard current">
+        <div class="ccard-label" id="labelCurrPaying">本月平均付費人數</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="mayPaying">-</span>
+          <span class="ccard-unit">人/日</span>
+          <span class="ccard-change" id="payingChange"></span>
+        </div>
+      </div>
+      <div class="ccard prev">
+        <div class="ccard-label" id="labelPrevPaying">上月同期付費人數</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="aprPaying">-</span>
+          <span class="ccard-unit">人/日</span>
+        </div>
+      </div>
+      <div class="ccard current">
+        <div class="ccard-label" id="labelCurrArppu">本月平均 ARPPU</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="mayArppu">-</span>
+          <span class="ccard-unit">元/人</span>
+          <span class="ccard-change" id="arppuChange"></span>
+        </div>
+      </div>
+      <div class="ccard prev">
+        <div class="ccard-label" id="labelPrevArppu">上月同期 ARPPU</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="aprArppu">-</span>
+          <span class="ccard-unit">元/人</span>
+        </div>
+      </div>
+      <div class="ccard current">
+        <div class="ccard-label" id="socialLabelCurrRev">社交玩家儲值</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="socialCurrRevenue">-</span>
+          <span class="ccard-change" id="socialRevenueChange"></span>
+        </div>
+      </div>
+      <div class="ccard prev">
+        <div class="ccard-label" id="socialLabelPrevRev">上月同期儲值</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="socialPrevRevenue">-</span>
+        </div>
+      </div>
+      <div class="ccard current">
+        <div class="ccard-label" id="labelCurrExSocial">扣除社交後流水</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="currExSocial">-</span>
+          <span class="ccard-change" id="exSocialChange"></span>
+        </div>
+      </div>
+      <div class="ccard current">
+        <div class="ccard-label" id="labelCurrRevenue">本月累計流水</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="currRevenue">-</span>
+          <span class="ccard-change" id="revenueChange"></span>
+        </div>
+      </div>
+      <div class="ccard prev">
+        <div class="ccard-label" id="labelPrevRevenue">上月同期流水</div>
+        <div class="ccard-main">
+          <span class="ccard-value" id="prevRevenue">-</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月份同期儲值品項比較（從日報搬來） -->
+  <div class="section">
+    <div class="section-title">🏪 月份同期儲值品項比較</div>
+    <table class="stc-table">
+      <thead>
+        <tr>
+          <th>品項</th>
+          <th class="apr-header" id="stcAprLabel1">4月付費人數</th>
+          <th class="may-header" id="stcMayLabel1">5月付費人數</th>
+          <th class="change-header">付費人數變化</th>
+          <th class="apr-header" id="stcAprLabel2">4月流水</th>
+          <th class="may-header" id="stcMayLabel2">5月流水</th>
+          <th class="change-header">流水變化</th>
+        </tr>
+      </thead>
+      <tbody id="stcTable"></tbody>
     </table>
   </div>
 
-  <div class="section">
-    <div class="section-title">💳 儲值品項分析</div>
-    <table>
-      <thead><tr><th>品項</th><th class="num">付費人數</th><th class="num">金額</th><th class="num">佔比</th></tr></thead>
-      <tbody id="saleTable"></tbody>
-    </table>
-  </div>
-</div>
-
-<div class="two-col">
-  <div class="section">
-    <div class="section-title">🏆 一般玩家儲值前五名</div>
-    <table>
-      <thead><tr><th>排名</th><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">儲值次數</th></tr></thead>
-      <tbody id="topRegularTable"></tbody>
-    </table>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🤝 社交玩家儲值</div>
-    <table>
-      <thead><tr><th>玩家暱稱</th><th>UserID</th><th class="num">總儲值</th><th class="num">儲值次數</th></tr></thead>
-      <tbody id="todaySocialTable"></tbody>
-    </table>
-  </div>
-</div>
-
-<div class="section" id="dailyReportSection"></div>
-
-<div class="section">
-  <div class="section-title">📊 月份同期比較</div>
-  <div class="compare-cards">
-    <!-- 付費人數 -->
-    <div class="ccard current">
-      <div class="ccard-label" id="labelCurrPaying">本月平均付費人數</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="mayPaying">-</span>
-        <span class="ccard-unit">人/日</span>
-        <span class="ccard-change" id="payingChange"></span>
-      </div>
-    </div>
-    <div class="ccard prev">
-      <div class="ccard-label" id="labelPrevPaying">上月同期付費人數</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="aprPaying">-</span>
-        <span class="ccard-unit">人/日</span>
-      </div>
-    </div>
-    <!-- ARPPU -->
-    <div class="ccard current">
-      <div class="ccard-label" id="labelCurrArppu">本月平均 ARPPU</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="mayArppu">-</span>
-        <span class="ccard-unit">元/人</span>
-        <span class="ccard-change" id="arppuChange"></span>
-      </div>
-    </div>
-    <div class="ccard prev">
-      <div class="ccard-label" id="labelPrevArppu">上月同期 ARPPU</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="aprArppu">-</span>
-        <span class="ccard-unit">元/人</span>
-      </div>
-    </div>
-    <!-- 社交玩家儲值 -->
-    <div class="ccard current">
-      <div class="ccard-label" id="socialLabelCurrRev">社交玩家儲值</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="socialCurrRevenue">-</span>
-        <span class="ccard-change" id="socialRevenueChange"></span>
-      </div>
-    </div>
-    <div class="ccard prev">
-      <div class="ccard-label" id="socialLabelPrevRev">上月同期儲值</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="socialPrevRevenue">-</span>
-      </div>
-    </div>
-    <!-- 扣除社交後流水（僅當月，不做同期比較） -->
-    <div class="ccard current">
-      <div class="ccard-label" id="labelCurrExSocial">扣除社交後流水</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="currExSocial">-</span>
-        <span class="ccard-change" id="exSocialChange"></span>
-      </div>
-    </div>
-    <!-- 累計流水 -->
-    <div class="ccard current">
-      <div class="ccard-label" id="labelCurrRevenue">本月累計流水</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="currRevenue">-</span>
-        <span class="ccard-change" id="revenueChange"></span>
-      </div>
-    </div>
-    <div class="ccard prev">
-      <div class="ccard-label" id="labelPrevRevenue">上月同期流水</div>
-      <div class="ccard-main">
-        <span class="ccard-value" id="prevRevenue">-</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="section-title">🏪 月份同期儲值品項比較</div>
-  <table class="stc-table">
-    <thead>
-      <tr>
-        <th>品項</th>
-        <th class="apr-header" id="stcAprLabel1">4月付費人數</th>
-        <th class="may-header" id="stcMayLabel1">5月付費人數</th>
-        <th class="change-header">付費人數變化</th>
-        <th class="apr-header" id="stcAprLabel2">4月流水</th>
-        <th class="may-header" id="stcMayLabel2">5月流水</th>
-        <th class="change-header">流水變化</th>
-      </tr>
-    </thead>
-    <tbody id="stcTable"></tbody>
-  </table>
+  <div class="section" id="monthlyReportSection"></div>
 </div>
 
 <script>
 // ── 密碼鎖 + RC4 解密 ────────────────────────────────────────────────
 const SESSION_KEY = 'sea_pin';
-const SALT        = 'SEA_DASHBOARD_2026';   // 與 n8n Code JS 保持一致
+const SALT        = 'SEA_DASHBOARD_2026';
 let pinBuffer        = '';
 let encryptedPayload = null;
 
-// RC4 解密（純 JS，與 n8n 對稱）
 function rc4Init(pin, salt, nonce) {
   const keyBytes = [];
   const raw = pin + ':' + salt;
@@ -499,7 +560,7 @@ const SALE_TYPE_NAMES = {
 };
 
 const MYR_TO_TWD = 7.56;
-let currentRate = 1;       // 預設馬幣
+let currentRate = 1;
 let cachedData  = null;
 
 function n(v) { return parseFloat(v) || 0; }
@@ -557,7 +618,6 @@ function render(d) {
 
   document.getElementById('subtitle').textContent = '資料日期：' + (d.date || '-');
 
-  // VIP 去重
   const seenLv = new Set();
   const uniqueVip = (d.vip || []).filter(v => {
     const lv = String(v.VipLV);
@@ -566,7 +626,6 @@ function render(d) {
     return true;
   }).filter(v => v.VipLV != 4 && v.VipLV != 6);
 
-  // 四大指標（daily 為 0 時從 VIP 加總）
   let paying = n(d.daily && d.daily.PayingUsers);
   let trans  = n(d.daily && d.daily.Transactions);
   let rev    = n(d.daily && d.daily.Revenue);
@@ -577,7 +636,6 @@ function render(d) {
     rev    = uniqueVip.reduce((s, v) => s + n(v.Revenue), 0);
     arppu  = paying > 0 ? Math.round(rev / paying) : 0;
   }
-  // DAU & 新增人數
   const da = d.dau        || {};
   const np = d.newPlayers || {};
   document.getElementById('dau').textContent             = fmt(da.today || 0);
@@ -590,17 +648,14 @@ function render(d) {
   document.getElementById('revenue').textContent      = '$' + fmtMoney(rev);
   document.getElementById('arppu').textContent        = '$' + fmtMoney(arppu);
 
-  // 與前天比較
   const pd = d.prevDay || {};
   document.getElementById('payingUsersDiff').innerHTML = diffTag(paying,       n(pd.PayingUsers));
   document.getElementById('transactionsDiff').innerHTML= diffTag(trans,        n(pd.Transactions));
   document.getElementById('revenueDiff').innerHTML     = diffTag(rev,          n(pd.Revenue));
   document.getElementById('arppuDiff').innerHTML       = diffTag(arppu,        n(pd.ARPPU));
 
-  // VIP 等級名稱對照
   const VIP_NAMES = { 9: '星耀', 8: '榮耀', 7: '皇家', 5: '藍鑽', 3: '金卡', 2: '銀卡', 1: '銅卡', 0: '試玩' };
 
-  // VIP 表格
   const vipPrevMap = {};
   (d.vipPrev || []).forEach(v => { vipPrevMap[Number(v.VipLV)] = v; });
   const vipOrder = [9, 8, 7, 5, 3, 2, 1, 0];
@@ -616,7 +671,6 @@ function render(d) {
     </tr>`;
   }).join('');
 
-  // 儲值品項表格
   const saleRows = d.saleType || [];
   const salePrevMap = {};
   (d.saleTypePrev || []).forEach(s => { salePrevMap[Number(s.SaleType)] = s; });
@@ -632,7 +686,7 @@ function render(d) {
       }).join('')
     : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 
-  // 月份同期比較
+  // 月份同期比較（元素在 tab-monthly，仍正常 render）
   const c  = d.comparison || {};
   const pm = c.prev_month || '4月';
   const cm = c.curr_month || '5月';
@@ -652,7 +706,6 @@ function render(d) {
   document.getElementById('arppuChange').innerHTML        = pct(c.may_avg_arppu,  c.apr_avg_arppu);
   document.getElementById('revenueChange').innerHTML      = pctDirect(c.revenue_growth_pct);
 
-  // 社交玩家儲值
   const sp    = d.socialPlayers || {};
   const spCur = sp.curr || {};
   const spPrv = sp.prev || {};
@@ -662,14 +715,12 @@ function render(d) {
   document.getElementById('socialPrevRevenue').textContent  = '$' + fmtMoney(spPrv.total_recharge || 0);
   document.getElementById('socialRevenueChange').innerHTML  = pct(spCur.total_recharge, spPrv.total_recharge);
 
-  // 扣掉社交後流水
   const currExSocial = n(c.curr_revenue) - n(spCur.total_recharge);
   const prevExSocial = n(c.prev_revenue) - n(spPrv.total_recharge);
   document.getElementById('labelCurrExSocial').textContent = cm + '扣除社交後流水';
   document.getElementById('currExSocial').textContent      = '$' + fmtMoney(currExSocial);
   document.getElementById('exSocialChange').innerHTML      = pct(currExSocial, prevExSocial);
 
-  // 一般玩家儲值前五名
   const topRegular = d.topRegularPlayers || [];
   document.getElementById('topRegularTable').innerHTML = topRegular.length
     ? topRegular.map((r, i) => `<tr>
@@ -681,7 +732,6 @@ function render(d) {
       </tr>`).join('')
     : '<tr><td colspan="5" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 
-  // 社交玩家儲值
   const todaySocial = (d.todaySocialPlayers || []).sort((a, b) => b.total_recharge - a.total_recharge);
   document.getElementById('todaySocialTable').innerHTML = todaySocial.length
     ? todaySocial.map(r => `<tr>
@@ -692,11 +742,9 @@ function render(d) {
       </tr>`).join('')
     : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 
-  // 每日營運摘要（合併區塊）
   renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows);
   showToolBar();
 
-  // 月份同期儲值品項比較
   document.getElementById('stcAprLabel1').textContent = pm + '付費人數';
   document.getElementById('stcAprLabel2').textContent = pm + '流水';
   document.getElementById('stcMayLabel1').textContent = cm + '付費人數';
@@ -716,22 +764,23 @@ function render(d) {
         </tr>`;
       }).join('')
     : '<tr><td colspan="7" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
+
+  // 若目前在週報/月報頁籤就立即畫圖
+  if (document.getElementById('tab-weekly')?.classList.contains('active')) initWeeklyCharts(d);
+  if (document.getElementById('tab-monthly')?.classList.contains('active')) initMonthlyCharts(d);
 }
 
-// ── 每日營運摘要（簡潔文字版） ──────────────────────────────────────
-// ── 工具列顯示 ────────────────────────────────────────────────────────
+// ── 每日營運摘要 ─────────────────────────────────────────────────────
 function showToolBar() {
   const tb = document.getElementById('toolBar');
   tb.style.display = 'flex';
 }
 
-// ── 下載今日報表 HTML ──────────────────────────────────────────────────
 function downloadReport() {
   if (!cachedData) return;
   const date = cachedData.date || new Date().toISOString().slice(0, 10);
   const styles = document.querySelector('style')?.textContent || '';
 
-  // 複製畫面（去掉不需要的元素）
   const bodyClone = document.body.cloneNode(true);
   ['#lockScreen','#toolBar','#historyPanel','#historyBadge'].forEach(sel => {
     bodyClone.querySelector(sel)?.remove();
@@ -761,18 +810,15 @@ ${bodyClone.innerHTML}
   document.body.removeChild(a);
 }
 
-// ── 歷史報表面板切換 ──────────────────────────────────────────────────
 function toggleHistoryPanel() {
   const panel = document.getElementById('historyPanel');
   panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
   if (panel.style.display === 'block' && !document.getElementById('historyDateInput').value) {
-    // 預設昨天
     const y = new Date(); y.setDate(y.getDate() - 1);
     document.getElementById('historyDateInput').value = y.toISOString().slice(0, 10);
   }
 }
 
-// ── 載入歷史報表 ──────────────────────────────────────────────────────
 async function loadHistory() {
   const dateVal = document.getElementById('historyDateInput').value;
   if (!dateVal) return;
@@ -797,7 +843,6 @@ async function loadHistory() {
     render(cachedData);
     status.textContent = `✅ 已載入 ${dateVal}`;
 
-    // 顯示歷史提示 badge
     const badge = document.getElementById('historyBadge');
     badge.textContent = `📅 目前顯示歷史報表：${dateVal}　（點此回到今日）`;
     badge.style.display = 'block';
@@ -812,7 +857,6 @@ async function loadHistory() {
   }
 }
 
-// ── 回到今日 ──────────────────────────────────────────────────────────
 function loadToday() {
   document.getElementById('historyBadge').style.display = 'none';
   fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
@@ -835,21 +879,13 @@ function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
   const npToday  = n(np.today);
   const pdPaying = n(pd.PayingUsers), pdRev = n(pd.Revenue);
 
-  // 彩色差值輔助
   function colDiff(curr, prev) {
     if (!prev) return '';
     const d = curr - prev, pct = (d / prev * 100).toFixed(1);
     const col = d >= 0 ? '#dc2626' : '#16a34a';
     return ` <span style="color:${col};font-weight:600;">${d >= 0 ? '▲' : '▼'}${Math.abs(pct)}%</span>`;
   }
-  function colDiffN(curr, prev) {
-    if (!prev) return '';
-    const d = curr - prev;
-    const col = d >= 0 ? '#dc2626' : '#16a34a';
-    return ` <span style="color:${col};font-weight:600;">${d >= 0 ? '▲' : '▼'}${Math.abs(Math.round(d)).toLocaleString('en-US')}</span>`;
-  }
 
-  // ── 一、整體表現 ──
   let perfWord = '表現平穩';
   if (pdRev > 0 && pdPaying > 0) {
     if (rev > pdRev * 1.05 && paying >= pdPaying) perfWord = '表現良好';
@@ -862,7 +898,6 @@ function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
 
   const sec1 = `今日流水 <strong>$${fmtMoney(rev)}</strong>，較前日${colDiff(rev, pdRev)}，${perfWord}。DAU ${fmt(dauToday)}（${colDiff(dauToday, dauPrev).trim() || '—'}）、付費人數 ${fmt(paying)}（${colDiff(paying, pdPaying).trim() || '—'}），${retainWord}。`;
 
-  // ── 二、重點觀察 ──
   const obs = [];
   if (uniqueVip.length > 0 && rev > 0) {
     const top = [...uniqueVip].sort((a, b) => n(b.Revenue) - n(a.Revenue))[0];
@@ -883,14 +918,12 @@ function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
     const more  = todaySocial.length > 2 ? ` 等 ${todaySocial.length} 人` : '';
     obs.push(`社交玩家今日合計儲值 <strong>$${fmtMoney(socialRev)}</strong>（${names}${more}）。`);
   }
-  // 高頻玩家
   if (topRegular.length > 0) {
     const hf = [...topRegular].sort((a, b) => n(b.transaction_count) - n(a.transaction_count))[0];
     if (n(hf.transaction_count) >= 10)
       obs.push(`<strong>${hf.NickName || hf.UserID}</strong> 高頻消費達 ${fmt(hf.transaction_count)} 次，屬小額高頻模式，可評估精準推送。`);
   }
 
-  // ── 三、異常提醒 ──
   const alerts = [];
   let alertLv = 'normal';
   if (pdPaying > 0 && pdRev > 0 && paying < pdPaying && rev > pdRev)
@@ -911,7 +944,6 @@ function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
   const badgeTxt = { normal:'正常', warning:'注意', danger:'警示' };
   const sec3 = `<span class="alert-badge ${badgeMap[alertLv]}">${badgeTxt[alertLv]}</span> ${alerts.length ? alerts.join(' ') : '本日各項指標無明顯異常。'}`;
 
-  // ── 四、營運建議 ──
   const recs = [];
   if (uniqueVip.length > 0 && rev > 0) {
     const top = [...uniqueVip].sort((a,b)=>n(b.Revenue)-n(a.Revenue))[0];
@@ -931,7 +963,6 @@ function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
     recs.push(`榮耀+星耀（VIP8+9）付費人數不足（${Math.round(topCount)} 人），建議定期舉辦頂層 VIP 限定活動，維持高端黏著度。`);
   if (recs.length === 0) recs.push('整體表現穩健，維持現有策略，重點追蹤次日留存與轉換率。');
 
-  // ── 輸出 ──
   const liHtml = arr => arr.map(t => `<li>${t}</li>`).join('');
   document.getElementById('dailyReportSection').innerHTML = `
     <div class="dr-title">📋 每日營運摘要 <span class="dr-date">(${d.date || ''})</span></div>
@@ -945,24 +976,117 @@ function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
     <ul class="dr-list">${liHtml(recs)}</ul>`;
 }
 
+// ── 頁籤切換 ─────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'weekly' && cachedData) initWeeklyCharts(cachedData);
+    if (btn.dataset.tab === 'monthly' && cachedData) initMonthlyCharts(cachedData);
+  });
+});
+
+// ── Chart.js 圖表 ─────────────────────────────────────────────────────
+let weeklyCharts = {};
+let monthlyCharts = {};
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } } },
+  scales: { x: { grid: { display: false } }, y: { beginAtZero: false, grid: { color: '#f0f0f0' } } }
+};
+
+function destroyCharts(group) {
+  Object.values(group).forEach(c => { if (c) c.destroy(); });
+}
+
+function createLineChart(canvasId, labels, currData, prevData, currLabel, prevLabel) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return null;
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: currLabel, data: currData, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.1)', borderWidth: 2, tension: .3, fill: true },
+        { label: prevLabel, data: prevData, borderColor: '#94a3b8', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5,5], tension: .3, fill: false }
+      ]
+    },
+    options: chartOptions
+  });
+}
+
+function renderSummaryCards(containerId, rows, prevRows, labelPrefix) {
+  const box = document.getElementById(containerId);
+  if (!box) return;
+  const sum = (arr, key) => (arr || []).reduce((s, r) => s + n(r[key]), 0);
+  const avg = (arr, key) => (arr && arr.length) ? sum(arr, key) / arr.length : 0;
+  const metrics = [
+    ['DAU 平均', avg(rows, 'DAU'), avg(prevRows, 'DAU'), false],
+    ['新增合計', sum(rows, 'NewPlayers'), sum(prevRows, 'NewPlayers'), false],
+    ['付費人數', sum(rows, 'PayingUsers'), sum(prevRows, 'PayingUsers'), false],
+    ['儲值次數', sum(rows, 'Transactions'), sum(prevRows, 'Transactions'), false],
+    ['營收', sum(rows, 'Revenue'), sum(prevRows, 'Revenue'), true],
+    ['ARPPU', avg(rows, 'ARPPU'), avg(prevRows, 'ARPPU'), true]
+  ];
+  box.innerHTML = metrics.map(([name, curr, prev, money]) => `
+    <div class="summary-card">
+      <div class="summary-card-title">${labelPrefix}${name}</div>
+      <div class="summary-card-value">${money ? '$' + fmtMoney(curr) : fmt(curr)}</div>
+      <div class="summary-card-change">${pct(curr, prev)}</div>
+    </div>
+  `).join('');
+}
+
+function initWeeklyCharts(d) {
+  if (!d.weeklyData) return;
+  destroyCharts(weeklyCharts); weeklyCharts = {};
+  const curr = d.weeklyData.curr || [];
+  const prev = d.weeklyData.prev || [];
+  const labels = curr.map((_, i) => 'Day ' + (i + 1));
+  renderSummaryCards('weeklySummaryCards', curr, prev, '本週 ');
+  weeklyCharts.dau          = createLineChart('weeklyDauChart',          labels, curr.map(x=>n(x.DAU)),          prev.map(x=>n(x.DAU)),          '本週', '上週');
+  weeklyCharts.newPlayers   = createLineChart('weeklyNewPlayersChart',   labels, curr.map(x=>n(x.NewPlayers)),   prev.map(x=>n(x.NewPlayers)),   '本週', '上週');
+  weeklyCharts.paying       = createLineChart('weeklyPayingChart',       labels, curr.map(x=>n(x.PayingUsers)),  prev.map(x=>n(x.PayingUsers)),  '本週', '上週');
+  weeklyCharts.transactions = createLineChart('weeklyTransactionsChart', labels, curr.map(x=>n(x.Transactions)), prev.map(x=>n(x.Transactions)), '本週', '上週');
+  weeklyCharts.revenue      = createLineChart('weeklyRevenueChart',      labels, curr.map(x=>n(x.Revenue)),      prev.map(x=>n(x.Revenue)),      '本週', '上週');
+  weeklyCharts.arppu        = createLineChart('weeklyArppuChart',        labels, curr.map(x=>n(x.ARPPU)),        prev.map(x=>n(x.ARPPU)),        '本週', '上週');
+}
+
+function initMonthlyCharts(d) {
+  if (!d.monthlyData) return;
+  destroyCharts(monthlyCharts); monthlyCharts = {};
+  const curr = d.monthlyData.curr || [];
+  const prev = d.monthlyData.prev || [];
+  const labels = curr.map(x => x.day_of_month || x.ProDate);
+  const currLabel = d.monthlyData.currLabel || '本月';
+  const prevLabel = d.monthlyData.prevLabel || '上月';
+  renderSummaryCards('monthlySummaryCards', curr, prev, currLabel + ' ');
+  monthlyCharts.dau          = createLineChart('monthlyDauChart',          labels, curr.map(x=>n(x.DAU)),          prev.map(x=>n(x.DAU)),          currLabel, prevLabel);
+  monthlyCharts.newPlayers   = createLineChart('monthlyNewPlayersChart',   labels, curr.map(x=>n(x.NewPlayers)),   prev.map(x=>n(x.NewPlayers)),   currLabel, prevLabel);
+  monthlyCharts.paying       = createLineChart('monthlyPayingChart',       labels, curr.map(x=>n(x.PayingUsers)),  prev.map(x=>n(x.PayingUsers)),  currLabel, prevLabel);
+  monthlyCharts.transactions = createLineChart('monthlyTransactionsChart', labels, curr.map(x=>n(x.Transactions)), prev.map(x=>n(x.Transactions)), currLabel, prevLabel);
+  monthlyCharts.revenue      = createLineChart('monthlyRevenueChart',      labels, curr.map(x=>n(x.Revenue)),      prev.map(x=>n(x.Revenue)),      currLabel, prevLabel);
+  monthlyCharts.arppu        = createLineChart('monthlyArppuChart',        labels, curr.map(x=>n(x.ARPPU)),        prev.map(x=>n(x.ARPPU)),        currLabel, prevLabel);
+}
+
 fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
   .then(r => r.json())
   .then(async d => {
     encryptedPayload = d.encryptedData;
     document.getElementById('pinLoading').style.display = 'none';
 
-    // 資料格式檢查：若 data.json 缺少 encryptedData，顯示維護中
     if (!encryptedPayload) {
       document.getElementById('pinError').textContent = '⚠️ 資料尚未更新，請稍後再試或通知管理員重新執行 n8n 工作流程';
-      // PIN 鍵盤保持鎖定
       return;
     }
 
-    // 解鎖鍵盤
     document.getElementById('pinPad').style.opacity = '1';
     document.getElementById('pinPad').style.pointerEvents = 'auto';
 
-    // 同一 Session 已驗證過 → 自動解密
     const savedPin = sessionStorage.getItem(SESSION_KEY);
     if (savedPin) {
       const ok = await decryptAndRender(savedPin);
