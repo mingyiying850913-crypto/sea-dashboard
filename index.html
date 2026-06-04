@@ -1069,20 +1069,26 @@ function initWeeklyCharts(d) {
   const fmtD = str => { const p = String(str).split('-'); return parseInt(p[1]) + '/' + parseInt(p[2]); };
   const currDates = curr.map(x => String(x.ProDate)).sort();
   const prevDates = prev.map(x => String(x.ProDate)).sort();
+  // 查詢日是周一時：curr=上週完整週、prev=前週；其他日：curr=本週至今、prev=上週完整週
+  const queryDate = d.date ? new Date(d.date + 'T00:00:00') : new Date();
+  const isQueryMonday = queryDate.getDay() === 1;
+  const weekCurrLabel = isQueryMonday ? '上週' : '本週';
+  const weekPrevLabel = isQueryMonday ? '前週' : '上週';
+
   const rangeEl = document.getElementById('weeklyDateRange');
   if (rangeEl) rangeEl.innerHTML = `
-    <span style="background:#7c3aed;color:#fff;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;">本週 ${currDates.length ? fmtD(currDates[0]) : ''}～${currDates.length ? fmtD(currDates[currDates.length-1]) : ''}</span>
+    <span style="background:#7c3aed;color:#fff;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;">${weekCurrLabel} ${currDates.length ? fmtD(currDates[0]) : ''}～${currDates.length ? fmtD(currDates[currDates.length-1]) : ''}</span>
     <span style="color:#888;font-size:13px;font-weight:600;">vs</span>
-    <span style="background:#f1f5f9;color:#64748b;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;border:1px dashed #cbd5e1;">上週 ${prevDates.length ? fmtD(prevDates[0]) : ''}～${prevDates.length ? fmtD(prevDates[prevDates.length-1]) : ''}</span>
+    <span style="background:#f1f5f9;color:#64748b;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;border:1px dashed #cbd5e1;">${weekPrevLabel} ${prevDates.length ? fmtD(prevDates[0]) : ''}～${prevDates.length ? fmtD(prevDates[prevDates.length-1]) : ''}</span>
   `;
 
-  renderSummaryCards('weeklySummaryCards', curr, prev, '本週 ');
-  weeklyCharts.dau          = createLineChart('weeklyDauChart',          weekLabels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          '本週', '上週');
-  weeklyCharts.newPlayers   = createLineChart('weeklyNewPlayersChart',   weekLabels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   '本週', '上週');
-  weeklyCharts.paying       = createLineChart('weeklyPayingChart',       weekLabels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  '本週', '上週');
-  weeklyCharts.transactions = createLineChart('weeklyTransactionsChart', weekLabels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), '本週', '上週');
-  weeklyCharts.revenue      = createLineChart('weeklyRevenueChart',      weekLabels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      '本週', '上週');
-  weeklyCharts.arppu        = createLineChart('weeklyArppuChart',        weekLabels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        '本週', '上週');
+  renderSummaryCards('weeklySummaryCards', curr, prev, weekCurrLabel + ' ');
+  weeklyCharts.dau          = createLineChart('weeklyDauChart',          weekLabels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          weekCurrLabel, weekPrevLabel);
+  weeklyCharts.newPlayers   = createLineChart('weeklyNewPlayersChart',   weekLabels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   weekCurrLabel, weekPrevLabel);
+  weeklyCharts.paying       = createLineChart('weeklyPayingChart',       weekLabels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  weekCurrLabel, weekPrevLabel);
+  weeklyCharts.transactions = createLineChart('weeklyTransactionsChart', weekLabels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), weekCurrLabel, weekPrevLabel);
+  weeklyCharts.revenue      = createLineChart('weeklyRevenueChart',      weekLabels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      weekCurrLabel, weekPrevLabel);
+  weeklyCharts.arppu        = createLineChart('weeklyArppuChart',        weekLabels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        weekCurrLabel, weekPrevLabel);
 }
 
 function initMonthlyCharts(d) {
@@ -1098,12 +1104,18 @@ function initMonthlyCharts(d) {
   const currLabel = d.monthlyData.currLabel || '本月';
   const prevLabel = d.monthlyData.prevLabel || '上月';
 
-  // 算出本月總天數（從 curr 第一筆的 ProDate 推算）
-  let maxDays = 31;
+  // 分別算本月與上月總天數，X 軸取較大者（讓上月虛線能完整顯示）
+  let currMonthDays = 31;
   if (curr.length > 0) {
     const fd = new Date(String(curr[0].ProDate) + 'T00:00:00');
-    maxDays = new Date(fd.getFullYear(), fd.getMonth() + 1, 0).getDate();
+    currMonthDays = new Date(fd.getFullYear(), fd.getMonth() + 1, 0).getDate();
   }
+  let prevMonthDays = 31;
+  if (prev.length > 0) {
+    const fd = new Date(String(prev[0].ProDate) + 'T00:00:00');
+    prevMonthDays = new Date(fd.getFullYear(), fd.getMonth() + 1, 0).getDate();
+  }
+  const maxDays = Math.max(currMonthDays, prevMonthDays);
 
   // 建立 day_of_month → row 的對照表
   const currMap = {};
