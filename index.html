@@ -224,6 +224,63 @@
     .mtd-card-compare { font-size: 12px; color: #999; margin-bottom: 4px; }
     .mtd-card-change { font-size: 13px; font-weight: 600; }
     @media (max-width: 1200px) { .chart-grid { grid-template-columns: 1fr; } }
+
+    /* ── 董事會目標區塊 ── */
+    .board-target-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 6px solid #7c3aed;
+    }
+    .board-target-card.yellow { border-left-color: #f59e0b; }
+    .board-target-card.red    { border-left-color: #dc2626; }
+    .board-target-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #2c2c2c;
+      margin-bottom: 14px;
+    }
+    .board-target-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .board-target-item {
+      background: #f8f7f4;
+      border-radius: 10px;
+      padding: 12px 14px;
+      border: 1px solid #ede8da;
+    }
+    .board-target-label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .board-target-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: #222;
+    }
+    .target-status {
+      font-size: 22px;
+      font-weight: 800;
+    }
+    .board-target-missing {
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 6px solid #f59e0b;
+      color: #92400e;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    @media (max-width: 1200px) {
+      .board-target-grid { grid-template-columns: repeat(2, 1fr); }
+    }
   </style>
 </head>
 <body>
@@ -291,6 +348,9 @@
 
 <!-- ── 日報頁籤 ── -->
 <div class="tab-content active" id="tab-daily">
+
+  <!-- 董事會目標區塊（由 renderBoardTarget() 填入） -->
+  <div id="boardTargetSection"></div>
 
   <div class="cards">
     <div class="card"><div class="card-icon">🧑‍🤝‍🧑</div><div class="card-label">DAU</div><div class="card-value" id="dau">-</div><div class="card-diff" id="dauDiff"></div></div>
@@ -618,6 +678,7 @@ function setCurrency(cur) {
 function render(d) {
 
   document.getElementById('subtitle').textContent = '資料日期：' + (d.date || '-');
+  renderBoardTarget(d);
 
   const seenLv = new Set();
   const uniqueVip = (d.vip || []).filter(v => {
@@ -869,6 +930,89 @@ function loadToday() {
     });
 }
 
+// ── 董事會目標追蹤 ─────────────────────────────────────────────────────
+function renderBoardTarget(d) {
+  const el = document.getElementById('boardTargetSection');
+  if (!el) return;
+
+  const reportDateStr = d.date;
+  const c = d.comparison || {};
+  const actualRevenueMYR = n(c.curr_revenue);
+
+  if (!reportDateStr || !actualRevenueMYR) {
+    el.innerHTML = '';
+    return;
+  }
+
+  const reportDate = new Date(reportDateStr + 'T00:00:00');
+  const year  = reportDate.getFullYear();
+  const month = reportDate.getMonth() + 1;
+  const day   = reportDate.getDate();
+  const monthDays = new Date(year, month, 0).getDate();
+
+  const boardTargets = d.boardTargets || {};
+  const exchangeRate = n(boardTargets.exchangeRate) || MYR_TO_TWD;
+  const targetTWD = boardTargets.targets?.[year]?.SEA_APP?.[month];
+
+  if (!targetTWD || n(targetTWD) <= 0) {
+    el.innerHTML = `
+      <div class="board-target-missing">
+        ⚠️ 尚未設定 ${year}年${month}月 SEA_APP 董事會目標
+      </div>
+    `;
+    return;
+  }
+
+  const targetMYR         = n(targetTWD) / exchangeRate;
+  const dailyTargetMYR    = targetMYR / monthDays;
+  // d.date 是昨天，例如 2026-06-03 代表本月資料為 6/1～6/3（共 day 天）
+  const actualAvgRevenueMYR = actualRevenueMYR / day;
+  const gapAvgMYR         = actualAvgRevenueMYR - dailyTargetMYR;
+  const achievementRate   = dailyTargetMYR > 0 ? actualAvgRevenueMYR / dailyTargetMYR * 100 : 0;
+
+  // statusClass：超標用琥珀黃（與版面暖色系搭配），落後用紅
+  // rateColor：反轉（>達標=紅，<達標=綠，配合儀表板「↑紅↓綠」慣例）
+  let statusClass = 'red';
+  let statusText  = `🔴 落後 $${fmtMoney(Math.abs(gapAvgMYR))} / 日`;
+  if (achievementRate >= 100) {
+    statusClass = 'yellow';
+    statusText  = `✅ 超前 $${fmtMoney(Math.abs(gapAvgMYR))} / 日`;
+  } else if (achievementRate >= 90) {
+    statusClass = '';
+    statusText  = `⚠️ 接近目標，落後 $${fmtMoney(Math.abs(gapAvgMYR))} / 日`;
+  }
+
+  const rateColor = achievementRate >= 100 ? '#dc2626' : achievementRate >= 90 ? '#f59e0b' : '#16a34a';
+
+  el.innerHTML = `
+    <div class="board-target-card ${statusClass}">
+      <div class="board-target-title">🎯 董事會目標追蹤</div>
+      <div class="board-target-grid">
+        <div class="board-target-item">
+          <div class="board-target-label">月目標</div>
+          <div class="board-target-value">$${fmtMoney(targetMYR)}</div>
+        </div>
+        <div class="board-target-item">
+          <div class="board-target-label">日均目標</div>
+          <div class="board-target-value">$${fmtMoney(dailyTargetMYR)} / 日</div>
+        </div>
+        <div class="board-target-item">
+          <div class="board-target-label">目前日均營收</div>
+          <div class="board-target-value">$${fmtMoney(actualAvgRevenueMYR)} / 日</div>
+        </div>
+        <div class="board-target-item">
+          <div class="board-target-label">達成率</div>
+          <div class="board-target-value" style="color:${rateColor};font-weight:800;">${achievementRate.toFixed(1)}%</div>
+        </div>
+        <div class="board-target-item">
+          <div class="board-target-label">狀態</div>
+          <div class="target-status">${statusText}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderDailyReport(d, paying, trans, rev, uniqueVip, saleRows) {
   const VIP_NAMES = { 9:'星耀', 8:'榮耀', 7:'皇家', 5:'藍鑽', 3:'金卡', 2:'銀卡', 1:'銅卡', 0:'試玩' };
   const da  = d.dau           || {};
@@ -1069,9 +1213,11 @@ function initWeeklyCharts(d) {
   const fmtD = str => { const p = String(str).split('-'); return parseInt(p[1]) + '/' + parseInt(p[2]); };
   const currDates = curr.map(x => String(x.ProDate)).sort();
   const prevDates = prev.map(x => String(x.ProDate)).sort();
+  // d.date 是昨天（資料日期），+1 才是今天（實際查詢日）
   // 查詢日是周一時：curr=上週完整週、prev=前週；其他日：curr=本週至今、prev=上週完整週
-  const queryDate = d.date ? new Date(d.date + 'T00:00:00') : new Date();
-  const isQueryMonday = queryDate.getDay() === 1;
+  const reportDate = d.date ? new Date(d.date + 'T00:00:00') : new Date();
+  reportDate.setDate(reportDate.getDate() + 1);
+  const isQueryMonday = reportDate.getDay() === 1;
   const weekCurrLabel = isQueryMonday ? '上週' : '本週';
   const weekPrevLabel = isQueryMonday ? '前週' : '上週';
 
