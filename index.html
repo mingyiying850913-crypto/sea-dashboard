@@ -358,18 +358,9 @@
 
 <!-- ── 月報頁籤 ── -->
 <div class="tab-content" id="tab-monthly">
-  <div class="summary-cards" id="monthlySummaryCards"></div>
-  <div class="chart-grid">
-    <div class="chart-container"><div class="chart-title">📊 DAU 趨勢（本月 vs 上月）</div><div class="chart-wrapper"><canvas id="monthlyDauChart"></canvas></div></div>
-    <div class="chart-container"><div class="chart-title">🆕 新增人數趨勢</div><div class="chart-wrapper"><canvas id="monthlyNewPlayersChart"></canvas></div></div>
-    <div class="chart-container"><div class="chart-title">💵 付費人數趨勢</div><div class="chart-wrapper"><canvas id="monthlyPayingChart"></canvas></div></div>
-    <div class="chart-container"><div class="chart-title">💳 儲值次數趨勢</div><div class="chart-wrapper"><canvas id="monthlyTransactionsChart"></canvas></div></div>
-    <div class="chart-container"><div class="chart-title">💰 營收趨勢</div><div class="chart-wrapper"><canvas id="monthlyRevenueChart"></canvas></div></div>
-    <div class="chart-container"><div class="chart-title">📈 ARPPU 趨勢</div><div class="chart-wrapper"><canvas id="monthlyArppuChart"></canvas></div></div>
-  </div>
 
-  <!-- 月份同期比較（從日報搬來） -->
-  <div class="section">
+  <!-- 月份同期比較 移到最上方 -->
+  <div class="section" style="margin-bottom:24px;">
     <div class="section-title">📊 月份同期比較</div>
     <div class="compare-cards">
       <div class="ccard current">
@@ -438,7 +429,16 @@
     </div>
   </div>
 
-  <!-- 月份同期儲值品項比較（從日報搬來） -->
+  <div class="chart-grid">
+    <div class="chart-container"><div class="chart-title">📊 DAU 趨勢（本月 vs 上月）</div><div class="chart-wrapper"><canvas id="monthlyDauChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">🆕 新增人數趨勢</div><div class="chart-wrapper"><canvas id="monthlyNewPlayersChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💵 付費人數趨勢</div><div class="chart-wrapper"><canvas id="monthlyPayingChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💳 儲值次數趨勢</div><div class="chart-wrapper"><canvas id="monthlyTransactionsChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">💰 營收趨勢</div><div class="chart-wrapper"><canvas id="monthlyRevenueChart"></canvas></div></div>
+    <div class="chart-container"><div class="chart-title">📈 ARPPU 趨勢</div><div class="chart-wrapper"><canvas id="monthlyArppuChart"></canvas></div></div>
+  </div>
+
+  <!-- 月份同期儲值品項比較 -->
   <div class="section">
     <div class="section-title">🏪 月份同期儲值品項比較</div>
     <table class="stc-table">
@@ -1053,31 +1053,36 @@ function initWeeklyCharts(d) {
   const curr = d.weeklyData.curr || [];
   const prev = d.weeklyData.prev || [];
 
-  // 日期格式化 M/DD
-  const fmtD = str => { const p = String(str).split('-'); return parseInt(p[1]) + '/' + parseInt(p[2]); };
+  // 固定 X 軸：周一 ~ 周日
+  const weekLabels = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
-  // 上方日期範圍標題
-  const currStart = curr.length > 0 ? fmtD(curr[0].ProDate) : '';
-  const currEnd   = curr.length > 0 ? fmtD(curr[curr.length-1].ProDate) : '';
-  const prevStart = prev.length > 0 ? fmtD(prev[0].ProDate) : '';
-  const prevEnd   = prev.length > 0 ? fmtD(prev[prev.length-1].ProDate) : '';
+  // 以 day_of_week（1=周一 ~ 7=周日）建立對照表，無資料填 null
+  const currMap = {};
+  curr.forEach(x => { currMap[n(x.day_of_week)] = x; });
+  const prevMap = {};
+  prev.forEach(x => { prevMap[n(x.day_of_week)] = x; });
+  const getArr = (map, key) => [1,2,3,4,5,6,7].map(day => {
+    const row = map[day]; return row !== undefined ? n(row[key]) : null;
+  });
+
+  // 日期範圍標題
+  const fmtD = str => { const p = String(str).split('-'); return parseInt(p[1]) + '/' + parseInt(p[2]); };
+  const currDates = curr.map(x => String(x.ProDate)).sort();
+  const prevDates = prev.map(x => String(x.ProDate)).sort();
   const rangeEl = document.getElementById('weeklyDateRange');
   if (rangeEl) rangeEl.innerHTML = `
-    <span style="background:#7c3aed;color:#fff;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;">本週 ${currStart}～${currEnd}</span>
+    <span style="background:#7c3aed;color:#fff;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;">本週 ${currDates.length ? fmtD(currDates[0]) : ''}～${currDates.length ? fmtD(currDates[currDates.length-1]) : ''}</span>
     <span style="color:#888;font-size:13px;font-weight:600;">vs</span>
-    <span style="background:#f1f5f9;color:#64748b;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;border:1px dashed #cbd5e1;">上週 ${prevStart}～${prevEnd}</span>
+    <span style="background:#f1f5f9;color:#64748b;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;border:1px dashed #cbd5e1;">上週 ${prevDates.length ? fmtD(prevDates[0]) : ''}～${prevDates.length ? fmtD(prevDates[prevDates.length-1]) : ''}</span>
   `;
 
-  // x 軸用本週實際日期
-  const labels = curr.map(x => fmtD(x.ProDate));
-
   renderSummaryCards('weeklySummaryCards', curr, prev, '本週 ');
-  weeklyCharts.dau          = createLineChart('weeklyDauChart',          labels, curr.map(x=>n(x.DAU)),          prev.map(x=>n(x.DAU)),          '本週', '上週');
-  weeklyCharts.newPlayers   = createLineChart('weeklyNewPlayersChart',   labels, curr.map(x=>n(x.NewPlayers)),   prev.map(x=>n(x.NewPlayers)),   '本週', '上週');
-  weeklyCharts.paying       = createLineChart('weeklyPayingChart',       labels, curr.map(x=>n(x.PayingUsers)),  prev.map(x=>n(x.PayingUsers)),  '本週', '上週');
-  weeklyCharts.transactions = createLineChart('weeklyTransactionsChart', labels, curr.map(x=>n(x.Transactions)), prev.map(x=>n(x.Transactions)), '本週', '上週');
-  weeklyCharts.revenue      = createLineChart('weeklyRevenueChart',      labels, curr.map(x=>n(x.Revenue)),      prev.map(x=>n(x.Revenue)),      '本週', '上週');
-  weeklyCharts.arppu        = createLineChart('weeklyArppuChart',        labels, curr.map(x=>n(x.ARPPU)),        prev.map(x=>n(x.ARPPU)),        '本週', '上週');
+  weeklyCharts.dau          = createLineChart('weeklyDauChart',          weekLabels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          '本週', '上週');
+  weeklyCharts.newPlayers   = createLineChart('weeklyNewPlayersChart',   weekLabels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   '本週', '上週');
+  weeklyCharts.paying       = createLineChart('weeklyPayingChart',       weekLabels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  '本週', '上週');
+  weeklyCharts.transactions = createLineChart('weeklyTransactionsChart', weekLabels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), '本週', '上週');
+  weeklyCharts.revenue      = createLineChart('weeklyRevenueChart',      weekLabels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      '本週', '上週');
+  weeklyCharts.arppu        = createLineChart('weeklyArppuChart',        weekLabels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        '本週', '上週');
 }
 
 function initMonthlyCharts(d) {
@@ -1113,7 +1118,6 @@ function initMonthlyCharts(d) {
     return row !== undefined ? n(row[key]) : null;
   });
 
-  renderSummaryCards('monthlySummaryCards', curr, prev, currLabel + ' ');
   monthlyCharts.dau          = createLineChart('monthlyDauChart',          labels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          currLabel, prevLabel);
   monthlyCharts.newPlayers   = createLineChart('monthlyNewPlayersChart',   labels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   currLabel, prevLabel);
   monthlyCharts.paying       = createLineChart('monthlyPayingChart',       labels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  currLabel, prevLabel);
