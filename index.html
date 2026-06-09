@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SEA版營運日報</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <style>
     /* ── 密碼遮罩 ── */
     #lockScreen {
@@ -627,6 +628,13 @@ let cachedData  = null;
 function n(v) { return parseFloat(v) || 0; }
 function fmt(v) { return Math.round(n(v)).toLocaleString('en-US'); }
 function fmtMoney(v) { return Math.round(n(v) * currentRate).toLocaleString('en-US'); }
+function fmtLabel(v) {
+  if (v === null || v === undefined) return '';
+  const av = Math.abs(v);
+  if (av >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+  if (av >= 1e3) return (v / 1e3).toFixed(1) + 'k';
+  return Math.round(v).toString();
+}
 
 function diffTag(curr, prev) {
   curr = n(curr); prev = n(prev);
@@ -966,7 +974,7 @@ function renderBoardTarget(d) {
   const targetMYR         = n(targetTWD) / exchangeRate;
   const dailyTargetMYR    = targetMYR / monthDays;
   // d.date 是昨天，例如 2026-06-03 代表本月資料為 6/1～6/3（共 day 天）
-  const actualAvgRevenueMYR = actualRevenueMYR / day;
+  const actualAvgRevenueMYR = actualRevenueMYR / day * 0.745;  // 通後淨額比例
   const gapAvgMYR         = actualAvgRevenueMYR - dailyTargetMYR;
   const achievementRate   = dailyTargetMYR > 0 ? actualAvgRevenueMYR / dailyTargetMYR * 100 : 0;
 
@@ -1134,13 +1142,18 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ── Chart.js 圖表 ─────────────────────────────────────────────────────
+Chart.register(ChartDataLabels);
+
 let weeklyCharts = {};
 let monthlyCharts = {};
 
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
-  plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } } },
+  plugins: {
+    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } },
+    datalabels: { display: false }   // 預設關閉，由 createLineChart 各 dataset 個別設定
+  },
   scales: { x: { grid: { display: false } }, y: { beginAtZero: false, grid: { color: '#f0f0f0' } } }
 };
 
@@ -1148,16 +1161,46 @@ function destroyCharts(group) {
   Object.values(group).forEach(c => { if (c) c.destroy(); });
 }
 
-function createLineChart(canvasId, labels, currData, prevData, currLabel, prevLabel) {
+function createLineChart(canvasId, labels, currData, prevData, currLabel, prevLabel, isMonthly = false) {
   const ctx = document.getElementById(canvasId);
   if (!ctx) return null;
+
+  // 決定是否顯示該點標籤
+  const makeDisplay = (data) => (context) => {
+    const v = data[context.dataIndex];
+    if (v === null || v === undefined) return false;
+    if (!isMonthly) return true;                             // 週報：每點都顯示
+    const idx = context.dataIndex;
+    if ((idx + 1) % 5 === 0) return true;                   // 月報：每 5 天一個
+    const lastIdx = data.reduce((acc, val, i) => val !== null ? i : acc, -1);
+    return idx === lastIdx;                                   // 月報：最後一個有資料的點
+  };
+
+  // 共用 datalabels 設定
+  const dlBase = {
+    font: { size: 10, weight: '700' },
+    anchor: 'end',
+    offset: 2,
+    formatter: fmtLabel
+  };
+
   return new Chart(ctx, {
     type: 'line',
     data: {
       labels,
       datasets: [
-        { label: currLabel, data: currData, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.1)', borderWidth: 2, tension: .3, fill: true, spanGaps: false },
-        { label: prevLabel, data: prevData, borderColor: '#94a3b8', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5,5], tension: .3, fill: false, spanGaps: false }
+        {
+          label: currLabel, data: currData,
+          borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.1)',
+          borderWidth: 2, tension: .3, fill: true, spanGaps: false,
+          datalabels: { ...dlBase, display: makeDisplay(currData), color: '#7c3aed', align: 'top' }
+        },
+        {
+          label: prevLabel, data: prevData,
+          borderColor: '#94a3b8', backgroundColor: 'transparent',
+          borderWidth: 2, borderDash: [5,5], tension: .3, fill: false, spanGaps: false,
+          datalabels: { ...dlBase, display: makeDisplay(prevData), color: '#94a3b8', align: 'bottom' }
+        }
       ]
     },
     options: chartOptions
@@ -1276,12 +1319,12 @@ function initMonthlyCharts(d) {
     return row !== undefined ? n(row[key]) : null;
   });
 
-  monthlyCharts.dau          = createLineChart('monthlyDauChart',          labels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          currLabel, prevLabel);
-  monthlyCharts.newPlayers   = createLineChart('monthlyNewPlayersChart',   labels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   currLabel, prevLabel);
-  monthlyCharts.paying       = createLineChart('monthlyPayingChart',       labels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  currLabel, prevLabel);
-  monthlyCharts.transactions = createLineChart('monthlyTransactionsChart', labels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), currLabel, prevLabel);
-  monthlyCharts.revenue      = createLineChart('monthlyRevenueChart',      labels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      currLabel, prevLabel);
-  monthlyCharts.arppu        = createLineChart('monthlyArppuChart',        labels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        currLabel, prevLabel);
+  monthlyCharts.dau          = createLineChart('monthlyDauChart',          labels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          currLabel, prevLabel, true);
+  monthlyCharts.newPlayers   = createLineChart('monthlyNewPlayersChart',   labels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   currLabel, prevLabel, true);
+  monthlyCharts.paying       = createLineChart('monthlyPayingChart',       labels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  currLabel, prevLabel, true);
+  monthlyCharts.transactions = createLineChart('monthlyTransactionsChart', labels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), currLabel, prevLabel, true);
+  monthlyCharts.revenue      = createLineChart('monthlyRevenueChart',      labels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      currLabel, prevLabel, true);
+  monthlyCharts.arppu        = createLineChart('monthlyArppuChart',        labels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        currLabel, prevLabel, true);
 }
 
 fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
