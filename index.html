@@ -99,13 +99,13 @@
     .stc-table td.may-cell { background: #ede9fe; text-align: right; font-weight: 600; }
     .stc-table td.change-cell { text-align: right; font-weight: 700; }
     /* ── 月份同期比較（新版 5 欄單卡） ── */
-    .mc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
-    .mc-card { background: #fff; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .mc-label { font-size: 13px; color: #888; font-weight: 500; margin-bottom: 8px; }
-    .mc-value { font-size: 28px; font-weight: 700; color: #2c2c2c; margin-bottom: 8px; }
-    .mc-compare { font-size: 12px; color: #aaa; margin-bottom: 6px; }
-    .mc-prev-val { font-size: 20px; font-weight: 700; color: #555; }
-    .mc-chg { font-size: 14px; font-weight: 700; }
+    .mc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .mc-card { background: #ede9fe; border-left: 4px solid #7c3aed; border-radius: 12px; padding: 14px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .mc-label { font-size: 11px; font-weight: 600; color: #5b21b6; margin-bottom: 10px; }
+    .mc-value { font-size: 24px; font-weight: 700; color: #3730a3; margin-bottom: 6px; }
+    .mc-compare { font-size: 11px; color: #6d28d9; margin-bottom: 4px; }
+    .mc-prev-val { font-size: 18px; font-weight: 700; color: #3730a3; }
+    .mc-chg { font-size: 13px; font-weight: 700; }
     @media (max-width: 1200px) { .mc-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 700px)  { .mc-grid { grid-template-columns: repeat(2, 1fr); } }
     /* ── 每日營運摘要（簡潔文字版） ── */
@@ -1149,19 +1149,18 @@ function destroyCharts(group) {
   Object.values(group).forEach(c => { if (c) c.destroy(); });
 }
 
-function createLineChart(canvasId, labels, currData, prevData, currLabel, prevLabel, isMonthly = false) {
+function createLineChart(canvasId, labels, currData, prevData, currLabel, prevLabel, isMonthly = false, opts = null) {
   const ctx = document.getElementById(canvasId);
   if (!ctx) return null;
 
   // 決定是否顯示該點標籤
   const makeDisplay = (data) => (context) => {
+    if (isMonthly) return false;                             // 月報：不顯示靜態標籤，hover tooltip 處理
     const v = data[context.dataIndex];
     if (v === null || v === undefined) return false;
-    if (!isMonthly) return true;                             // 週報：每點都顯示
     const idx = context.dataIndex;
-    if ((idx + 1) % 5 === 0) return true;                   // 月報：每 5 天一個
     const lastIdx = data.reduce((acc, val, i) => val !== null ? i : acc, -1);
-    return idx === lastIdx;                                   // 月報：最後一個有資料的點
+    return idx === lastIdx;                                  // 週報：只顯示最後一個有資料的點
   };
 
   // 共用 datalabels 設定
@@ -1169,7 +1168,15 @@ function createLineChart(canvasId, labels, currData, prevData, currLabel, prevLa
     font: { size: 10, weight: '700' },
     anchor: 'end',
     offset: 2,
-    formatter: fmtLabel
+    formatter: (v, ctx) => {
+      if (v === null || v === undefined) return '';
+      const data = ctx.dataset.data;
+      const lastIdx = data.reduce((acc, val, i) => val !== null ? i : acc, -1);
+      // 最後一點顯示完整數字（如 20,332），中繼標顯示縮寫（如 20.5k）
+      return ctx.dataIndex === lastIdx
+        ? Math.round(n(v)).toLocaleString('en-US')
+        : fmtLabel(v);
+    }
   };
 
   return new Chart(ctx, {
@@ -1191,7 +1198,7 @@ function createLineChart(canvasId, labels, currData, prevData, currLabel, prevLa
         }
       ]
     },
-    options: chartOptions
+    options: opts || chartOptions
   });
 }
 
@@ -1259,13 +1266,40 @@ function initWeeklyCharts(d) {
     <span style="background:#f1f5f9;color:#64748b;padding:6px 16px;border-radius:8px;font-size:13px;font-weight:700;border:1px dashed #cbd5e1;">${weekPrevLabel} ${prevDates.length ? fmtD(prevDates[0]) : ''}～${prevDates.length ? fmtD(prevDates[prevDates.length-1]) : ''}</span>
   `;
 
+  // 建立每個星期位置對應的日期（用於 tooltip 顯示）
+  const currDateArr = [1,2,3,4,5,6,7].map(dow => currMap[dow]?.ProDate || null);
+  const prevDateArr = [1,2,3,4,5,6,7].map(dow => prevMap[dow]?.ProDate || null);
+
+  // 週報專用 options：tooltip 加上日期
+  const weeklyOpts = {
+    ...chartOptions,
+    plugins: {
+      ...chartOptions.plugins,
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const dateArr = ctx.datasetIndex === 0 ? currDateArr : prevDateArr;
+            const date = dateArr[ctx.dataIndex] || '';
+            const seriesLabel = ctx.dataset.label || '';
+            const value = ctx.parsed.y !== null
+              ? Math.round(ctx.parsed.y).toLocaleString('en-US')
+              : '-';
+            return date
+              ? `${seriesLabel} ${date}：${value}`
+              : `${seriesLabel}：${value}`;
+          }
+        }
+      }
+    }
+  };
+
   renderSummaryCards('weeklySummaryCards', curr, prev, weekCurrLabel + ' ');
-  weeklyCharts.dau          = createLineChart('weeklyDauChart',          weekLabels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          weekCurrLabel, weekPrevLabel);
-  weeklyCharts.newPlayers   = createLineChart('weeklyNewPlayersChart',   weekLabels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   weekCurrLabel, weekPrevLabel);
-  weeklyCharts.paying       = createLineChart('weeklyPayingChart',       weekLabels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  weekCurrLabel, weekPrevLabel);
-  weeklyCharts.transactions = createLineChart('weeklyTransactionsChart', weekLabels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), weekCurrLabel, weekPrevLabel);
-  weeklyCharts.revenue      = createLineChart('weeklyRevenueChart',      weekLabels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      weekCurrLabel, weekPrevLabel);
-  weeklyCharts.arppu        = createLineChart('weeklyArppuChart',        weekLabels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        weekCurrLabel, weekPrevLabel);
+  weeklyCharts.dau          = createLineChart('weeklyDauChart',          weekLabels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          weekCurrLabel, weekPrevLabel, false, weeklyOpts);
+  weeklyCharts.newPlayers   = createLineChart('weeklyNewPlayersChart',   weekLabels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   weekCurrLabel, weekPrevLabel, false, weeklyOpts);
+  weeklyCharts.paying       = createLineChart('weeklyPayingChart',       weekLabels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  weekCurrLabel, weekPrevLabel, false, weeklyOpts);
+  weeklyCharts.transactions = createLineChart('weeklyTransactionsChart', weekLabels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), weekCurrLabel, weekPrevLabel, false, weeklyOpts);
+  weeklyCharts.revenue      = createLineChart('weeklyRevenueChart',      weekLabels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      weekCurrLabel, weekPrevLabel, false, weeklyOpts);
+  weeklyCharts.arppu        = createLineChart('weeklyArppuChart',        weekLabels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        weekCurrLabel, weekPrevLabel, false, weeklyOpts);
 }
 
 function initMonthlyCharts(d) {
@@ -1307,12 +1341,44 @@ function initMonthlyCharts(d) {
     return row !== undefined ? n(row[key]) : null;
   });
 
-  monthlyCharts.dau          = createLineChart('monthlyDauChart',          labels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          currLabel, prevLabel, true);
-  monthlyCharts.newPlayers   = createLineChart('monthlyNewPlayersChart',   labels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   currLabel, prevLabel, true);
-  monthlyCharts.paying       = createLineChart('monthlyPayingChart',       labels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  currLabel, prevLabel, true);
-  monthlyCharts.transactions = createLineChart('monthlyTransactionsChart', labels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), currLabel, prevLabel, true);
-  monthlyCharts.revenue      = createLineChart('monthlyRevenueChart',      labels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      currLabel, prevLabel, true);
-  monthlyCharts.arppu        = createLineChart('monthlyArppuChart',        labels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        currLabel, prevLabel, true);
+  // 建立每天對應的日期陣列（用於 tooltip 顯示）
+  const currDateArr = labels.map(day => currMap[day]?.ProDate || null);
+  const prevDateArr = labels.map(day => prevMap[day]?.ProDate || null);
+
+  // 月報專用 options：title=星期幾，label=YYYY-MM-DD：數字
+  const dowNames = ['周日','周一','周二','周三','周四','周五','周六'];
+  const monthlyOpts = {
+    ...chartOptions,
+    plugins: {
+      ...chartOptions.plugins,
+      tooltip: {
+        callbacks: {
+          // 標題：取當天任一有效日期換算星期幾
+          title: (items) => {
+            const idx = items[0].dataIndex;
+            const date = currDateArr[idx] || prevDateArr[idx] || '';
+            return date ? dowNames[new Date(date + 'T00:00:00').getDay()] : String(idx + 1);
+          },
+          // 每條線：YYYY-MM-DD：數字
+          label: (ctx) => {
+            const dateArr = ctx.datasetIndex === 0 ? currDateArr : prevDateArr;
+            const date = dateArr[ctx.dataIndex] || '';
+            const value = ctx.parsed.y !== null
+              ? Math.round(ctx.parsed.y).toLocaleString('en-US')
+              : '-';
+            return date ? `${date}：${value}` : `${ctx.dataset.label}：${value}`;
+          }
+        }
+      }
+    }
+  };
+
+  monthlyCharts.dau          = createLineChart('monthlyDauChart',          labels, getArr(currMap,'DAU'),          getArr(prevMap,'DAU'),          currLabel, prevLabel, true, monthlyOpts);
+  monthlyCharts.newPlayers   = createLineChart('monthlyNewPlayersChart',   labels, getArr(currMap,'NewPlayers'),   getArr(prevMap,'NewPlayers'),   currLabel, prevLabel, true, monthlyOpts);
+  monthlyCharts.paying       = createLineChart('monthlyPayingChart',       labels, getArr(currMap,'PayingUsers'),  getArr(prevMap,'PayingUsers'),  currLabel, prevLabel, true, monthlyOpts);
+  monthlyCharts.transactions = createLineChart('monthlyTransactionsChart', labels, getArr(currMap,'Transactions'), getArr(prevMap,'Transactions'), currLabel, prevLabel, true, monthlyOpts);
+  monthlyCharts.revenue      = createLineChart('monthlyRevenueChart',      labels, getArr(currMap,'Revenue'),      getArr(prevMap,'Revenue'),      currLabel, prevLabel, true, monthlyOpts);
+  monthlyCharts.arppu        = createLineChart('monthlyArppuChart',        labels, getArr(currMap,'ARPPU'),        getArr(prevMap,'ARPPU'),        currLabel, prevLabel, true, monthlyOpts);
 }
 
 fetch('https://raw.githubusercontent.com/mingyiying850913-crypto/sea-dashboard/main/data.json?t=' + Date.now())
