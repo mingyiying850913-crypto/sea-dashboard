@@ -98,6 +98,16 @@
     .stc-table td.apr-cell { background: #fef9ec; text-align: right; }
     .stc-table td.may-cell { background: #ede9fe; text-align: right; font-weight: 600; }
     .stc-table td.change-cell { text-align: right; font-weight: 700; }
+    /* ── 月份同期比較（新版 5 欄單卡） ── */
+    .mc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    .mc-card { background: #fff; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .mc-label { font-size: 13px; color: #888; font-weight: 500; margin-bottom: 8px; }
+    .mc-value { font-size: 28px; font-weight: 700; color: #2c2c2c; margin-bottom: 8px; }
+    .mc-compare { font-size: 12px; color: #aaa; margin-bottom: 6px; }
+    .mc-prev-val { font-size: 20px; font-weight: 700; color: #555; }
+    .mc-chg { font-size: 14px; font-weight: 700; }
+    @media (max-width: 1200px) { .mc-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 700px)  { .mc-grid { grid-template-columns: repeat(2, 1fr); } }
     /* ── 每日營運摘要（簡潔文字版） ── */
     .dr-title { font-size: 15px; font-weight: 700; color: #2c2c2c; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f0e8d0; }
     .dr-date  { font-weight: 400; color: #999; font-size: 14px; }
@@ -422,70 +432,37 @@
 
   <!-- 月份同期比較 移到最上方 -->
   <div class="section" style="margin-bottom:24px;">
-    <div class="section-title">📊 月份同期比較</div>
-    <div class="compare-cards">
-      <div class="ccard current">
-        <div class="ccard-label" id="labelCurrPaying">本月平均付費人數</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="mayPaying">-</span>
-          <span class="ccard-unit">人/日</span>
-          <span class="ccard-change" id="payingChange"></span>
-        </div>
+    <div class="section-title">📊 月份同期比較 <span id="mcTitle" style="font-size:14px;color:#aaa;font-weight:400;"></span></div>
+    <div class="mc-grid">
+      <div class="mc-card">
+        <div class="mc-label" id="mcLbl1">-</div>
+        <div class="mc-value" id="mcVal1">-</div>
+        <div class="mc-compare" id="mcComp1"></div>
+        <div class="mc-chg"    id="mcChg1"></div>
       </div>
-      <div class="ccard prev">
-        <div class="ccard-label" id="labelPrevPaying">上月同期付費人數</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="aprPaying">-</span>
-          <span class="ccard-unit">人/日</span>
-        </div>
+      <div class="mc-card">
+        <div class="mc-label" id="mcLbl2">-</div>
+        <div class="mc-value" id="mcVal2">-</div>
+        <div class="mc-compare" id="mcComp2"></div>
+        <div class="mc-chg"    id="mcChg2"></div>
       </div>
-      <div class="ccard current">
-        <div class="ccard-label" id="labelCurrArppu">本月平均 ARPPU</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="mayArppu">-</span>
-          <span class="ccard-unit">元/人</span>
-          <span class="ccard-change" id="arppuChange"></span>
-        </div>
+      <div class="mc-card">
+        <div class="mc-label" id="mcLbl3">-</div>
+        <div class="mc-value" id="mcVal3">-</div>
+        <div class="mc-compare" id="mcComp3"></div>
+        <div class="mc-chg"    id="mcChg3"></div>
       </div>
-      <div class="ccard prev">
-        <div class="ccard-label" id="labelPrevArppu">上月同期 ARPPU</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="aprArppu">-</span>
-          <span class="ccard-unit">元/人</span>
-        </div>
+      <div class="mc-card">
+        <div class="mc-label" id="mcLbl4">-</div>
+        <div class="mc-value" id="mcVal4">-</div>
+        <div class="mc-compare" id="mcComp4"></div>
+        <div class="mc-chg"    id="mcChg4"></div>
       </div>
-      <div class="ccard current">
-        <div class="ccard-label" id="socialLabelCurrRev">社交玩家儲值</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="socialCurrRevenue">-</span>
-          <span class="ccard-change" id="socialRevenueChange"></span>
-        </div>
-      </div>
-      <div class="ccard prev">
-        <div class="ccard-label" id="socialLabelPrevRev">上月同期儲值</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="socialPrevRevenue">-</span>
-        </div>
-      </div>
-      <div class="ccard current">
-        <div class="ccard-label" id="labelCurrExSocial">扣除社交後流水</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="currExSocial">-</span>
-          <span class="ccard-change" id="exSocialChange"></span>
-        </div>
-      </div>
-      <div class="ccard current">
-        <div class="ccard-label" id="labelCurrRevenue">本月累計流水</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="currRevenue">-</span>
-          <span class="ccard-change" id="revenueChange"></span>
-        </div>
-      </div>
-      <div class="ccard prev">
-        <div class="ccard-label" id="labelPrevRevenue">上月同期流水</div>
-        <div class="ccard-main">
-          <span class="ccard-value" id="prevRevenue">-</span>
-        </div>
+      <div class="mc-card">
+        <div class="mc-label" id="mcLbl5">-</div>
+        <div class="mc-value" id="mcVal5">-</div>
+        <div class="mc-compare" id="mcComp5"></div>
+        <div class="mc-chg"    id="mcChg5"></div>
       </div>
     </div>
   </div>
@@ -756,40 +733,51 @@ function render(d) {
       }).join('')
     : '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
 
-  // 月份同期比較（元素在 tab-monthly，仍正常 render）
+  // 月份同期比較（新版 5 欄單卡）
   const c  = d.comparison || {};
   const pm = c.prev_month || '4月';
   const cm = c.curr_month || '5月';
-  document.getElementById('labelCurrPaying').textContent  = cm + '平均付費人數';
-  document.getElementById('labelPrevPaying').textContent  = pm + '同期付費人數';
-  document.getElementById('labelCurrArppu').textContent   = cm + '平均 ARPPU';
-  document.getElementById('labelPrevArppu').textContent   = pm + '同期 ARPPU';
-  document.getElementById('labelCurrRevenue').textContent = cm + '累計流水';
-  document.getElementById('labelPrevRevenue').textContent = pm + '同期流水';
-  document.getElementById('mayPaying').textContent        = fmt(c.may_avg_paying);
-  document.getElementById('aprPaying').textContent        = fmt(c.apr_avg_paying);
-  document.getElementById('mayArppu').textContent         = '$' + fmtMoney(c.may_avg_arppu);
-  document.getElementById('aprArppu').textContent         = '$' + fmtMoney(c.apr_avg_arppu);
-  document.getElementById('currRevenue').textContent      = '$' + fmtMoney(c.curr_revenue);
-  document.getElementById('prevRevenue').textContent      = '$' + fmtMoney(c.prev_revenue);
-  document.getElementById('payingChange').innerHTML       = pct(c.may_avg_paying, c.apr_avg_paying);
-  document.getElementById('arppuChange').innerHTML        = pct(c.may_avg_arppu,  c.apr_avg_arppu);
-  document.getElementById('revenueChange').innerHTML      = pctDirect(c.revenue_growth_pct);
 
   const sp    = d.socialPlayers || {};
   const spCur = sp.curr || {};
   const spPrv = sp.prev || {};
-  document.getElementById('socialLabelCurrRev').textContent = cm + '社交玩家儲值';
-  document.getElementById('socialLabelPrevRev').textContent = pm + '同期儲值';
-  document.getElementById('socialCurrRevenue').textContent  = '$' + fmtMoney(spCur.total_recharge || 0);
-  document.getElementById('socialPrevRevenue').textContent  = '$' + fmtMoney(spPrv.total_recharge || 0);
-  document.getElementById('socialRevenueChange').innerHTML  = pct(spCur.total_recharge, spPrv.total_recharge);
-
   const currExSocial = n(c.curr_revenue) - n(spCur.total_recharge);
   const prevExSocial = n(c.prev_revenue) - n(spPrv.total_recharge);
-  document.getElementById('labelCurrExSocial').textContent = cm + '扣除社交後流水';
-  document.getElementById('currExSocial').textContent      = '$' + fmtMoney(currExSocial);
-  document.getElementById('exSocialChange').innerHTML      = pct(currExSocial, prevExSocial);
+
+  // 輔助：產生「vs 5月: <big>數字</big>」HTML
+  const vsHtml = (val) => `vs ${pm}: <span class="mc-prev-val">${val}</span>`;
+
+  document.getElementById('mcTitle').textContent = `（${cm} vs ${pm} 同期）`;
+
+  // 卡 1：平均付費人數
+  document.getElementById('mcLbl1').textContent = cm + ' 平均付費人數';
+  document.getElementById('mcVal1').textContent = fmt(c.may_avg_paying);
+  document.getElementById('mcComp1').innerHTML  = vsHtml(fmt(c.apr_avg_paying));
+  document.getElementById('mcChg1').innerHTML   = pct(c.may_avg_paying, c.apr_avg_paying);
+
+  // 卡 2：平均 ARPPU
+  document.getElementById('mcLbl2').textContent = cm + ' 平均 ARPPU';
+  document.getElementById('mcVal2').textContent = '$' + fmtMoney(c.may_avg_arppu);
+  document.getElementById('mcComp2').innerHTML  = vsHtml('$' + fmtMoney(c.apr_avg_arppu));
+  document.getElementById('mcChg2').innerHTML   = pct(c.may_avg_arppu, c.apr_avg_arppu);
+
+  // 卡 3：社交玩家儲值
+  document.getElementById('mcLbl3').textContent = cm + ' 社交玩家儲值';
+  document.getElementById('mcVal3').textContent = '$' + fmtMoney(spCur.total_recharge || 0);
+  document.getElementById('mcComp3').innerHTML  = vsHtml('$' + fmtMoney(spPrv.total_recharge || 0));
+  document.getElementById('mcChg3').innerHTML   = pct(spCur.total_recharge, spPrv.total_recharge);
+
+  // 卡 4：扣除社交後流水
+  document.getElementById('mcLbl4').textContent = cm + ' 扣除社交後流水';
+  document.getElementById('mcVal4').textContent = '$' + fmtMoney(currExSocial);
+  document.getElementById('mcComp4').innerHTML  = vsHtml('$' + fmtMoney(prevExSocial));
+  document.getElementById('mcChg4').innerHTML   = pct(currExSocial, prevExSocial);
+
+  // 卡 5：累計流水
+  document.getElementById('mcLbl5').textContent = cm + ' 累計流水';
+  document.getElementById('mcVal5').textContent = '$' + fmtMoney(c.curr_revenue);
+  document.getElementById('mcComp5').innerHTML  = vsHtml('$' + fmtMoney(c.prev_revenue));
+  document.getElementById('mcChg5').innerHTML   = pctDirect(c.revenue_growth_pct);
 
   const topRegular = d.topRegularPlayers || [];
   document.getElementById('topRegularTable').innerHTML = topRegular.length
