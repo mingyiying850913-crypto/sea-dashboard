@@ -98,6 +98,12 @@
     .stc-table td.apr-cell { background: #fef9ec; text-align: right; }
     .stc-table td.may-cell { background: #ede9fe; text-align: right; font-weight: 600; }
     .stc-table td.change-cell { text-align: right; font-weight: 700; }
+    .stc-alert-box {
+      background: #fff7ed; border: 1px solid #fed7aa; border-left: 6px solid #f59e0b;
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 14px;
+      color: #92400e; font-size: 13.5px; font-weight: 600; line-height: 1.7;
+    }
+    .stc-alert-row td { background: #fff7ed; }
     /* ── 月份同期比較（新版 5 欄單卡） ── */
     .mc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
     .mc-card { background: #ede9fe; border-left: 4px solid #7c3aed; border-radius: 12px; padding: 14px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -479,6 +485,7 @@
   <!-- 月份同期儲值品項比較 -->
   <div class="section">
     <div class="section-title">🏪 月份同期儲值品項比較</div>
+    <div id="stcAlertSection"></div>
     <table class="stc-table">
       <thead>
         <tr>
@@ -597,6 +604,16 @@ const SALE_TYPE_NAMES = {
   6:'產包', 7:'付費蛋', 8:'小額付費', 9:'定製禮包', 10:'TACO',
   11:'CRM禮包', 12:'Web產包', 13:'登入禮包'
 };
+
+// 儲值品項異常警示閾值（流水月變化 % 低於此值即觸發）
+const SALE_TYPE_THRESHOLDS = {
+  1: -7, 2: -5, 3: -12, 4: -5, 5: -80, 6: -3, 7: -10, 10: -8, 12: -45
+};
+const DEFAULT_SALE_THRESHOLD = -30;
+function getSaleThreshold(saleType) {
+  const t = SALE_TYPE_THRESHOLDS[n(saleType)];
+  return t !== undefined ? t : DEFAULT_SALE_THRESHOLD;
+}
 
 const MYR_TO_TWD = 7.56;
 let currentRate = 1;
@@ -808,11 +825,18 @@ function render(d) {
   document.getElementById('stcMayLabel1').textContent = cm + '付費人數';
   document.getElementById('stcMayLabel2').textContent = cm + '流水';
   const stc = d.saleTypeComparison || [];
+  const stcAlerts = [];
   document.getElementById('stcTable').innerHTML = stc.length
     ? stc.map(r => {
         const name = r.name || SALE_TYPE_NAMES[n(r.SaleType)] || `類型${r.SaleType}`;
-        return `<tr>
-          <td><strong>${name}</strong></td>
+        const apr = n(r.apr_total_amount);
+        const may = n(r.may_total_amount);
+        const threshold  = getSaleThreshold(r.SaleType);
+        const changePct  = apr > 0 ? (may - apr) / apr * 100 : 0;
+        const triggered  = apr > 0 && changePct <= threshold;
+        if (triggered) stcAlerts.push({ name, changePct, threshold });
+        return `<tr class="${triggered ? 'stc-alert-row' : ''}">
+          <td><strong>${name}</strong>${triggered ? ' <span class="alert-badge warning">⚠️ 異常</span>' : ''}</td>
           <td class="apr-cell">${fmt(r.apr_paying_users)}</td>
           <td class="may-cell">${fmt(r.may_paying_users)}</td>
           <td class="change-cell">${changeCell(r.may_paying_users, r.apr_paying_users)}</td>
@@ -822,6 +846,15 @@ function render(d) {
         </tr>`;
       }).join('')
     : '<tr><td colspan="7" style="text-align:center;color:#bbb;padding:16px;">暫無資料</td></tr>';
+
+  const stcAlertEl = document.getElementById('stcAlertSection');
+  if (stcAlertEl) {
+    stcAlertEl.innerHTML = stcAlerts.length
+      ? `<div class="stc-alert-box">⚠️ 儲值品項異常警示（${stcAlerts.length} 項超過閾值）：${
+          stcAlerts.map(a => `<strong>${a.name}</strong>（${a.changePct.toFixed(1)}%，閾值 ${a.threshold}%）`).join('、')
+        }</div>`
+      : '';
+  }
 
   // 若目前在週報/月報頁籤就立即畫圖
   if (document.getElementById('tab-weekly')?.classList.contains('active')) initWeeklyCharts(d);
